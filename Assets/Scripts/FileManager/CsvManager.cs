@@ -1,9 +1,15 @@
+using UnityEngine;
 
-public class CsvManager : FileManager
+public class CsvManager : MonoBehaviour
 {
     private void Awake()
     {
 
     }
 
+    public void OnLoad(string path)
+    {
+
+
+    }
 }
