@@ -5,14 +5,15 @@ TagManager:
   serializedVersion: 2
   tags:
   - Ground
+  - EmptyArea
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - GenArea
   - Water
   - UI
-  - 
+  - Ground
   - 
   - 
   - 

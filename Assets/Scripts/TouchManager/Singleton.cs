@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
@@ -5,6 +6,7 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
     private static T _instance;
     private static readonly object _lock = new object();
     private static bool applicationIsQuitting = false;
+    private static bool isInitialized = false;
 
     public static T Instance
     {
