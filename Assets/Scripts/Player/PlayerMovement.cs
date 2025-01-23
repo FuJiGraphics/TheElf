@@ -1,10 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float moveSpeed = 10.0f;
+    public float moveSpeed = 10f;
+    public int healthPoint = 100;
+    public WeaponSC[] Weapons;
 
     private TouchManager touch;
     private Vector3 currDir;
@@ -17,6 +20,12 @@ public class PlayerMovement : MonoBehaviour
     }
 
     private void Update()
+    {
+        this.TouchMove();
+        this.Attack();
+    }
+
+    private void TouchMove()
     {
         if (touch.TouchHeld.Active)
         {
@@ -34,6 +43,14 @@ public class PlayerMovement : MonoBehaviour
         else
         {
             transform.position = targetPos;
+        }
+    }
+
+    private void Attack()
+    {
+        for (int i = 0; i < Weapons.Length; ++i)
+        {
+            Weapons[i].Shoot(currDir, transform.position);
         }
     }
 

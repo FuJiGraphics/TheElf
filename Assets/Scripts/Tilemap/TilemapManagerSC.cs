@@ -10,15 +10,17 @@ public class TilemapManagerSC : MonoBehaviour
     private static ObjectPool s_ObjPool;
     private static Dictionary<string, bool> s_ObjMap;
 
+    private bool IsInitialized { get; set; } = false;
+
     private void Start()
     {
-        s_ObjPool = new ObjectPool();
-        s_ObjPool.Init(targetPrefab, 50, targetGrid.transform);
-        s_ObjMap = new Dictionary<string, bool>();
+        this.Init();
     }
 
     public GameObject Get(Vector3 position)
     {
+        this.Init();
+
         string targetKey = position.ToString();
         GameObject resultObject = null;
         if (s_ObjMap.ContainsKey(targetKey))
@@ -39,6 +41,8 @@ public class TilemapManagerSC : MonoBehaviour
 
     public void Return(GameObject obj)
     {
+        this.Init();
+
         string targetKey = obj.transform.position.ToString();
         if (s_ObjMap.ContainsKey(targetKey))
         {
@@ -52,5 +56,16 @@ public class TilemapManagerSC : MonoBehaviour
 
     public void SetParent(Transform transform)
         => s_ObjPool.SetParent(transform);
+
+    private void Init()
+    {
+        if (IsInitialized)
+            return;
+
+        IsInitialized = true;
+        s_ObjPool = new ObjectPool();
+        s_ObjPool.Init(targetPrefab, 50, targetGrid.transform);
+        s_ObjMap = new Dictionary<string, bool>();
+    }
 
 } // class TilemapManagerSC

@@ -7,6 +7,9 @@ TagManager:
   - Ground
   - Tilemap
   - Bounds
+  - PlayerBound
+  - Enemy
+  - MapBounds
   layers:
   - Default
   - TransparentFX
