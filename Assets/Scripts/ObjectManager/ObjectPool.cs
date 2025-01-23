@@ -1,27 +1,33 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Animations;
 
 public class ObjectPool
 {
+    public Transform Parent { get; set; } = null;
     public int MaxCount { get; private set; } = 100;
     public int UseCount { get; private set; } = 0;
     public GameObject TargetPrefab { get; private set; } = null;
     public GameObject Instance { get; private set; } = new GameObject("ObjectPool");
     private Dictionary<GameObject, bool> m_GameObjects;
 
-    public void Init(GameObject prefabs, int maxCount)
+    public void Init(GameObject prefabs, int maxCount, Transform parent = null)
     {
         if (maxCount < 1)
             return;
 
+        Parent = parent != null ? parent : null;
         TargetPrefab = prefabs;
         MaxCount = maxCount;
         m_GameObjects = new Dictionary<GameObject, bool>();
         for (int i = 0; i < MaxCount; ++i)
         {
             GameObject go = GameObject.Instantiate(TargetPrefab);
-            go.transform.SetParent(Instance.transform);
+            if (Parent)
+                go.transform.SetParent(Parent);
+            else
+                go.transform.SetParent(Instance.transform);
             m_GameObjects.Add(go, false);
             go.SetActive(false);
         }
@@ -40,6 +46,9 @@ public class ObjectPool
         MaxCount = 0;
         GameObject.Destroy(Instance);
     }
+
+    public void SetParent(Transform transform)
+        => Parent = transform;
 
     public GameObject Gen(Vector3 position)
         => this.Gen(position, Quaternion.identity);
@@ -94,6 +103,9 @@ public class ObjectPool
 
     public void ReturnAll()
     {
+        if (m_GameObjects == null)
+            return;
+
         var keys = new List<GameObject>(m_GameObjects.Keys);
         for (int i = 0; i < keys.Count; ++i)
         {
