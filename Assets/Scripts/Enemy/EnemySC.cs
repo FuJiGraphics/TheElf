@@ -21,7 +21,8 @@ public class EnemySC : MonoBehaviour
 
     private void Start()
     {
-        spriteRenderers = new List<SpriteRenderer>(GetComponentsInChildren<SpriteRenderer>());
+        spriteRenderers = new List<SpriteRenderer>(
+            GetComponentsInChildren<SpriteRenderer>());
     }
 
     private void Update()
