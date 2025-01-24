@@ -27,7 +27,7 @@ public class OutsideBoundSC : MonoBehaviour
             var tilemaps = targetViewport.CurrenTilemap;
             for (int i = 0; i < tilemaps.Count; ++i)
             {
-                Vector2 nextPos = tilemaps[i].transform.position + m_DirectionVec;
+                Vector3 nextPos = tilemaps[i].transform.position + m_DirectionVec;
                 tilemapManager.Get(nextPos);
             }
         }

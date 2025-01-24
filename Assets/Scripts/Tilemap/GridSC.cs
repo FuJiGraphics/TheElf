@@ -8,10 +8,7 @@ public class GridSC : MonoBehaviour
 
     private void Start()
     {
-        GameObject player = GameObject.FindWithTag("Player");
-        Vector3 playerPos = player.transform.position;
-        Vector3 upVec = (Vector3.up * 33f);
-        tilemapManager.Get(playerPos);
-        tilemapManager.Get(playerPos + upVec);
+        tilemapManager.Get(Vector3.zero);
+        tilemapManager.Get(Vector3.up * 33f);
     }
 } // class GridSC
