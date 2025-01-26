@@ -7,12 +7,10 @@ public class MainCameraSC : MonoBehaviour
     public BoxCollider2D[] outsideBounds;
     public List<GameObject> CurrenTilemap { get; private set; }
 
-    private Camera m_Camera;
     private BoxCollider2D m_BoxCollider;
 
     private void Start()
     {
-        m_Camera = GetComponent<Camera>();
         m_BoxCollider = GetComponent<BoxCollider2D>();
         if (outsideBounds.Length < 4)
         {
