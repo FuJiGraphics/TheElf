@@ -9,11 +9,14 @@ public class OutsideBoundSC : MonoBehaviour
         Top, Bottom, Left, Right,
     };
 
+    public Grid targetGrid;
+    public GameObject tilemapPrefab;
     public BoundDirection type;
     public MainCameraSC targetViewport;
-    public TilemapManagerSC tilemapManager;
     
     private Vector3 m_DirectionVec;
+    public static Dictionary<Vector2Int, bool> s_ObjMap = 
+        new Dictionary<Vector2Int, bool>();
 
     private void Start()
     {
@@ -27,8 +30,16 @@ public class OutsideBoundSC : MonoBehaviour
             var tilemaps = targetViewport.CurrenTilemap;
             for (int i = 0; i < tilemaps.Count; ++i)
             {
-                Vector2 nextPos = tilemaps[i].transform.position + m_DirectionVec;
-                tilemapManager.Get(nextPos);
+                Vector3 nextPos = tilemaps[i].transform.position + m_DirectionVec;
+                Vector2Int targetKey = Vector2Int.zero;
+                targetKey.x = (int)nextPos.x;
+                targetKey.y = (int)nextPos.y;
+                if (!s_ObjMap.ContainsKey(targetKey))
+                {
+                    var go = GameObject.Instantiate(tilemapPrefab, targetGrid.transform);
+                    go.transform.position = nextPos;
+                    s_ObjMap.Add(targetKey, true);
+                }
             }
         }
     }

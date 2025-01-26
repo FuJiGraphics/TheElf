@@ -11,6 +11,7 @@ public class ObjectPool
     public GameObject TargetPrefab { get; private set; } = null;
     public GameObject Instance { get; private set; } = new GameObject("ObjectPool");
     private Dictionary<GameObject, bool> m_GameObjects;
+    private bool isChangingState = false;
 
     public void Init(GameObject prefabs, int maxCount, Transform parent = null)
     {
@@ -61,16 +62,26 @@ public class ObjectPool
 
     public GameObject Gen(Vector3 position, Quaternion rotation, Vector3 localScale)
     {
+        if (isChangingState)
+            return null;
+
         GameObject target = null;
-        if (UseCount < MaxCount)
+        if (m_GameObjects != null && UseCount < MaxCount)
         {
             foreach (var obj in m_GameObjects)
             {
-                if (!obj.Value)
+                if (obj.Key != null && !obj.Value)
                 {
                     m_GameObjects[obj.Key] = true;
                     target = obj.Key;
-                    target.SetActive(true);
+
+                    isChangingState = true;
+                    if (!target.activeSelf)
+                    {
+                        target.SetActive(true);
+                    }
+                    isChangingState = false;
+
                     target.transform.position = position;
                     target.transform.rotation = rotation;
                     target.transform.localScale= localScale;
@@ -84,7 +95,7 @@ public class ObjectPool
 
     public void Return(GameObject obj)
     {
-        if (obj == null || MaxCount < 1)
+        if (m_GameObjects == null || obj == null || MaxCount < 1 || isChangingState)
             return;
 
         if (m_GameObjects.ContainsKey(obj))
@@ -92,7 +103,12 @@ public class ObjectPool
             if (m_GameObjects[obj])
             {
                 m_GameObjects[obj] = false;
-                obj.SetActive(false);
+                isChangingState = true;
+                if (obj.activeSelf)
+                {
+                    obj.SetActive(false);
+                }
+                isChangingState = false;
                 obj.transform.position = Vector3.zero;
                 obj.transform.rotation = Quaternion.identity;
                 obj.transform.localScale = Vector3.one;

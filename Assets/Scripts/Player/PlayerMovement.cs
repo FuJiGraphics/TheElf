@@ -13,10 +13,13 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 currDir;
     private Vector3 targetPos;
 
+    private Animator animator;
+
     private void Start()
     {
         touch = TouchManager.Instance;
         currDir = Vector2.right;
+        animator = GetComponent<Animator>();
     }
 
     private void Update()
@@ -44,6 +47,9 @@ public class PlayerMovement : MonoBehaviour
         {
             transform.position = targetPos;
         }
+
+        animator.SetFloat("x", currDir.x);
+        animator.SetFloat("y", currDir.y);
     }
 
     private void Attack()

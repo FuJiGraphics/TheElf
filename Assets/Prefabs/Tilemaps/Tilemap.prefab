@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 2063545820433779560}
   - component: {fileID: 3129491230588346838}
   - component: {fileID: 230292923103254772}
-  - component: {fileID: 6454428581403087852}
   m_Layer: 6
   m_Name: Tilemap
   m_TagString: Tilemap
@@ -40185,16 +40184,3 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 33, y: 33}
   m_EdgeRadius: 0
---- !u!114 &6454428581403087852
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7587461756118643187}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eb5977a4ddf12384eb692998741cdd12, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tilemapManager: {fileID: 269568845682753835, guid: 7075798af33dd97499667f95b225c396, type: 3}

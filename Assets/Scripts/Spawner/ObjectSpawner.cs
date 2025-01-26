@@ -13,7 +13,6 @@ public class ObjectSpawner : MonoBehaviour
         None        = 0,
         Position    = 1 << 0,
         Rotation    = 1 << 1,
-        // Scale       = 1 << 2,
         Color       = 1 << 3,
     }
 
@@ -24,6 +23,9 @@ public class ObjectSpawner : MonoBehaviour
     public UnityEvent<GameObject> spawnEvents;
 
     private ObjectPool[] objectPools;
+
+    public GameObject Spawn()
+        => this.Spawn(transform.position);
 
     public GameObject Spawn(Vector3 position)
     {
