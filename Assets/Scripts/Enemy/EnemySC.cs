@@ -7,6 +7,7 @@ public class EnemySC : MonoBehaviour
     public GameObject target;
     public float moveSpeed = 5f;
     public int attackPower = 10;
+    public float attackSpeed = 1f;
     public int health = 100;
 
     public bool superArmor = false;
@@ -19,6 +20,8 @@ public class EnemySC : MonoBehaviour
     private bool isCollided = false;
     private bool isStunned = false;
 
+    private float m_ElapsedTime = 0f;
+
     private void Start()
     {
         spriteRenderers = new List<SpriteRenderer>(
@@ -27,6 +30,9 @@ public class EnemySC : MonoBehaviour
 
     private void Update()
     {
+        if (!GameManagerSC.Instance.IsPlaying)
+            return;
+
         if (!isCollided && !isStunned)
         {
             this.Move();
@@ -37,7 +43,21 @@ public class EnemySC : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
+            m_ElapsedTime = attackSpeed;
             isCollided = true;
+        }
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Player"))
+        {
+            m_ElapsedTime += Time.deltaTime;
+            if (m_ElapsedTime > attackSpeed)
+            {
+                m_ElapsedTime = 0f;
+                collision.GetComponent<PlayerSC>().Damaged(attackPower);
+            }
         }
     }
 
@@ -46,6 +66,7 @@ public class EnemySC : MonoBehaviour
         if (collision.CompareTag("Player"))
         {
             isCollided = false;
+            m_ElapsedTime = 0f;
         }
     }
 

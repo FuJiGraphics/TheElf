@@ -99,10 +99,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d94f4b9d6bd846240981a6fe9e6b7e34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackPower: 20
-  attackSpeed: 1
+  attackSpeed: 2
   projectilePrefab: {fileID: 8808289594362423235, guid: 763f365aebd021c41b1ff98fa350a5e0, type: 3}
-  projectileSpeed: 5
+  projectileSpeed: 10
 --- !u!50 &7032527817477035914
 Rigidbody2D:
   serializedVersion: 4

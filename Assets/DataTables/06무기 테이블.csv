@@ -1,0 +1,26 @@
+Greatbow weapon table,,,,,,,
+string,int,int,float,int,int,int,int
+weapon name,Key id value,basic attack ATK,basic attack SPEED,basic attack RANGE,Key id,Key id,monster maximum TARGET
+Greatbow,11,7,1.3,,10001,1011,6
+Guardian's Bow,12,11,1.3,,10002,1012,7
+silver branch,13,17,1.25,,10003,1013,8
+Palace of Dawn,14,26,1.15,,10004,1014,10
+light of the world tree,15,40,1,,10005,1015,12
+,,,,,,,
+catapult weapon table,,,,,,,
+string,int,int,int,int,int,int,int
+weapon Name,Key id value,basic attack ATK,basic attack SPEED,basic attack RANGE,Key id,Key id,monster maximum TARGET
+catapult,21,4,0.7,,10006,1021,2
+Guardian's Crossbow,22,6,0.7,,10007,1022,2
+Essence of Wind,23,9,0.65,,10008,1023,3
+crossbow of dawn,24,14,0.55,,10009,1024,3
+Judgment of the World Tree,25,22,0.4,,10010,1025,4
+,,,,,,,
+long sword weapon table,,,,,,,
+string,int,int,int,int,int,int,int
+weapon Name,Key id value,basic attack ATK,basic attack SPEED,basic attack RANGE,Key id,Key id,monster maximum TARGET
+long sword,31,10,1,,10011,1031,3
+Guardian's Sword,32,15,1,,10012,1032,4
+Earth Sword,33,25,0.95,,10013,1033,5
+Blade of Dawn,34,41,0.85,,10014,1034,6
+branches of the world tree,35,66,0.7,,10015,1035,7

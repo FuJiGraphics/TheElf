@@ -1,0 +1,17 @@
+WeaponSkillTable,,,,
+WeaponSkillName,Key id value,SkillDamage,SkillAttackRange,Key id
+Greatbow skill,1011,10,,11011
+Guardian's Bow skill,1012,15,,11012
+silver branch skill,1013,23,,11013
+Palace of Dawn skill,1014,34,,11014
+light of the world tree skill,1015,52,,11015
+catapult skill,1021,12 = (4*3),,11021
+Guardian's Crossbow skill,1022,18 = (6*3),,11022
+Essence of Wind skill,1023,27 = (9*3),,11023
+crossbow of dawn skill,1024,42 = (14*3),,11024
+Judgment of the World Tree,1025,66 = (22*3),,11025
+Long Sword Skill,1031,20,,11031
+Guardian's Sword Skill,1032,30,,11032
+Earth Sword Skill,1033,50,,11033
+Blade of Dawn skill,1034,82,,11034
+branches of the world tree,1035,132,,11035

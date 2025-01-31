@@ -1,0 +1,8 @@
+ItemTable,int,int,bool,int,bool,int,int,int,int,int,float
+ItemName,Key id value,RecoveryAmount,IgnoreDamage,AttackPowerOfTheWeaponBeingWorn * 2,RemoveAllStatusAbnormalities,TimeLimitIncreasedBy30Seconds,MaximumNumberOfUsesPerStage,MaximumNumberOfHoldings,Duration (seconds),Key id,AppearanceProbability
+Spirit's Blessing (Recovery Potion),51,Maximum health (20%),0,0,0,0,5,10,0,10051,60%
+Spirit's Tears (Recovery Potion),52,Maximum health (50%),0,0,0,0,1,2,0,10052,15%
+Mandrake Root (Invincibility Potion),53,0,1,0,0,0,2,3,3,10053,1%
+Spirit's Rage (Attack Increase Potion),54,0,0,1,0,0,2,6,15,10054,13%
+Mandrake's Tears (status recovery potion),55,0,0,0,1,0,3,5,0,10055,10%
+Curtain of Time (Time Attack Time Increased by 30 seconds),56,0,0,0,0,1,1,1,0,10056,1%

@@ -1,0 +1,35 @@
+CommonMonsterClass,,,,,,,,,,,,,,
+string,int,int,int,int,int,float,int,int,int,int,,,,
+Common Monster Name,Key id value,HP,Basic Attack(body slam),ExpGained,MoveSpeed,AttackSpeed,Key id,Key id,Key id,Key id,,,,
+Tree Spirit,101,20,1,1,65,1,0,10000,10107,0,,,,
+Mushroom Spirit,102,22,1,1,65,1,0,10000,10108,0,,,,
+Dead Tree Spirit,103,31,2,1,75,1,0,10000,10109,0,,,,
+Green Tree Spirit,104,35,2,3,75,1,0,10000,10110,0,,,,
+Blue Mushroom Spirit,105,46,3,3,85,1,0,10000,10111,0,,,,
+Blue Old Tree Spirit,106,51,3,3,85,1,0,10000,10112,0,,,,
+Dark Tree Spirit,107,65,4,6,100,1,2107,10000,10113,12107,,,,
+Dark Mushroom Spirit,108,76,4,6,100,1,2108,10000,10201,12108,,,,
+Dark Old Tree Spirit,109,83,5,6,115,1,2109,10000,10202,12109,,,,
+Flame Tree Spirit,110,100,5,9,115,1,2110,10000,10203,12110,,,,
+Flame Mushroom Spirit,111,124,6,9,135,1,2111,10000,10204,12111,,,,
+Flame Dead Tree Spirit,112,133,7,9,145,1,2112,10000,10205,12112,,,,
+Elite Knight,113,199,8,15,155,1,2113,10000,10206,12113,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+BossMonsterClass,,,,,,,,,,,,,,
+string,int,int,int,int,int,float,int,int,int,int,int,int,int,int
+BossMonsterName,Key id value,HP,Basic Attack(body slam),Give Stat Point,MoveSpeed,AttackSpeed,Key id,Key id,Key id,Key id,Key id,Key id,Key id,Key id
+ForestSpirit,201,40,5,1,80,1.5,2201,10000,10201,12201,0,0,0,0
+MutantMushroom,202,44,5,1,80,1.5,2202,10000,10202,12202,0,0,0,0
+100YearOldTree,203,62,10,1,85,1.5,2203,10000,10203,12203,0,0,0,0
+SwampSpirit,204,70,10,1,85,1.5,2204,10000,10204,12204,0,0,0,0
+MoldyMushroom,205,92,15,1,100,1.5,2205,10000,10205,12205,0,0,0,0
+MutantOldTree,206,102,15,1,100,1.5,2206,10000,10206,12206,0,0,0,0
+DarkSpirit,207,130,20,2,120,1.5,2207,10000,10207,12207,0,0,0,0
+ClownMushroomzSpirit,208,152,20,2,120,1.5,2208,10000,10208,12208,0,0,0,0
+An Old Tree That Has Lost Its Light,209,166,25,2,140,1.5,2209,10000,10209,12209,0,0,0,0
+Spirit Of Flame,210,200,25,2,140,1.5,2210,10000,10210,12210,0,0,0,0
+Fiery Mushroom,211,248,30,2,155,1.5,2211,10000,10211,12211,0,0,0,0
+Burning Old Tree,212,266,35,3,155,1.5,2212,10000,10212,12212,0,0,0,0
+Knight Master,213,398,40,3,175,1.5,2213,10000,10213,12213,0,0,0,0
+Balkand,214,500,50,100,185,1.5,2214,10000,10214,12214,2215,12215,2216,2217

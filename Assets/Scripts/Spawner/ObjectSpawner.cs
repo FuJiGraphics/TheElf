@@ -1,9 +1,8 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Rendering;
+using UnityEngine.Pool;
 
 public class ObjectSpawner : MonoBehaviour
 {
@@ -16,71 +15,39 @@ public class ObjectSpawner : MonoBehaviour
         Color       = 1 << 3,
     }
 
-    [Tooltip("X: Min, Y: Max")]
+    public GameObject spawnTarget;
+   
+    public int defaultCapacity = 10;
+    public int maxSize = 20;
     public Vector2 randomCubeSize = new Vector2 { x = 5f, y = 5f };
     public float randomSphereRadius = 5f;
-    public GameObject[] spawnTargets;
     public UnityEvent<GameObject> spawnEvents;
 
-    private ObjectPool[] objectPools;
+    private ObjectPool<GameObject> objectPools;
+
+    public void Clear() 
+        => objectPools.Clear();
 
     public GameObject Spawn()
         => this.Spawn(transform.position);
 
     public GameObject Spawn(Vector3 position)
-    {
-        GameObject newObject = null;
-        for (int i = 0; i < spawnTargets.Length; ++i)
-        {
-            newObject = this.Spawn(position, Quaternion.identity);
-        }
-        return newObject;
-    }
+        => this.Spawn(position, Quaternion.identity);
 
     public GameObject Spawn(Vector3 position, Quaternion rotation)
     {
-        GameObject newObject = null;
-        for (int i = 0; i < spawnTargets.Length; ++i)
-        {
-            newObject = this.Spawn(i, position, rotation);
-        }
-        return newObject;
-    }
-
-    public GameObject Spawn(int index, Vector3 position, Quaternion rotation)
-    {
-        GameObject newObject = null;
-        if (spawnTargets.Length > 0)
-        {
-            newObject = objectPools[index].Gen(position, rotation);
-            spawnEvents?.Invoke(newObject);
-        }
-        return newObject;
+        GameObject go = objectPools.Get();
+        go.transform.position = position;
+        go.transform.rotation = rotation;
+        spawnEvents?.Invoke(go);
+        return go;
     }
 
     public void RandomSpawnFromSphere()
+        => this.RandomSpawnFromSphere(FixedValue.None);
+
+    public void RandomSpawnFromSphere(FixedValue flag = FixedValue.None)
     {
-        if (spawnTargets.Length <= 0)
-            return;
-
-        this.RandomSpawnFromSphere(FixedValue.None);
-    }
-
-    public void RandomSpawnFromSphere(FixedValue flag)
-    {
-        if (spawnTargets.Length <= 0)
-            return;
-
-        int index = 0;
-        index = UnityEngine.Random.Range(0, spawnTargets.Length);
-        this.RandomSpawnFromSphere(index, flag);
-    }
-
-    public void RandomSpawnFromSphere(int index, FixedValue flag = FixedValue.None)
-    {
-        if (spawnTargets.Length <= 0)
-            return;
-
         Vector3 ranPos = Vector3.zero;
         Quaternion ranRot = Quaternion.identity;
         Color ranColor = Color.white;
@@ -110,7 +77,7 @@ public class ObjectSpawner : MonoBehaviour
             };
         }
 
-        GameObject newObject = this.Spawn(index, ranPos, ranRot);
+        GameObject newObject = this.Spawn(ranPos, ranRot);
         if (newObject != null)
         {
             newObject.GetComponent<Renderer>().material.color = ranColor;
@@ -118,28 +85,10 @@ public class ObjectSpawner : MonoBehaviour
     }
 
     public void RandomSpawnFromCube()
+        => this.RandomSpawnFromCube(FixedValue.None);
+
+    public void RandomSpawnFromCube(FixedValue flag = FixedValue.None)
     {
-        if (spawnTargets.Length <= 0)
-            return;
-
-        this.RandomSpawnFromCube(FixedValue.None);
-    }
-
-    public void RandomSpawnFromCube(FixedValue flag)
-    {
-        if (spawnTargets.Length <= 0)
-            return;
-
-        int index = 0;
-        index = UnityEngine.Random.Range(0, spawnTargets.Length);
-        this.RandomSpawnFromCube(index, flag);
-    }
-
-    public void RandomSpawnFromCube(int index, FixedValue flag = FixedValue.None)
-    {
-        if (spawnTargets.Length <= 0)
-            return;
-
         Vector3 ranPos = Vector3.zero;
         Quaternion ranRot = Quaternion.identity;
         Color ranColor = Color.white;
@@ -171,38 +120,31 @@ public class ObjectSpawner : MonoBehaviour
             };
         }
 
-        GameObject newObject = this.Spawn(index, ranPos, ranRot);
+        GameObject newObject = this.Spawn(ranPos, ranRot);
         if (newObject != null)
         {
             newObject.GetComponent<Renderer>().material.color = ranColor;
         }
     }
 
-    public void ReleaseSpawnedObjects()
-    {
-        for (int i = 0; i < objectPools.Length; ++i)
-        {
-            objectPools[i].ReturnAll();
-        }
-    }
-
     private void Start()
     {
-        objectPools = new ObjectPool[spawnTargets.Length];
-        for (int i = 0; i < objectPools.Length; ++i)
-        {
-            objectPools[i] = new ObjectPool();
-            objectPools[i].Init(spawnTargets[i], 10);
-            objectPools[i].Instance.transform.SetParent(transform);
-        }
+        objectPools = new ObjectPool<GameObject>(
+            createFunc: () => Instantiate(spawnTarget),     // 새 객체를 생성하는 방법
+            actionOnGet: obj => obj.SetActive(true),        // 풀에서 가져올 때 실행
+            actionOnRelease: obj => obj.SetActive(false),   // 풀에 반환될 때 실행
+            actionOnDestroy: obj => Destroy(obj),           // 풀에서 제거될 때 실행
+            collectionCheck: false,                         // 중복 반환 검사
+            defaultCapacity: defaultCapacity,               // 기본 용량
+            maxSize: maxSize                                // 최대 용량
+        );
     }
 
-    private void OnDestroy()
+    private void OnDrawGizmos()
     {
-        for (int i = 0; i < objectPools.Length; ++i)
-        {
-            objectPools[i].Release();
-        }
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireCube(transform.position, randomCubeSize);
+        Gizmos.DrawWireSphere(transform.position, randomSphereRadius);
     }
 
 } // class ObjectSpawner

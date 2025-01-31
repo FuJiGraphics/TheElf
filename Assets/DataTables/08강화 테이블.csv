@@ -1,0 +1,20 @@
+string,int,int,int,int,int
+WeaponName,Key id value,Key id,NumberOfItemsRequired(previous tier weapons),Key id,Key id
+Guardian's Bow,12,11,1,3004,3011
+silver branch,13,12,1,3004,3011
+Palace of Dawn,14,13,1,3004,3011
+light of the world tree,15,14,1,3004,3011
+,,,,,
+string,int,int,int,int,int
+WeaponName,Key id value,Key id,NumberOfItemsRequired(previous tier weapons),Key id,Key id
+Guardian's Crossbow,22,21,1,3005,3012
+Essence of Wind,23,22,1,3005,3012
+crossbow of dawn,24,23,1,3005,3012
+Judgment of the World Tree,25,24,1,3005,3012
+,,,,,
+string,int,int,int,int,int
+WeaponName,Key id value,Key id,NumberOfItemsRequired(previous tier weapons),Key id,Key id
+Guardian's Sword,32,31,1,3006,3013
+Earth Sword,33,32,1,3006,3013
+Blade of Dawn,34,33,1,3006,3013
+branches of the world tree,35,34,1,3006,3013

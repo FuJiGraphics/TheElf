@@ -1,0 +1,26 @@
+MonsterSkillTable,,,,,
+string,int,int,int,int,int
+MonsterSkillName,Key id value,SkillDamage,SKillAttackRange,Key id,SkillCoolDown
+Dark Tree Spirit,2107,5,,12107,25
+Dark Mushroom Spirit,2108,5,,12108,25
+Dark Old Tree Spirit,2109,6,,12109,25
+Flame Tree Spirit,2110,6,,12110,24
+Flame Mushroom Spirit,2111,7,,12111,24
+Flame Dead Tree Spirit,2112,8,,12112,24
+Elite Knight,2113,10,,12113,20
+ForestSpirit,2201,6,,12201,20
+MutantMushroom,2202,6,,12202,20
+100YearOldTree,2203,12,,12203,20
+SwampSpirit,2204,12,,12204,19
+MoldyMushroom,2205,18,,12205,19
+MutantOldTree,2206,18,,12206,19
+DarkSpirit,2207,24,,12207,18
+ClownMushroomzSpirit,2208,24,,12208,18
+An Old Tree That Has Lost Its Light,2209,30,,12209,18
+Spirit Of Flame,2210,30,,12210,17
+Fiery Mushroom,2211,36,,12211,17
+Burning Old Tree,2212,42,,12212,17
+Knight Master,2213,48,,12213,16
+Balkand,2214,60,,12214,15
+Balkand Skill2,2215,60,,12215,20
+Balkand Skill3,2216,60,,12216,25
