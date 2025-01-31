@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -7,22 +8,25 @@ using UnityEngine;
 public class GameTimerSC : MonoBehaviour
 {
     public bool IsPlaying { get; private set; } = false;
+    public float ElapsedTime { get => Mathf.Clamp(m_TimeLimit - m_Duration, 0f, m_TimeLimit); }
 
     public TextMeshProUGUI m_TimerText;
     private WaitForSeconds m_Wait;
     private float m_TimeLimit;
-    private float m_ElapsedTime;
+    private float m_Duration;
     private int m_Minute;
     private int m_Second;
     private bool m_Paused;
+    private Dictionary<int, List<Action>> m_TimeEvents;
 
     private readonly float m_TimeWeight = 60f;
 
-    private void Start()
+    private void Awake()
     {
         m_TimerText = GetComponent<TextMeshProUGUI>();
         m_Wait = new WaitForSeconds(1f);
         m_Paused = false;
+        m_TimeEvents = new Dictionary<int, List<Action>>();
         this.ResetTimer();
     }
 
@@ -50,21 +54,46 @@ public class GameTimerSC : MonoBehaviour
     public void ResetTimer()
     {
         m_Paused = false;
-        m_ElapsedTime = m_TimeLimit;
+        m_Duration = m_TimeLimit;
         this.AdjustTimer();
+    }
+
+    public void AddTimeEvent(int second, Action func)
+    {
+        if (!m_TimeEvents.ContainsKey(second))
+        {
+            m_TimeEvents.Add(second, new List<Action>());
+        }
+        // func이 중복으로 들어온 경우 Add 하지 않음
+        if (!m_TimeEvents[second].Contains(func))
+        {
+            m_TimeEvents[second].Add(func);
+        }
+    }
+
+    public void DeleteTimeEvent(Action func)
+    {
+        foreach (var events in m_TimeEvents)
+        {
+            if (events.Value.Contains(func))
+            {
+                events.Value.Remove(func);
+            }
+        }
     }
 
     private IEnumerator CoroutineTimer()
     {
         this.ResetTimer();
         IsPlaying = true;
-        while (m_ElapsedTime > 0)
+        while (m_Duration > 0)
         {
             yield return m_Wait;
             if (!m_Paused)
             {
-                m_ElapsedTime -= 1f;
+                m_Duration -= 1f;
                 this.AdjustTimer();
+                this.OnTimeEvents();
             }
         }
         IsPlaying = false;
@@ -72,10 +101,22 @@ public class GameTimerSC : MonoBehaviour
 
     private void AdjustTimer()
     {
-        m_Minute = (int)(m_ElapsedTime / m_TimeWeight);
-        m_Second = (int)(m_ElapsedTime % m_TimeWeight);
-        string format = m_Minute.ToString() + ":" + m_Second.ToString("D2");
+        m_Minute = (int)(m_Duration / m_TimeWeight);
+        m_Second = (int)(m_Duration % m_TimeWeight);
+        string format = m_Minute.ToString("D2") + ":" + m_Second.ToString("D2");
         m_TimerText.text = format;
+    }
+
+    private void OnTimeEvents()
+    {
+        int second = (int)ElapsedTime;
+        if (m_TimeEvents.ContainsKey(second))
+        {
+            for (int i = 0; i < m_TimeEvents[second].Count; ++i)
+            {
+                m_TimeEvents[second][i]();
+            }
+        }
     }
 
 } // class GameTimerSC
