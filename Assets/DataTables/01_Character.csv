@@ -1,2 +1,2 @@
-Id,Name,SkillCoolDown,HealthPoint,MoveSpeed,KeyIds
-1,Empty,0.0,100,5.0,3001/3002/3003/3004/3005/3006/3011/3012/3013/10215
+Id,Name,SkillCoolDown,HealthPoint,MoveSpeed,StatKeyIds,RandomStatKeyids,EffectKeyIds
+1,Empty,0,100,5,3001/3002/3003/3004/3005/3006,3011/3012/3013,10215
