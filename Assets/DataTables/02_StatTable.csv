@@ -1,5 +1,5 @@
 Id,Name,NeedStatPoints,SkillCoolDownReductions,KeyIds
-3001,ElementalFlow,1/2/3/4/5,-2.5/-5/-7.5/-10/-15,4001/4002/4003/4004/4005
+3001,ElementalFlow,1/2/3/4/5,-0.000444444,4001/4002/4003/4004/4005
 ,,,,
 Id,Name,NeedStatPoints,MaxHealthUpList,KeyIds
 3002,StrongSprit,1/2/3/4/5,50/100/150/200/250/300,4001/4002/4003/4004/4005

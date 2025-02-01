@@ -1,0 +1,2 @@
+Id,Name,RespawnCycle,MaxCount,Offset,duration,KeyId(MonsterKey)
+10000001,MonsterRespawn,0,0,0,0,
