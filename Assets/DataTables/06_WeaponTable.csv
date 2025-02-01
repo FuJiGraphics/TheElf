@@ -1,4 +1,4 @@
-Id,Name,BasicAttack,BasicAttackSpeed,BasicAttackRange,MonsterMaximumTarget,KeyIds,SkillKeyIds
+Id,Name,BasicAttack,BasicAttackSpeed,BasicAttackRange,MonsterMaximumTarget,EffectKeyIds,SkillKeyIds
 11,Greatbow,7,1.3,0,6,10001,1011
 12,Guardian'sBow,11,1.3,0,7,10002,1012
 13,SilverBranch,17,1.25,0,8,10003,1013
