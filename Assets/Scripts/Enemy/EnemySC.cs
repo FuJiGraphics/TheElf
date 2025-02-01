@@ -4,11 +4,13 @@ using UnityEngine;
 
 public class EnemySC : MonoBehaviour
 {
+    public int id = -1;
     public GameObject target;
     public float moveSpeed = 5f;
-    public int attackPower = 10;
+    public int basicAttack = 10;
     public float attackSpeed = 1f;
-    public int health = 100;
+    public int healthPoint = 100;
+    public int expGained = 0;
 
     public bool superArmor = false;
     public float stunDuration = 0.1f;
@@ -26,6 +28,7 @@ public class EnemySC : MonoBehaviour
     {
         spriteRenderers = new List<SpriteRenderer>(
             GetComponentsInChildren<SpriteRenderer>());
+        this.SetMonsterData(EnemyTable.Instance.Get(id));
     }
 
     private void Update()
@@ -56,7 +59,7 @@ public class EnemySC : MonoBehaviour
             if (m_ElapsedTime > attackSpeed)
             {
                 m_ElapsedTime = 0f;
-                collision.GetComponent<PlayerSC>().Damaged(attackPower);
+                collision.GetComponent<PlayerSC>().Damaged(basicAttack);
             }
         }
     }
@@ -70,6 +73,16 @@ public class EnemySC : MonoBehaviour
         }
     }
 
+    public void SetMonsterData(MonsterData data)
+    {
+        this.id = data.Id;
+        this.healthPoint = data.HealthPoint;
+        this.basicAttack = data.BasicAttack;
+        this.expGained = data.ExpGained;
+        this.moveSpeed = data.MoveSpeed;
+        this.attackSpeed = data.AttackSpeed;
+    }
+
     public virtual void Move()
     {
         if (target == null)
@@ -79,19 +92,19 @@ public class EnemySC : MonoBehaviour
         targetDir.Normalize();
         targetDir.z = 0f;
 
-        Vector3 velocity = targetDir * moveSpeed * Time.deltaTime;
+        Vector3 velocity = targetDir * moveSpeed * Time.deltaTime * 0.01f;
         transform.position += velocity;
     }
 
     public virtual void OnDamage(int damage)
     {
-        health -= damage;
+        healthPoint -= damage;
         this.TriggerDamageEffect();
         this.TriggerStunState();
-        if (health < 0)
+        if (healthPoint < 0)
         {
             this.Die();
-            health = 0;
+            healthPoint = 0;
         }
     }
 

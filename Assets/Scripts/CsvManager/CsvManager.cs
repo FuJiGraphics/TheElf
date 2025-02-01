@@ -29,7 +29,7 @@ public static class CsvManager
         if (!string.IsNullOrEmpty(keys))
         {
             result = new List<T>();
-            var keyList = keys.Split(',');
+            var keyList = keys.Split('/');
             for (int i = 0; i < keyList.Length; ++i)
             {
                 result.Add((T)Convert.ChangeType(keyList[i], typeof(T)));

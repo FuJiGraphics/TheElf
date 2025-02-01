@@ -10,7 +10,7 @@ public class PlayerSC : MonoBehaviour
     public int id = -1;
     public float moveSpeed;
     public int healthPoint;
-    public int skillCoolDown;
+    public float skillCoolDown;
     public List<int> keyIds;
     public WeaponSC[] weapons;
 

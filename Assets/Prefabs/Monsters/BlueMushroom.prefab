@@ -2517,10 +2517,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 423c98b17983ada45891a6a08c7b407d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  id: 105
   target: {fileID: 0}
   moveSpeed: 1
-  attackPower: 10
-  health: 100
+  basicAttack: 10
+  attackSpeed: 1
+  healthPoint: 100
+  expGained: 0
   superArmor: 0
   stunDuration: 0.5
   blinkDuration: 0.01

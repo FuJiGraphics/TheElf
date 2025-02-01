@@ -3,25 +3,56 @@ using UnityEngine.UI;
 
 public class ExitButtonSC : MonoBehaviour
 {
-    public int enabledSecond = 120;
+    public GameObject activeObject;
+
+    public int disableSecond = 120;
     private Button m_ExitButton;
-    private Color m_NormalColor;
+    private Image[] m_Images;
 
     private void Awake()
     {
         m_ExitButton = GetComponent<Button>();
+        m_Images = GetComponentsInChildren<Image>();
+        m_ExitButton.onClick.AddListener(OnClick);
     }
 
     private void Start()
     {
-        GameManagerSC.Instance.AddTimeEvent(enabledSecond, EnabledButton);
+        GameManagerSC.Instance.AddTimeEvent(disableSecond, Disable);
     }
 
-    public void EnabledButton()
+    private void OnEnable()
+    {
+        for (int i = 0; i < m_Images.Length; ++i)
+        {
+            m_Images[i].color = Color.white;
+        }
+    }
+
+    public void OnClick()
+    {
+        if (!GameManagerSC.Instance.IsPlaying)
+        {
+            return;
+        }
+
+        if (activeObject == null)
+        {
+            Debug.LogError("active object를 찾을 수 없습니다.");
+            return;
+        }
+        activeObject.SetActive(true);
+        GameManagerSC.Instance.PauseGame();
+    }
+
+    public void Disable()
     {
         m_ExitButton.enabled = false;
-        var colorTint = m_ExitButton.colors;
-        colorTint = m_ExitButton.colors;
+        for (int i = 0; i < m_Images.Length; ++i)
+        {
+            m_Images[i].color = new Color(0f, 0f, 0f, 0f);
+        }
+        Debug.Log("OnDisable!");
     }
 
 } // class ExitButtonSC

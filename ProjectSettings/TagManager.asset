@@ -11,6 +11,7 @@ TagManager:
   - Enemy
   - MapBounds
   - UI
+  - GiveupUI
   layers:
   - Default
   - TransparentFX
