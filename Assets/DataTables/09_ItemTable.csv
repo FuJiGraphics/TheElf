@@ -5,3 +5,11 @@ Id,Name,RecoveryAmount(MaxHealth),IgnoreDamage,AttackPowerOfTheWeaponBeingWorn *
 54,Spirit'sRage(AttackIncreasePotion),0,0,1,0,0,2,6,15,13%
 55,Mandrake'sTears(StatusRecoveryPotion),0,0,0,1,0,3,5,0,10%
 56,CurtainOfTime(TimeAttackTimeIncreasedBy30Seconds),0,0,0,0,1,1,1,0,1%
+<<<<<<< HEAD
+=======
+,,,,,,,,,,
+,,,,,,,,,,
+,,,,,,,,,,
+,,,,,,,,,,
+,,,,,,,,,,
+>>>>>>> 80e937381a069134ecff4c1a37277f1b87d0d6c7
