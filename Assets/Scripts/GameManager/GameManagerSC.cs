@@ -78,7 +78,6 @@ public class GameManagerSC : Singleton<GameManagerSC>
 
         Time.timeScale = 1.0f;
         IsPlaying = true;
-        m_TimerUI.StopTimer();
         m_TimerUI.StartTimer(timeLimit);
     }
 

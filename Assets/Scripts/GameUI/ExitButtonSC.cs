@@ -42,7 +42,6 @@ public class ExitButtonSC : MonoBehaviour
             return;
         }
         activeObject.SetActive(true);
-        GameManagerSC.Instance.PauseGame();
     }
 
     public void Disable()
@@ -52,7 +51,6 @@ public class ExitButtonSC : MonoBehaviour
         {
             m_Images[i].color = new Color(0f, 0f, 0f, 0f);
         }
-        Debug.Log("OnDisable!");
     }
 
 } // class ExitButtonSC

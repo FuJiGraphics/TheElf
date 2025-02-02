@@ -5,7 +5,7 @@ using System.Threading;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class PlayerSC : MonoBehaviour
+public class PlayerSC : MonoBehaviour, IDefender
 {
     public int id = -1;
     public float moveSpeed;
@@ -17,12 +17,15 @@ public class PlayerSC : MonoBehaviour
     private TouchManager m_Touch;
     private Vector3 m_CurrDir;
     private Vector3 m_TargetPos;
+    private bool m_HasMoved;
 
     private Animator m_Animator;
 
     private HealthBarSC m_HealthBar;
     private int m_CurrHealth;
-    
+
+    private Rigidbody2D m_Rigidbody;
+
     public bool IsDead { get; private set; }
     
     private void Reset()
@@ -38,10 +41,11 @@ public class PlayerSC : MonoBehaviour
         m_HealthBar = GetComponentInChildren<HealthBarSC>();
         m_HealthBar.SetMaxHealth(healthPoint);
         m_CurrHealth = healthPoint;
+        m_Rigidbody = GetComponent<Rigidbody2D>();
         IsDead = false;
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (!GameManagerSC.Instance.IsPlaying)
             return;
@@ -53,7 +57,7 @@ public class PlayerSC : MonoBehaviour
         }
     }
 
-    public void Damaged(int damage)
+    public void TakeDamage(int damage)
     {
         m_CurrHealth = Mathf.Clamp(m_CurrHealth - damage, 0, healthPoint);
         m_HealthBar.SetHealth(m_CurrHealth);
@@ -93,22 +97,26 @@ public class PlayerSC : MonoBehaviour
             m_TargetPos.z = 0f;
             m_CurrDir = (m_TargetPos - transform.position).normalized;
             m_CurrDir.z = 0f;
+            m_HasMoved = true;
         }
 
-        Vector3 velocity = (m_CurrDir * moveSpeed * Time.deltaTime);
+        Vector3 velocity = (m_CurrDir * moveSpeed * Time.deltaTime) * 0.01f;
         float currMag = (m_TargetPos - transform.position).magnitude;
+        Vector3 newPosition;
         if (currMag > velocity.magnitude)
         {
-            transform.position += velocity;
+            newPosition = transform.position + velocity;
         }
         else
         {
-            transform.position = m_TargetPos;
+            newPosition = m_TargetPos;
+            m_HasMoved = false;
         }
+        m_Rigidbody.MovePosition(newPosition);
 
         m_Animator.SetFloat("x", m_CurrDir.x);
         m_Animator.SetFloat("y", m_CurrDir.y);
-        m_Animator.SetBool("Walk", currMag != 0f);
+        m_Animator.SetBool("Walk", m_HasMoved);
     }
 
     private void Attack()

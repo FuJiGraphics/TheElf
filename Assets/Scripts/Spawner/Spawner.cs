@@ -16,7 +16,8 @@ public class Spawner : MonoBehaviour
     ObjectSpawner m_Spawner;
     WaitForSeconds m_WaitRespawnCycle;
     WaitForSeconds m_WaitRespawnOffset;
-    float m_ElapsedTime;
+    float m_ElapsedTime = 0f;
+    int m_CurrentSpawnCount = 0;
 
     void Start()
     {
@@ -54,11 +55,15 @@ public class Spawner : MonoBehaviour
         yield return m_WaitRespawnOffset;
         while (m_ElapsedTime < duration)
         {
-            GameObject go = m_Spawner.Spawn();
-            EnemySC sc = go.GetComponent<EnemySC>();
-            if (sc != null)
+            if (m_CurrentSpawnCount < maxCount)
             {
-                sc.target = trackingTarget;
+                m_CurrentSpawnCount++;
+                GameObject go = m_Spawner.Spawn();
+                EnemySC sc = go.GetComponent<EnemySC>();
+                if (sc != null)
+                {
+                    sc.target = trackingTarget;
+                }
             }
             yield return m_WaitRespawnCycle;
         }

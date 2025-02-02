@@ -23,8 +23,8 @@ public class BulletSC : MonoBehaviour
     {
         if (collision.CompareTag("Enemy"))
         {
-            var sc = collision.gameObject.GetComponent<EnemySC>();
-            sc.OnDamage(attackPower);
+            var sc = collision.gameObject.GetComponent<IDefender>();
+            sc.TakeDamage(attackPower);
         }
     }
 

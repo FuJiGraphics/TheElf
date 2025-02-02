@@ -6,8 +6,30 @@ public class EnemyTable : Singleton<EnemyTable>
 {
     private Dictionary<int, MonsterData> m_Table;
 
-    private void Awake()
+    private bool m_IsInitialized = false;
+
+    public MonsterData Get(int id)
     {
+        this.Init(); 
+        return m_Table[id];
+    }
+
+    public MonsterData At(int id)
+    {
+        this.Init();
+        if (!m_Table.ContainsKey(id))
+        {
+            Debug.LogError($"Id를 찾을 수 없습니다. {id}");
+            return null;
+        }
+        return m_Table[id];
+    }
+
+    private void Init()
+    {
+        if (m_IsInitialized)
+            return;
+        m_IsInitialized = true;
         m_Table = new Dictionary<int, MonsterData>();
         string path = "/DataTables/04_MonsterTable.csv";
         var records = CsvManager.Load<MonsterData>(Application.dataPath + path);
@@ -20,19 +42,6 @@ public class EnemyTable : Singleton<EnemyTable>
             }
             m_Table.Add(monster.Id, monster);
         }
-    }
-
-    public MonsterData Get(int id)
-        => m_Table[id];
-
-    public MonsterData At(int id)
-    {
-        if (!m_Table.ContainsKey(id))
-        {
-            Debug.LogError($"Id를 찾을 수 없습니다. {id}");
-            return null;
-        }
-        return m_Table[id];
     }
 
 } // class EnemyTable

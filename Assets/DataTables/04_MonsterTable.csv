@@ -1,9 +1,9 @@
-Id,MonsterName,HP,BasicAttack(body slam),ExpGained,MoveSpeed,AttackSpeed,SkillKeyIds,EffectKeyIds
+Id,Name,HealthPoint,BasicAttack,ExpGained,MoveSpeed,AttackSpeed,SkillKeyIds,EffectKeyIds
 101,TreeSpirit,20,1,1,65,1,0,10000
 102,Mushroom Spirit,22,1,1,65,1,0,10000
 103,DeadTreeSpirit,31,2,1,75,1,0,10000
 104,GreenTreeSpirit,35,2,3,75,1,0,10000
-105,BlueMushroomSpirit,46,3,3,85,1,0,10000
+105,BlueMushroomSpirit,46,3,3,150,1,0,10000
 106,BlueOldTreeSpirit,51,3,3,85,1,0,10000
 107,DarkTreeSpirit,65,4,6,100,1,2107,10000
 108,DarkMushroomSpirit,76,4,6,100,1,2108,10000
@@ -26,3 +26,4 @@ Id,MonsterName,HP,BasicAttack(body slam),ExpGained,MoveSpeed,AttackSpeed,SkillKe
 212,BurningOldTree,266,35,3,155,1.5,2212,10000
 213,KnightMaster,398,40,3,175,1.5,2213,10000
 214,Balkand,500,50,100,185,1.5,2214/2215/2216,10000
+301,BlackWerewolf,500,30,100,250,1.5,2214/2215/2216,10000

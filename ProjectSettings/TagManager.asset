@@ -12,6 +12,7 @@ TagManager:
   - MapBounds
   - UI
   - GiveupUI
+  - Shadow
   layers:
   - Default
   - TransparentFX

@@ -10,5 +10,6 @@ public class MonsterData
     public int ExpGained { get; set; }
     public float MoveSpeed { get; set; }
     public float AttackSpeed { get; set; }
-    public string KeyIds { get; set; }
+    public string SkillKeyIds { get; set; }
+    public string EffectKeyIds { get; set; }
 } // class MonsterData
