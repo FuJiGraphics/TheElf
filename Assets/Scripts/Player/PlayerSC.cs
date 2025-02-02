@@ -26,7 +26,7 @@ public class PlayerSC : MonoBehaviour, IDefender
 
     private Rigidbody2D m_Rigidbody;
 
-    public bool IsDead { get; private set; }
+    public bool IsDie { get; private set; } = false;
     
     private void Reset()
     {
@@ -42,7 +42,7 @@ public class PlayerSC : MonoBehaviour, IDefender
         m_HealthBar.SetMaxHealth(healthPoint);
         m_CurrHealth = healthPoint;
         m_Rigidbody = GetComponent<Rigidbody2D>();
-        IsDead = false;
+        IsDie = false;
     }
 
     private void FixedUpdate()
@@ -50,7 +50,7 @@ public class PlayerSC : MonoBehaviour, IDefender
         if (!GameManagerSC.Instance.IsPlaying)
             return;
 
-        if (!IsDead)
+        if (!IsDie)
         { 
             this.TouchMove();
             this.Attack();
@@ -63,6 +63,7 @@ public class PlayerSC : MonoBehaviour, IDefender
         m_HealthBar.SetHealth(m_CurrHealth);
         if (m_CurrHealth == 0)
         {
+            IsDie = true;
             StartCoroutine(CoroutineDead());
         }
     }
@@ -130,13 +131,12 @@ public class PlayerSC : MonoBehaviour, IDefender
     private IEnumerator CoroutineDead()
     {
         m_Animator.SetBool("Dead", true);
-        IsDead = true;
         var animState = m_Animator.GetCurrentAnimatorStateInfo(0);
         while (animState.normalizedTime < 1.0f)
         {
             yield return null;
         }
-        GameManagerSC.Instance.PauseGame();
+        GameManagerSC.Instance.DefeatGame();
     }
 
 } // class PlayerMovement

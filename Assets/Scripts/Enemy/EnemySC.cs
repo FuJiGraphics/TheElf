@@ -43,7 +43,6 @@ public class EnemySC : MonoBehaviour, IDefender
     private List<SpriteRenderer> m_SpriteRenderers;
     private GameObject m_CollidedPlayer;
     private bool m_IsStunned = false;
-    private bool m_IsDead = false;
     private bool m_IsCollided = false;
     private bool m_IsFireIndividualSkills = false;
     private Vector3 m_TargetDir = Vector3.zero;
@@ -51,6 +50,8 @@ public class EnemySC : MonoBehaviour, IDefender
     private bool m_Attacked = false;
 
     private Rigidbody2D m_Rigidbody;
+
+    public bool IsDie { get; private set; } = false;
 
     protected virtual void Start()
     {
@@ -77,7 +78,7 @@ public class EnemySC : MonoBehaviour, IDefender
 
         this.FireIndividualSkill();
 
-        if (!isBlockedMovement && !m_Attacked && !m_IsDead && !m_IsStunned)
+        if (!isBlockedMovement && !m_Attacked && !IsDie && !m_IsStunned)
         {
             this.Move();
         }
@@ -165,13 +166,14 @@ public class EnemySC : MonoBehaviour, IDefender
 
     public virtual void TakeDamage(int damage)
     {
-        if (m_IsDead)
+        if (IsDie)
             return;
 
         healthPoint -= damage;
         if (healthPoint < 0)
         {
             healthPoint = 0;
+            IsDie = true;
             this.Die();
         }
         else
@@ -245,7 +247,6 @@ public class EnemySC : MonoBehaviour, IDefender
 
     private IEnumerator DeadCoroutine()
     {
-        m_IsDead = true;
         CircleCollider2D collider = GetComponentInParent<CircleCollider2D>();
         if (collider == null)
         {
@@ -268,7 +269,7 @@ public class EnemySC : MonoBehaviour, IDefender
 
     private IEnumerator AttackCoroutine()
     {
-        if (!m_Attacked && !m_IsDead && !m_IsStunned)
+        if (!m_Attacked && !IsDie && !m_IsStunned)
         {
             m_Attacked = true;
             PlayAnimation(AnimType.Attack);

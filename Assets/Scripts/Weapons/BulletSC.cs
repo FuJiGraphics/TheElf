@@ -25,6 +25,11 @@ public class BulletSC : MonoBehaviour
         {
             var sc = collision.gameObject.GetComponent<IDefender>();
             sc.TakeDamage(attackPower);
+            if (sc.IsDie)
+            {
+                // 킬 카운트 증가
+                GameManagerSC.Instance.KillCount++;
+            }
         }
     }
 

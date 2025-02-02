@@ -10,9 +10,11 @@ public class GameManagerSC : Singleton<GameManagerSC>
     public GameObject gameUI;
 
     private GameTimerSC m_TimerUI;
+    private DefeatPanelSC m_DefeatUI;
     private bool m_IsPlaying;
 
     public float CurrentTime { get => m_TimerUI.ElapsedTime; }
+    public int KillCount { get; set; }
 
     public bool IsPlaying
     {
@@ -32,10 +34,15 @@ public class GameManagerSC : Singleton<GameManagerSC>
 
     private void Awake()
     {
-        m_TimerUI = gameUI.GetComponentInChildren<GameTimerSC>();
+        m_TimerUI = gameUI.GetComponentInChildren<GameTimerSC>(true);
         if (m_TimerUI == null)
         {
-            Debug.Log("TimerUI is null!");
+            Debug.Log("Did not found Timer UI!");
+        }
+        m_DefeatUI = gameUI.GetComponentInChildren<DefeatPanelSC>(true);
+        if (m_DefeatUI == null)
+        {
+            Debug.Log("Did not found Defeat UI!");
         }
     }
 
@@ -54,6 +61,32 @@ public class GameManagerSC : Singleton<GameManagerSC>
         this.StartGame();
     }
 
+    public void Init()
+    {
+        timeLimit = 360.0f;
+        m_IsPlaying = false;
+
+        gameUI = GameObject.Find("GameUI");
+        if (gameUI == null)
+        {
+            Debug.Log("Did not found Game UI!");
+
+        }
+        m_TimerUI = gameUI.GetComponentInChildren<GameTimerSC>(true);
+        if (m_TimerUI == null)
+        {
+            Debug.Log("Did not found Timer UI!");
+        }
+        m_DefeatUI = gameUI.GetComponentInChildren<DefeatPanelSC>(true);
+        if (m_DefeatUI == null)
+        {
+            Debug.Log("Did not found Defeat UI!");
+        }
+
+        m_TimerUI.StopTimer();
+        m_TimerUI.StartTimer(timeLimit);
+    }
+
     public void PauseGame()
     {
         Time.timeScale = 0.0f;
@@ -68,7 +101,7 @@ public class GameManagerSC : Singleton<GameManagerSC>
 
         string currScene = SceneManager.GetActiveScene().name;
         SceneManager.LoadScene(currScene);
-        this.StartGame();
+        this.Init();
     }
 
     public void StartGame()
@@ -79,6 +112,12 @@ public class GameManagerSC : Singleton<GameManagerSC>
         Time.timeScale = 1.0f;
         IsPlaying = true;
         m_TimerUI.StartTimer(timeLimit);
+    }
+
+    public void DefeatGame()
+    {
+        this.PauseGame();
+        m_DefeatUI.gameObject.SetActive(true);
     }
 
     public void AddTimeEvent(int second, Action func)

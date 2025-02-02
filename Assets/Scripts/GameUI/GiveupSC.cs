@@ -16,7 +16,7 @@ public class GiveupSC : MonoBehaviour
 
     private void OnClickYesButton()
     {
-
+        GameManagerSC.Instance.DefeatGame();
     }
 
     private void OnClickNoButton()
