@@ -50,6 +50,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 301
   target: {fileID: 0}
+  individualSkills:
+  - {fileID: 3564037184005652616, guid: faf413a878fc5704691f32394fcf1293, type: 3}
+  activeSkillDuration: 3
   moveSpeed: 5
   basicAttack: 10
   attackSpeed: 1
@@ -64,6 +67,8 @@ MonoBehaviour:
   animator: {fileID: 0}
   right: {x: -1, y: 1, z: 1}
   left: {x: 1, y: 1, z: 1}
+  isBlockedAttack: 0
+  isBlockedMovement: 0
 --- !u!58 &5156391496112899223
 CircleCollider2D:
   m_ObjectHideFlags: 0

@@ -13,8 +13,8 @@ public class EnemySC : MonoBehaviour, IDefender
 {
     public int id = -1;
     public GameObject target;
-    public ISkill individualSkills;
-    public ISkill collectiveSkills;
+    public List<GameObject> individualSkills;
+    public float activeSkillDuration = 5f;      // 스킬 발동 간격
 
     public float moveSpeed = 5f;
     public int basicAttack = 10;
@@ -37,11 +37,16 @@ public class EnemySC : MonoBehaviour, IDefender
     public Vector3 right = new Vector3(-1f, 1f, 1f);
     public Vector3 left = Vector3.one;
 
+    public bool isBlockedAttack = false;
+    public bool isBlockedMovement = false;
+
     private List<SpriteRenderer> m_SpriteRenderers;
     private GameObject m_CollidedPlayer;
     private bool m_IsStunned = false;
     private bool m_IsDead = false;
     private bool m_IsCollided = false;
+    private bool m_IsFireIndividualSkills = false;
+    private Vector3 m_TargetDir = Vector3.zero;
 
     private bool m_Attacked = false;
 
@@ -70,11 +75,13 @@ public class EnemySC : MonoBehaviour, IDefender
         if (!GameManagerSC.Instance.IsPlaying)
             return;
 
-        if (!m_Attacked && !m_IsDead && !m_IsStunned)
+        this.FireIndividualSkill();
+
+        if (!isBlockedMovement && !m_Attacked && !m_IsDead && !m_IsStunned)
         {
             this.Move();
         }
-        if (m_IsCollided)
+        if (!isBlockedAttack && m_IsCollided)
         {
             this.Attack();
         }
@@ -131,21 +138,24 @@ public class EnemySC : MonoBehaviour, IDefender
 
     public virtual void Move()
     {
-        if (target == null)
-            return;
-
         var animState = animator.GetCurrentAnimatorStateInfo(0);
         if (!m_IsCollided)
         {
-            Vector3 targetDir = target.transform.position - transform.position;
-            targetDir.Normalize();
-            targetDir.z = 0f;
+            if (target != null)
+            {
+                m_TargetDir = target.transform.position - transform.position;
+                m_TargetDir.Normalize();
+                m_TargetDir.z = 0f;
+            }
 
-            Vector3 velocity = targetDir * moveSpeed * Time.deltaTime * 0.01f;
+            Vector3 velocity = m_TargetDir * moveSpeed * Time.deltaTime * 0.01f;
             Vector3 newPosition = transform.position + velocity;
             m_Rigidbody.MovePosition(newPosition);
-            PlayAnimation(AnimType.Walk);
-            transform.localScale = (targetDir.x > 0f) ? right : left;
+            if (m_TargetDir != Vector3.zero)
+            {
+                PlayAnimation(AnimType.Walk);
+            }
+            transform.localScale = (m_TargetDir.x > 0f) ? right : left;
         }
         else if (animState.normalizedTime >= 1.0f)
         {
@@ -178,6 +188,9 @@ public class EnemySC : MonoBehaviour, IDefender
     public void Attack()
         => StartCoroutine(AttackCoroutine());
 
+    public void FireIndividualSkill()
+        => StartCoroutine(IndividualSkillCoroutine());
+
     public void TriggerStunState()
     {
         if (!superArmor)
@@ -193,6 +206,14 @@ public class EnemySC : MonoBehaviour, IDefender
     public void TriggerDamageEffect()
     {
         StartCoroutine(BlinkEffect());
+    }
+
+    public void PlayAnimation(AnimType animType)
+    {
+        if (animations.ContainsKey(animType))
+        {
+            animations[animType]();
+        }
     }
 
     private IEnumerator BlinkEffect()
@@ -261,12 +282,69 @@ public class EnemySC : MonoBehaviour, IDefender
         }
     }
 
-    private void PlayAnimation(AnimType animType)
+    private IEnumerator IndividualSkillCoroutine()
     {
-        if (animations.ContainsKey(animType))
+        if (individualSkills.Count > 0 && !m_IsFireIndividualSkills)
         {
-            animations[animType]();
+            m_IsFireIndividualSkills = true;
+            yield return new WaitForSeconds(activeSkillDuration);
+            for (int i = 0; i < individualSkills.Count; ++i)
+            {
+                GameObject skillGo = GameObject.Instantiate(individualSkills[i], transform.position, Quaternion.identity);
+                ISkill targetSkill = null;
+                if (skillGo != null)
+                {
+                    targetSkill = skillGo.GetComponent<ISkill>();
+                }
+                if (targetSkill != null && this.CheckProbability(targetSkill.ActivateProb))
+                {
+                    if (IsOverlapTag(targetSkill.Collider, "Player"))
+                    {
+                        isBlockedMovement = true;
+                        isBlockedAttack = true;
+                        targetSkill.OnFire(gameObject);
+                        yield return new WaitForSeconds(targetSkill.SkillDuration);
+                        isBlockedMovement = false;
+                        isBlockedAttack = false;
+                    }
+                }
+                GameObject.Destroy(skillGo);
+            }
+            m_IsFireIndividualSkills = false;
         }
+    }
+
+    bool IsOverlapTag(Collider2D collider, string tag)
+    {
+        bool result = false;
+        List<Collider2D> hits;
+        if (this.FireOverlapCheck(collider, out hits))
+        {
+            foreach (var hit in hits)
+            {
+                if (hit.CompareTag(tag))
+                {
+                    result = true;
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
+    bool FireOverlapCheck(Collider2D collider, out List<Collider2D> hits)
+    {
+        bool result = false;
+        hits = new List<Collider2D>();
+        ContactFilter2D contactFilter = new ContactFilter2D();
+
+        int hitCount = Physics2D.OverlapCollider(collider, contactFilter, hits);
+
+        if (hitCount > 0)
+        {
+            result = true;
+        }
+        return result;
     }
 
     private void SetSortingOrders(int order)
@@ -275,6 +353,12 @@ public class EnemySC : MonoBehaviour, IDefender
         {
             m_SpriteRenderers[i].sortingOrder = order;
         }
+    }
+
+    bool CheckProbability(float chance)
+    {
+        float randomValue = UnityEngine.Random.Range(0.0f, 100.0f);
+        return randomValue < chance;  // 확률에 맞게 true/false 반환
     }
 
 } // class EnemySC
