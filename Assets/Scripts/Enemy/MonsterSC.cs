@@ -40,6 +40,7 @@ public class MonsterSC : EnemySC
         base.animator = m_Prefabs.GetComponentInChildren<Animator>();
         base.right = new Vector3(-1f, 1f, 1f);
         base.left = Vector3.one;
+        base.isBoss = false;
     }
 
     private void AttackAnimations()

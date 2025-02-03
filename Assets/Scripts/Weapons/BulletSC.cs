@@ -1,3 +1,4 @@
+using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -23,12 +24,19 @@ public class BulletSC : MonoBehaviour
     {
         if (collision.CompareTag("Enemy"))
         {
-            var sc = collision.gameObject.GetComponent<IDefender>();
+            var sc = collision.gameObject.GetComponent<EnemySC>();
             sc.TakeDamage(attackPower);
             if (sc.IsDie)
             {
-                // 킬 카운트 증가
-                GameManagerSC.Instance.KillCount++;
+                if (sc.isBoss)
+                {
+                    GameManagerSC.Instance.VictoryGame();
+                }
+                else
+                {
+                    // 킬 카운트 증가
+                    GameManagerSC.Instance.KillCount++;
+                }
             }
         }
     }

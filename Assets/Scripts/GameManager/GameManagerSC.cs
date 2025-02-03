@@ -11,6 +11,7 @@ public class GameManagerSC : Singleton<GameManagerSC>
 
     private GameTimerSC m_TimerUI;
     private DefeatPanelSC m_DefeatUI;
+    private VictoryPanelSC m_VictoryUI;
     private bool m_IsPlaying;
 
     public float CurrentTime { get => m_TimerUI.ElapsedTime; }
@@ -53,6 +54,7 @@ public class GameManagerSC : Singleton<GameManagerSC>
     {
         timeLimit = 360.0f;
         m_IsPlaying = false;
+        KillCount = 0;
 
         gameUI = GameObject.Find("GameUI");
         if (gameUI == null)
@@ -67,6 +69,11 @@ public class GameManagerSC : Singleton<GameManagerSC>
         }
         m_DefeatUI = gameUI.GetComponentInChildren<DefeatPanelSC>(true);
         if (m_DefeatUI == null)
+        {
+            Debug.Log("Did not found Defeat UI!");
+        }
+        m_VictoryUI = gameUI.GetComponentInChildren<VictoryPanelSC>(true);
+        if (m_VictoryUI == null)
         {
             Debug.Log("Did not found Defeat UI!");
         }
@@ -111,6 +118,12 @@ public class GameManagerSC : Singleton<GameManagerSC>
     {
         this.PauseGame();
         m_DefeatUI.gameObject.SetActive(true);
+    }
+
+    public void VictoryGame()
+    {
+        this.PauseGame();
+        m_VictoryUI.gameObject.SetActive(true);
     }
 
     public void AddTimeEvent(int second, Action func)

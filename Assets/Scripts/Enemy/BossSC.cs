@@ -39,6 +39,7 @@ public class BossSC : EnemySC
         m_Animation = GetComponentInChildren<MonsterAnimation>();
         base.right = Vector3.one;
         base.left = new Vector3(-1f, 1f, 1f);
+        base.isBoss = true;
     }
 
     private void AttackAnimations()

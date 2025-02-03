@@ -15,6 +15,7 @@ public class EnemySC : MonoBehaviour, IDefender
     public GameObject target;
     public List<GameObject> individualSkills;
     public float activeSkillDuration = 5f;      // 스킬 발동 간격
+    public bool isBoss = false;
 
     public float moveSpeed = 5f;
     public int basicAttack = 10;
