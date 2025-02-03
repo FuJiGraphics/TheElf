@@ -30,7 +30,7 @@ public class MonsterSC : EnemySC
 
     private void Init()
     {
-        this.SetMonsterData(EnemyTable.Instance.Get(id));
+        this.SetMonsterData(EnemyTable.Get(id));
         m_Prefabs = GetComponentInChildren<SPUM_Prefabs>();
         if (m_Prefabs == null)
         {

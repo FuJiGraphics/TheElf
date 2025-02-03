@@ -10,12 +10,18 @@ using System.Linq;
 
 public static class CsvManager
 {
-    public static IEnumerable<T> Load<T>(string csvPath)
+    public static IEnumerable<T> Load<T>(string pathOrText)
     {
-        if (!File.Exists(csvPath))
-            return null;
+        using (var reader = new StreamReader(pathOrText))
+        using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+        {
+            return csv.GetRecords<T>().ToList();
+        }
+    }
 
-        using (var reader = new StreamReader(csvPath))
+    public static IEnumerable<T> LoadFromText<T>(string csvText)
+    {
+        using (var reader = new StringReader(csvText))
         using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
         {
             return csv.GetRecords<T>().ToList();

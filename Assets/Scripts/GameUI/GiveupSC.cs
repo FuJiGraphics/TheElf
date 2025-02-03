@@ -14,23 +14,20 @@ public class GiveupSC : MonoBehaviour
         buttons[1].onClick.AddListener(OnClickNoButton);
     }
 
+    private void OnEnable()
+    {
+        GameManagerSC.Instance.PauseGame();
+    }
+
     private void OnClickYesButton()
     {
+        gameObject.SetActive(false);
         GameManagerSC.Instance.DefeatGame();
     }
 
     private void OnClickNoButton()
     {
         gameObject.SetActive(false);
-    }
-
-    private void OnEnable()
-    {
-        GameManagerSC.Instance.PauseGame();
-    }
-
-    private void OnDisable()
-    {
         GameManagerSC.Instance.StartGame();
     }
 

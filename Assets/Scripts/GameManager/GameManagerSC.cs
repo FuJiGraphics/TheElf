@@ -34,20 +34,8 @@ public class GameManagerSC : Singleton<GameManagerSC>
 
     private void Awake()
     {
-        m_TimerUI = gameUI.GetComponentInChildren<GameTimerSC>(true);
-        if (m_TimerUI == null)
-        {
-            Debug.Log("Did not found Timer UI!");
-        }
-        m_DefeatUI = gameUI.GetComponentInChildren<DefeatPanelSC>(true);
-        if (m_DefeatUI == null)
-        {
-            Debug.Log("Did not found Defeat UI!");
-        }
-    }
-
-    private void Start()
-    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+        this.Init();
         this.StartGame();
     }
 
@@ -82,9 +70,16 @@ public class GameManagerSC : Singleton<GameManagerSC>
         {
             Debug.Log("Did not found Defeat UI!");
         }
+    }
 
-        m_TimerUI.StopTimer();
-        m_TimerUI.StartTimer(timeLimit);
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        Debug.Log("sceneLoaded Called");
+        if (scene.name == "InGameScene")
+        {
+            this.Init();
+            this.StartGame();
+        }
     }
 
     public void PauseGame()
@@ -96,12 +91,10 @@ public class GameManagerSC : Singleton<GameManagerSC>
 
     public void RestartGame()
     {
-        if (IsPlaying)
-            this.PauseGame();
-
+        m_TimerUI.StopTimer();
+        this.StartGame();
         string currScene = SceneManager.GetActiveScene().name;
         SceneManager.LoadScene(currScene);
-        this.Init();
     }
 
     public void StartGame()

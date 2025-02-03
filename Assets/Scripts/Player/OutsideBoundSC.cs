@@ -15,12 +15,13 @@ public class OutsideBoundSC : MonoBehaviour
     public MainCameraSC targetViewport;
     
     private Vector3 m_DirectionVec;
-    public static Dictionary<Vector2Int, bool> s_ObjMap = 
-        new Dictionary<Vector2Int, bool>();
+    private Dictionary<Vector2Int, bool> m_ObjMap;
 
     private void Start()
     {
+        targetGrid = GameObject.FindWithTag("Grid").GetComponent<Grid>();
         m_DirectionVec = this.GetDirectionVec();
+        m_ObjMap = new Dictionary<Vector2Int, bool>();
     }
 
     private void OnTriggerExit2D(Collider2D collision)
@@ -34,11 +35,11 @@ public class OutsideBoundSC : MonoBehaviour
                 Vector2Int targetKey = Vector2Int.zero;
                 targetKey.x = (int)nextPos.x;
                 targetKey.y = (int)nextPos.y;
-                if (!s_ObjMap.ContainsKey(targetKey))
+                if (!m_ObjMap.ContainsKey(targetKey))
                 {
                     var go = GameObject.Instantiate(tilemapPrefab, targetGrid.transform);
                     go.transform.position = nextPos;
-                    s_ObjMap.Add(targetKey, true);
+                    m_ObjMap.Add(targetKey, true);
                 }
             }
         }

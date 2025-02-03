@@ -27,9 +27,4 @@ public class DefeatPanelSC : MonoBehaviour
         GameManagerSC.Instance.PauseGame();
     }
 
-    private void OnDisable()
-    {
-        GameManagerSC.Instance.StartGame();
-    }
-
 } // class DefeatPanelSC

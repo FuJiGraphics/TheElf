@@ -21,6 +21,10 @@ public class Spawner : MonoBehaviour
 
     void Start()
     {
+        if (trackingTarget == null)
+        {
+            trackingTarget = GameObject.FindWithTag("Player");
+        }
         m_Spawner = GetComponent<ObjectSpawner>();
         if (m_Spawner == null)
         {

@@ -47,6 +47,10 @@ public class EnemySC : MonoBehaviour, IDefender
     private bool m_IsFireIndividualSkills = false;
     private Vector3 m_TargetDir = Vector3.zero;
 
+    private WaitForSeconds m_WaitBlinkDuration;
+    private WaitForSeconds m_StunDuration;
+    private WaitForSeconds m_DeadAnimDuration;
+
     private bool m_Attacked = false;
 
     private Rigidbody2D m_Rigidbody;
@@ -69,6 +73,9 @@ public class EnemySC : MonoBehaviour, IDefender
         {
             Debug.LogError("Rigidbody�� ã�� �� �����ϴ�.");
         }
+        m_WaitBlinkDuration = new WaitForSeconds(blinkDuration);
+        m_StunDuration = new WaitForSeconds(stunDuration);
+        m_DeadAnimDuration = new WaitForSeconds(deadAnimDuration);
     }
 
     protected virtual void Update()
@@ -227,21 +234,21 @@ public class EnemySC : MonoBehaviour, IDefender
                 renderer.color = Color.red;
             }
 
-            yield return new WaitForSeconds(blinkDuration);
+            yield return m_WaitBlinkDuration;
 
             foreach (var renderer in m_SpriteRenderers)
             {
                 renderer.color = Color.white;
             }
 
-            yield return new WaitForSeconds(blinkDuration);
+            yield return m_WaitBlinkDuration;
         }
     }
 
     private IEnumerator Stun()
     {
         m_IsStunned = true;
-        yield return new WaitForSeconds(stunDuration);
+        yield return m_StunDuration;
         m_IsStunned = false;
     }
 
@@ -263,7 +270,7 @@ public class EnemySC : MonoBehaviour, IDefender
         rb.angularVelocity = 0f;
         PlayAnimation(AnimType.Die);
         this.SetSortingOrders(-100);
-        yield return new WaitForSeconds(deadAnimDuration);
+        yield return m_DeadAnimDuration;
         GameObject.Destroy(gameObject);
     }
 

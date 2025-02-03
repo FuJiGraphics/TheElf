@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using Unity.VisualScripting;
@@ -28,11 +29,6 @@ public class PlayerSC : MonoBehaviour, IDefender
 
     public bool IsDie { get; private set; } = false;
     
-    private void Reset()
-    {
-        this.LoadData();
-    }
-
     private void Start()
     {
         m_Touch = TouchManager.Instance;
@@ -42,6 +38,7 @@ public class PlayerSC : MonoBehaviour, IDefender
         m_HealthBar.SetMaxHealth(healthPoint);
         m_CurrHealth = healthPoint;
         m_Rigidbody = GetComponent<Rigidbody2D>();
+        this.LoadData();
         IsDie = false;
     }
 
@@ -70,24 +67,18 @@ public class PlayerSC : MonoBehaviour, IDefender
 
     private void LoadData()
     {
-        string path = "/DataTables/01_Character.csv";
-        var records = CsvManager.Load<PlayerData>(Application.dataPath + path);
+        TextAsset csvFile = Resources.Load<TextAsset>("01_Character");
+        if (csvFile == null)
+        {
+            Debug.LogError("CSV 파일을 찾을 수 없습니다.");
+        }
+        var records = CsvManager.LoadFromText<PlayerData>(csvFile.text);
         PlayerData playerData = records.First();
         this.id = playerData.Id;
         this.moveSpeed = playerData.MoveSpeed;
         this.healthPoint = playerData.HealthPoint;
         this.skillCoolDown = playerData.SkillCoolDown;
-        keyIds = CsvManager.ToList<int>(playerData.KeyIds);
-
-        string ranPath = "/DataTables/02_RandomStatTable.csv";
-        var ranRecords = CsvManager.Load<RandomStatData>(Application.dataPath + ranPath);
-        if (ranRecords != null)
-        {
-            foreach (var record in ranRecords)
-            {
-                Debug.Log(record.Id);
-            }
-        }
+        // keyIds = CsvManager.ToList<int>(playerData.KeyIds);
     }
 
     private void TouchMove()

@@ -1,46 +1,52 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEngine;
 
-public class EnemyTable : Singleton<EnemyTable>
+public static class EnemyTable
 {
-    private Dictionary<int, MonsterData> m_Table;
+    private static Dictionary<int, MonsterData> s_Table;
+    private static bool m_IsInitialized = false;
 
-    private bool m_IsInitialized = false;
-
-    public MonsterData Get(int id)
+    public static MonsterData Get(int id)
     {
-        this.Init(); 
-        return m_Table[id];
+        EnemyTable.Init();
+        return s_Table[id];
     }
 
-    public MonsterData At(int id)
+    public static MonsterData At(int id)
     {
-        this.Init();
-        if (!m_Table.ContainsKey(id))
+        EnemyTable.Init();
+        if (!s_Table.ContainsKey(id))
         {
             Debug.LogError($"Id를 찾을 수 없습니다. {id}");
             return null;
         }
-        return m_Table[id];
+        return s_Table[id];
     }
 
-    private void Init()
+    private static void Init()
     {
         if (m_IsInitialized)
             return;
         m_IsInitialized = true;
-        m_Table = new Dictionary<int, MonsterData>();
-        string path = "/DataTables/04_MonsterTable.csv";
-        var records = CsvManager.Load<MonsterData>(Application.dataPath + path);
+        s_Table = new Dictionary<int, MonsterData>();
+
+        TextAsset csvFile = Resources.Load<TextAsset>("04_MonsterTable");
+        if (csvFile == null)
+        {
+            Debug.LogError("CSV 파일을 찾을 수 없습니다.");
+        }
+
+        var records = CsvManager.LoadFromText<MonsterData>(csvFile.text);
         foreach (MonsterData monster in records)
         {
-            if (m_Table.ContainsKey(monster.Id))
+            if (s_Table.ContainsKey(monster.Id))
             {
                 Debug.Log($"중복 선언된 키입니다. {monster.Id}");
                 continue;
             }
-            m_Table.Add(monster.Id, monster);
+            s_Table.Add(monster.Id, monster);
         }
     }
 

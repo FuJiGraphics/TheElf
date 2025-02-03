@@ -30,6 +30,19 @@ public class GameTimerSC : MonoBehaviour
         this.ResetTimer();
     }
 
+    private void OnEnable()
+    {
+        ResetTimer();
+        IsPlaying = false;
+    }
+
+    private void OnDisable()
+    {
+        StopCoroutine(CoroutineTimer());
+        m_Paused = false;
+        m_TimeEvents.Clear();
+    }
+
     public void StartTimer(float limitSecond)
     {
         if (m_Paused)
@@ -64,7 +77,6 @@ public class GameTimerSC : MonoBehaviour
         {
             m_TimeEvents.Add(second, new List<Action>());
         }
-        // func이 중복으로 들어온 경우 Add 하지 않음
         if (!m_TimeEvents[second].Contains(func))
         {
             m_TimeEvents[second].Add(func);
