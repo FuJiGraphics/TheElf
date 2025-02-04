@@ -1,0 +1,15 @@
+Id,Name,RecoveryAmount(MaxHealth),IgnoreDamage,AttackPowerOfTheWeaponBeingWorn * 2,RemoveAllStatusAbnormalities,TimeLimitIncreasedBy30Seconds,MaximumNumberOfUsesPerStage,MaximumNumberOfHoldings,Duration(Seconds),AppearanceProbability
+51,Spirit'sBlessing(RecoveryPotion),Maximum health (20%),0,0,0,0,5,10,0,60%
+52,Spirit'sTears(RecoveryPotion),Maximum health (50%),0,0,0,0,1,2,0,15%
+53,MandrakeRoot(InvincibilityPotion),0,1,0,0,0,2,3,3,1%
+54,Spirit'sRage(AttackIncreasePotion),0,0,1,0,0,2,6,15,13%
+55,Mandrake'sTears(StatusRecoveryPotion),0,0,0,1,0,3,5,0,10%
+56,CurtainOfTime(TimeAttackTimeIncreasedBy30Seconds),0,0,0,0,1,1,1,0,1%
+<<<<<<< HEAD
+=======
+,,,,,,,,,,
+,,,,,,,,,,
+,,,,,,,,,,
+,,,,,,,,,,
+,,,,,,,,,,
+>>>>>>> 80e937381a069134ecff4c1a37277f1b87d0d6c7

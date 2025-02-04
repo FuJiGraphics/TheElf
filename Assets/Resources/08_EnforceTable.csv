@@ -1,0 +1,13 @@
+Id,Name,NumberOfItemsRequired(previous tier weapons),ItemsKeyIds,StatKeyIds,RandomStatKeyIds
+12,Guardian'sBow,1,11,3004,3011
+13,SilverBranch,1,12,3004,3011
+14,PalaceOfDawn,1,13,3004,3011
+15,LightOfTheWorldTree,1,14,3004,3011
+22,Guardian'sCrossbow,1,21,3005,3012
+23,EssenceOfWind,1,22,3005,3012
+24,CrossbowOfDawn,1,23,3005,3012
+25,JudgmentOfTheWorldTree,1,24,3005,3012
+32,Guardian'sSword,1,31,3006,3013
+33,EarthSword,1,32,3006,3013
+34,BladeOfDawn,1,33,3006,3013
+35,BranchesOfTheWorld tree,1,34,3006,3013
