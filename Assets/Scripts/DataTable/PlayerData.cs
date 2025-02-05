@@ -10,4 +10,5 @@ public class PlayerData : IGameData
     public string RandomStatKeyIds { get; set; }
     public string EffectKeyIds { get; set; }
     public string ExpKeyIds { get; set; }
+
 } // class PlayerData

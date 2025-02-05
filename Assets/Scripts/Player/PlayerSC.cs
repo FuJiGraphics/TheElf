@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -6,8 +7,11 @@ using System.Threading;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
+using static UnityEditor.IMGUI.Controls.PrimitiveBoundsHandle;
+using UnityEngine.UIElements;
 
-public class PlayerSC : MonoBehaviour, IDefender, ILevelable
+public class PlayerSC : MonoBehaviour
+    , IDefender, ILevelable, IEquipment
 {
     public int id = 1;
     public float moveSpeed;
@@ -17,7 +21,6 @@ public class PlayerSC : MonoBehaviour, IDefender, ILevelable
     public List<int> randomStatKeyIds;
     public List<int> effectKeyIds;
     public List<int> expKeyIds;
-    public WeaponSC[] weapons;
 
     private TouchManager m_Touch;
     private Vector3 m_CurrDir;
@@ -36,17 +39,16 @@ public class PlayerSC : MonoBehaviour, IDefender, ILevelable
     public bool IsDie { get; private set; } = false;
     public int Level { get; set; } = 1;
 
+    public Longbow Longbow { get; set; }
+    public Crossbow Crossbow { get; set; }
+    public Sword Sword { get; set; }
+    private List<BaseWeapon> Weapons { get; set; }
+
     private void Start()
     {
-        m_Touch = TouchManager.Instance;
-        m_CurrDir = Vector2.right;
-        m_Animator = GetComponent<Animator>();
-        m_HealthBar = GetComponentInChildren<HealthBarSC>();
-        m_HealthBar.SetMaxHealth(healthPoint);
-        m_CurrHealth = healthPoint;
-        m_Rigidbody = GetComponent<Rigidbody2D>();
+        this.Init();
         this.LoadData();
-        IsDie = false;
+        this.InitStartingWeapon();
     }
 
     private void FixedUpdate()
@@ -93,6 +95,18 @@ public class PlayerSC : MonoBehaviour, IDefender, ILevelable
         GameManagerSC.Instance.SetExp(m_CurrExp, maxExp);
     }
 
+    private void Init()
+    {
+        m_Touch = TouchManager.Instance;
+        m_CurrDir = Vector2.right;
+        m_Animator = GetComponent<Animator>();
+        m_HealthBar = GetComponentInChildren<HealthBarSC>();
+        m_HealthBar.SetMaxHealth(healthPoint);
+        m_CurrHealth = healthPoint;
+        m_Rigidbody = GetComponent<Rigidbody2D>();
+        IsDie = false;
+    }
+
     private void LoadData()
     {
         DataTable<PlayerData>.Init("01_Character");
@@ -115,6 +129,35 @@ public class PlayerSC : MonoBehaviour, IDefender, ILevelable
             int id = expList[i];
             expKeyIds.Add(DataTable<NeedExpData>.Get(id).NeedExp);
         }
+    }
+
+    private void InitStartingWeapon()
+    {
+        Weapons = new List<BaseWeapon>();
+        BaseWeapon ranFirstWeapon = this.SetRandomWeapon();
+        Weapons.Add(ranFirstWeapon);
+    }
+
+    private BaseWeapon SetRandomWeapon()
+    {
+        BaseWeapon ret = null;
+        int index = UnityEngine.Random.Range(0, 2);
+        switch (index)
+        {
+            case 0: 
+                Longbow = new Longbow();
+                ret = Longbow;
+                break;
+            case 1: 
+                Crossbow = new Crossbow();
+                ret = Crossbow;
+                break;
+            case 2: 
+                Sword = new Sword();
+                ret = Sword;
+                break;
+        }
+        return ret;
     }
 
     private void TouchMove()
@@ -149,9 +192,9 @@ public class PlayerSC : MonoBehaviour, IDefender, ILevelable
 
     private void Attack()
     {
-        for (int i = 0; i < weapons.Length; ++i)
+        for (int i = 0; i < Weapons.Count; ++i)
         {
-            weapons[i].Shoot(m_CurrDir, transform.position);
+            Weapons[i].Shoot(m_CurrDir, transform.position);
         }
     } 
 

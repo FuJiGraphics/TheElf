@@ -2,5 +2,5 @@
 public class LevelData : IGameData
 {
     public int Id { get; set; }
-    public string Value { get; set; }
+    public int Level { get; set; }
 } // class LevelData

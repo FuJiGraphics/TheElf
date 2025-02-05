@@ -306,7 +306,7 @@ public class EnemySC : MonoBehaviour, IDefender
                 {
                     targetSkill = skillGo.GetComponent<ISkill>();
                 }
-                if (targetSkill != null && this.CheckProbability(targetSkill.ActivateProb))
+                if (targetSkill != null && UtilManager.CheckProbability(targetSkill.ActivateProb))
                 {
                     if (IsOverlapTag(targetSkill.Collider, "Player"))
                     {
@@ -363,12 +363,6 @@ public class EnemySC : MonoBehaviour, IDefender
         {
             m_SpriteRenderers[i].sortingOrder = order;
         }
-    }
-
-    bool CheckProbability(float chance)
-    {
-        float randomValue = UnityEngine.Random.Range(0.0f, 100.0f);
-        return randomValue < chance;  // 확률에 맞게 true/false 반환
     }
 
 } // class EnemySC
