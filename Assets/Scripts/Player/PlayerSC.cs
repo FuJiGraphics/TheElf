@@ -5,14 +5,18 @@ using System.Linq;
 using System.Threading;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 
-public class PlayerSC : MonoBehaviour, IDefender
+public class PlayerSC : MonoBehaviour, IDefender, ILevelable
 {
-    public int id = -1;
+    public int id = 1;
     public float moveSpeed;
     public int healthPoint;
     public float skillCoolDown;
-    public List<int> keyIds;
+    public List<int> statKeyIds;
+    public List<int> randomStatKeyIds;
+    public List<int> effectKeyIds;
+    public List<int> expKeyIds;
     public WeaponSC[] weapons;
 
     private TouchManager m_Touch;
@@ -24,11 +28,14 @@ public class PlayerSC : MonoBehaviour, IDefender
 
     private HealthBarSC m_HealthBar;
     private int m_CurrHealth;
+    private int m_CurrExp;
 
     private Rigidbody2D m_Rigidbody;
 
+    public int CurrentExp { get; set; }
     public bool IsDie { get; private set; } = false;
-    
+    public int Level { get; set; } = 1;
+
     private void Start()
     {
         m_Touch = TouchManager.Instance;
@@ -65,20 +72,49 @@ public class PlayerSC : MonoBehaviour, IDefender
         }
     }
 
+    public void TakeExp(int exp)
+    {
+        if (Level >= expKeyIds.Count)
+            return;
+
+        DataTable<NeedExpData>.Init("12_NeedExpTable");
+
+        int maxExp = expKeyIds[Level - 1];
+        int nextExp = m_CurrExp + exp;
+        if (nextExp >= maxExp)
+        {
+            m_CurrExp = 0;
+            Level++;
+        }
+        else
+        {
+            m_CurrExp = nextExp;
+        }
+        GameManagerSC.Instance.SetExp(m_CurrExp, maxExp);
+    }
+
     private void LoadData()
     {
-        TextAsset csvFile = Resources.Load<TextAsset>("01_Character");
-        if (csvFile == null)
-        {
-            Debug.LogError("CSV 파일을 찾을 수 없습니다.");
-        }
-        var records = CsvManager.LoadFromText<PlayerData>(csvFile.text);
-        PlayerData playerData = records.First();
+        DataTable<PlayerData>.Init("01_Character");
+        PlayerData playerData = DataTable<PlayerData>.Get(id);
         this.id = playerData.Id;
-        this.moveSpeed = playerData.MoveSpeed;
-        this.healthPoint = playerData.HealthPoint;
+        this.name = playerData.Name;
         this.skillCoolDown = playerData.SkillCoolDown;
-        // keyIds = CsvManager.ToList<int>(playerData.KeyIds);
+        this.healthPoint = playerData.HealthPoint;
+        this.moveSpeed = playerData.MoveSpeed;
+        this.statKeyIds = CsvManager.ToList<int>(playerData.StatKeyIds);
+        this.randomStatKeyIds = CsvManager.ToList<int>(playerData.RandomStatKeyIds);
+        this.effectKeyIds = CsvManager.ToList<int>(playerData.EffectKeyIds);
+
+        // 필요 경험치 로드
+        var expList = CsvManager.ToList<int>(playerData.ExpKeyIds);
+        DataTable<NeedExpData>.Init("12_NeedExpTable");
+        expKeyIds = new List<int>();
+        for (int i = 0; i < expList.Count; ++i)
+        {
+            int id = expList[i];
+            expKeyIds.Add(DataTable<NeedExpData>.Get(id).NeedExp);
+        }
     }
 
     private void TouchMove()

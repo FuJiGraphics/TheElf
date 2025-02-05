@@ -1,4 +1,4 @@
-Id,Name,NumberOfItemsRequired(previous tier weapons),ItemsKeyIds,StatKeyIds,RandomStatKeyIds
+Id,Name,NumberOfItemsRequired,ItemsKeyIds,StatKeyIds,RandomStatKeyIds
 12,Guardian'sBow,1,11,3004,3011
 13,SilverBranch,1,12,3004,3011
 14,PalaceOfDawn,1,13,3004,3011

@@ -35,12 +35,69 @@ public static class CsvManager
         if (!string.IsNullOrEmpty(keys))
         {
             result = new List<T>();
-            var keyList = keys.Split('/');
-            for (int i = 0; i < keyList.Length; ++i)
+
+            List<string> strList = new List<string>();
+            List<int> intList = new List<int>();
+            if (CsvManager.IsListKeys<string>(keys, strList))
             {
-                result.Add((T)Convert.ChangeType(keyList[i], typeof(T)));
+                foreach (string record in strList)
+                {
+                    if (CsvManager.IsFormula(record, intList))
+                    {
+                        result.AddRange(intList.Cast<T>());
+                        intList.Clear();
+                    }
+                }
+            }
+            else
+            {
+                if (CsvManager.IsFormula(keys, intList))
+                {
+                    result.AddRange(intList.Cast<T>());
+                }
             }
         }
         return result;
     }
-}
+
+    private static bool IsFormula(string keys, List<int> output) 
+    {
+        bool result = false;
+
+        var keyList = keys.Split("#");
+        if (keyList.Length > 1 && output != null)
+        {
+            int id = int.Parse(keyList[0]);
+            // ¹üÀ§ ½Ä
+            var rangeFormula = keyList[1].Split("~");
+            if (rangeFormula.Length > 1)
+            {
+                int increase = int.Parse(rangeFormula[0]);
+                int maxCount = int.Parse(rangeFormula[1]);
+                int size = id + (increase * maxCount);
+                for (int i = id + increase; i <= size; i += increase)
+                {
+                    output.Add(i);
+                }
+                result = true;
+            }
+        }
+        return result;
+    }
+
+    private static bool IsListKeys<T>(string keys, List<T> output)
+    {
+        bool result = false;
+        var keyList = keys.Split('/');
+        if (keyList.Length > 0 && keyList[0].Length > 0)
+        {
+            for (int i = 0; i < keyList.Length; ++i)
+            {
+                output.Add((T)Convert.ChangeType(keyList[i], typeof(T)));
+            }
+            result = true;
+        }
+        return result;
+    }
+
+} // static class CsvManager 

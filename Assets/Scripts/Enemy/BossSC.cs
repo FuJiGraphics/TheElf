@@ -33,7 +33,8 @@ public class BossSC : EnemySC
 
     private void Init()
     {
-        this.SetMonsterData(EnemyTable.Get(id));
+        DataTable<MonsterData>.Init("04_MonsterTable");
+        this.SetMonsterData(DataTable<MonsterData>.Get(id));
         m_Animator = GetComponentInChildren<Animator>();
         base.animator = m_Animator;
         m_Animation = GetComponentInChildren<MonsterAnimation>();

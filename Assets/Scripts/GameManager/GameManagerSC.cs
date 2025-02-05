@@ -1,8 +1,7 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameManagerSC : Singleton<GameManagerSC>
 {
@@ -12,6 +11,7 @@ public class GameManagerSC : Singleton<GameManagerSC>
     private GameTimerSC m_TimerUI;
     private DefeatPanelSC m_DefeatUI;
     private VictoryPanelSC m_VictoryUI;
+    private ExperienceSC m_ExpUI;
     private bool m_IsPlaying;
 
     public float CurrentTime { get => m_TimerUI.ElapsedTime; }
@@ -59,24 +59,34 @@ public class GameManagerSC : Singleton<GameManagerSC>
         gameUI = GameObject.Find("GameUI");
         if (gameUI == null)
         {
-            Debug.Log("Did not found Game UI!");
-
+            Debug.LogError("Did not found Game UI!");
         }
         m_TimerUI = gameUI.GetComponentInChildren<GameTimerSC>(true);
         if (m_TimerUI == null)
         {
-            Debug.Log("Did not found Timer UI!");
+            Debug.LogError("Did not found Timer UI!");
         }
         m_DefeatUI = gameUI.GetComponentInChildren<DefeatPanelSC>(true);
         if (m_DefeatUI == null)
         {
-            Debug.Log("Did not found Defeat UI!");
+            Debug.LogError("Did not found Defeat UI!");
         }
         m_VictoryUI = gameUI.GetComponentInChildren<VictoryPanelSC>(true);
         if (m_VictoryUI == null)
         {
-            Debug.Log("Did not found Defeat UI!");
+            Debug.LogError("Did not found Defeat UI!");
         }
+        var expGo = GameObject.FindWithTag("ExperienceUI");
+        if (expGo == null)
+        {
+            Debug.LogError("Did not found Experience UI!");
+        }
+        m_ExpUI = expGo.GetComponent<ExperienceSC>();
+        if (m_ExpUI == null)
+        {
+            Debug.LogError("Did not found Experience Script!");
+        }
+        this.SetExp(0, 100);
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -131,5 +141,8 @@ public class GameManagerSC : Singleton<GameManagerSC>
 
     public void DeleteTimeEvent(Action func)
         => m_TimerUI.DeleteTimeEvent(func);
+
+    public void SetExp(int value, int maxValue)
+        => m_ExpUI.SetExp(value, maxValue);
 
 } // class GameManagerSC

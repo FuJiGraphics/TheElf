@@ -8,4 +8,4 @@ public class RandomStatData
     public int NeedStatPoint {  get; set; }
     public string ItemPayments { get; set; }
     public string KeyIds { get; set; } 
-}
+} // class RandomStatData

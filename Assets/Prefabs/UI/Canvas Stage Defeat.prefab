@@ -12,6 +12,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Canvas Stage Defeat
       objectReference: {fileID: 0}
+    - target: {fileID: 4968394671740786835, guid: 674ea9b03f179fb4cb6b70b568edf40a, type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8863323309314335417, guid: 674ea9b03f179fb4cb6b70b568edf40a, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

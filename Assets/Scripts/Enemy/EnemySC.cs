@@ -255,6 +255,7 @@ public class EnemySC : MonoBehaviour, IDefender
 
     private IEnumerator DeadCoroutine()
     {
+        target.GetComponent<ILevelable>().TakeExp(expGained);
         CircleCollider2D collider = GetComponentInParent<CircleCollider2D>();
         if (collider == null)
         {

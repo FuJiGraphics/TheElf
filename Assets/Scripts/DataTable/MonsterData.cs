@@ -1,7 +1,5 @@
 
-using System.Collections.Generic;
-
-public class MonsterData
+public class MonsterData : IGameData
 {
     public int Id { get; set; }
     public string Name { get; set; }
