@@ -16,6 +16,7 @@ TagManager:
   - Grid
   - ExperienceUI
   - RemainExpUI
+  - ObjectPool
   layers:
   - Default
   - TransparentFX

@@ -1,8 +1,12 @@
 
+using System.Collections.Generic;
+using UnityEngine;
+
 public interface IEquipment
 {
-    Longbow Longbow { get; set; }
-    Crossbow Crossbow { get; set; }
-    Sword Sword { get; set; }
+    List<GameObject> AllWeapons { get; }
+    GameObject Longbow { get; }
+    GameObject Crossbow { get; }
+    GameObject Sword { get; }
 
 } // interface IEquipment

@@ -39,10 +39,11 @@ public class PlayerSC : MonoBehaviour
     public bool IsDie { get; private set; } = false;
     public int Level { get; set; } = 1;
 
-    public Longbow Longbow { get; set; }
-    public Crossbow Crossbow { get; set; }
-    public Sword Sword { get; set; }
-    private List<BaseWeapon> Weapons { get; set; }
+    // IEquipment
+    public List<GameObject> AllWeapons { get; private set; }
+    public GameObject Longbow { get; private set; }
+    public GameObject Crossbow { get; private set; }
+    public GameObject Sword { get; private set; }
 
     private void Start()
     {
@@ -110,7 +111,7 @@ public class PlayerSC : MonoBehaviour
     private void LoadData()
     {
         DataTable<PlayerData>.Init("01_Character");
-        PlayerData playerData = DataTable<PlayerData>.Get(id);
+        PlayerData playerData = DataTable<PlayerData>.At(id);
         this.id = playerData.Id;
         this.name = playerData.Name;
         this.skillCoolDown = playerData.SkillCoolDown;
@@ -127,37 +128,24 @@ public class PlayerSC : MonoBehaviour
         for (int i = 0; i < expList.Count; ++i)
         {
             int id = expList[i];
-            expKeyIds.Add(DataTable<NeedExpData>.Get(id).NeedExp);
+            expKeyIds.Add(DataTable<NeedExpData>.At(id).NeedExp);
         }
     }
 
     private void InitStartingWeapon()
     {
-        Weapons = new List<BaseWeapon>();
-        BaseWeapon ranFirstWeapon = this.SetRandomWeapon();
-        Weapons.Add(ranFirstWeapon);
-    }
-
-    private BaseWeapon SetRandomWeapon()
-    {
-        BaseWeapon ret = null;
-        int index = UnityEngine.Random.Range(0, 2);
-        switch (index)
+        AllWeapons = new List<GameObject>
         {
-            case 0: 
-                Longbow = new Longbow();
-                ret = Longbow;
-                break;
-            case 1: 
-                Crossbow = new Crossbow();
-                ret = Crossbow;
-                break;
-            case 2: 
-                Sword = new Sword();
-                ret = Sword;
-                break;
+            Longbow,
+            Crossbow,
+            Sword
+        };
+        for (int i = 0; i < AllWeapons.Count; ++i)
+        {
+            AllWeapons[i].SetActive(false);
         }
-        return ret;
+        int ran = UnityEngine.Random.Range(0, AllWeapons.Count - 1);
+        AllWeapons[ran].SetActive(true);
     }
 
     private void TouchMove()
@@ -192,9 +180,9 @@ public class PlayerSC : MonoBehaviour
 
     private void Attack()
     {
-        for (int i = 0; i < Weapons.Count; ++i)
+        for (int i = 0; i < AllWeapons.Count; ++i)
         {
-            Weapons[i].Shoot(m_CurrDir, transform.position);
+            // Weapons[i].Shoot(m_CurrDir, transform.position);
         }
     } 
 

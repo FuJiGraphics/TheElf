@@ -34,18 +34,13 @@ public static class DataTable<T>
         }
     }
 
-    public static T Get(int id)
-    {
-        if (!s_IsInitialized)
-        {
-            Debug.LogError("초기화 되지 않은 테이블입니다.");
-            return default(T);
-        }
-        return s_Table[id];
-    }
-
     public static T At(int id)
     {
+        if (id < 0)
+        {
+            Debug.LogError("인덱스를 찾을 수 없습니다.");
+            return default(T);
+        }
         if (!s_IsInitialized)
         {
             Debug.LogError("초기화 되지 않은 테이블입니다.");
