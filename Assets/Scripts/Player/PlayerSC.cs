@@ -1,22 +1,18 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.TextCore.Text;
-using static UnityEditor.IMGUI.Controls.PrimitiveBoundsHandle;
-using UnityEngine.UIElements;
 
 public class PlayerSC : MonoBehaviour
-    , IDefender, ILevelable, IEquipment
+    , IDefender, ILevelable
 {
     public int id = 1;
     public float moveSpeed;
     public int healthPoint;
     public float skillCoolDown;
+
+    // IEquipment
+    public List<GameObject> allWeapons;
+
     public List<int> statKeyIds;
     public List<int> randomStatKeyIds;
     public List<int> effectKeyIds;
@@ -39,11 +35,7 @@ public class PlayerSC : MonoBehaviour
     public bool IsDie { get; private set; } = false;
     public int Level { get; set; } = 1;
 
-    // IEquipment
-    public List<GameObject> AllWeapons { get; private set; }
-    public GameObject Longbow { get; private set; }
-    public GameObject Crossbow { get; private set; }
-    public GameObject Sword { get; private set; }
+    private List<WeaponSC> m_EquippedWeapons;
 
     private void Start()
     {
@@ -88,12 +80,24 @@ public class PlayerSC : MonoBehaviour
         {
             m_CurrExp = 0;
             Level++;
+            GameManagerSC.Instance.EnforceGame(this);
         }
         else
         {
             m_CurrExp = nextExp;
         }
         GameManagerSC.Instance.SetExp(m_CurrExp, maxExp);
+    }
+
+    public void SetItem(int index, GameObject weapon)
+    {
+        allWeapons[index] = weapon;
+        m_EquippedWeapons = new List<WeaponSC>();
+        foreach (var go in allWeapons)
+        {
+            WeaponSC sc = go.GetComponent<WeaponSC>();
+            m_EquippedWeapons.Add(sc);
+        }
     }
 
     private void Init()
@@ -134,18 +138,23 @@ public class PlayerSC : MonoBehaviour
 
     private void InitStartingWeapon()
     {
-        AllWeapons = new List<GameObject>
+        if (allWeapons == null || allWeapons.Count < 1)
         {
-            Longbow,
-            Crossbow,
-            Sword
-        };
-        for (int i = 0; i < AllWeapons.Count; ++i)
-        {
-            AllWeapons[i].SetActive(false);
+            Debug.Log("Empty Weapons!");
+            return;
         }
-        int ran = UnityEngine.Random.Range(0, AllWeapons.Count - 1);
-        AllWeapons[ran].SetActive(true);
+        for (int i = 0; i < allWeapons.Count; ++i)
+        {
+            allWeapons[i].SetActive(false);
+        }
+        int ran = Random.Range(0, allWeapons.Count);
+        allWeapons[1].SetActive(true);
+        m_EquippedWeapons = new List<WeaponSC>();
+        foreach (var weapon in allWeapons)
+        {
+            WeaponSC sc = weapon.GetComponent<WeaponSC>();
+            m_EquippedWeapons.Add(sc);
+        }
     }
 
     private void TouchMove()
@@ -180,9 +189,13 @@ public class PlayerSC : MonoBehaviour
 
     private void Attack()
     {
-        for (int i = 0; i < AllWeapons.Count; ++i)
+        for (int i = 0; i < m_EquippedWeapons.Count; ++i)
         {
-            // Weapons[i].Shoot(m_CurrDir, transform.position);
+            if (m_EquippedWeapons[i].gameObject.activeSelf)
+            {
+                var look = Quaternion.LookRotation(Vector3.forward, m_CurrDir);
+                m_EquippedWeapons[i].Fire(m_CurrDir, transform.position, look);
+            }
         }
     } 
 

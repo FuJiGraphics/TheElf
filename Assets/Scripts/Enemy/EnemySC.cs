@@ -41,6 +41,8 @@ public class EnemySC : MonoBehaviour, IDefender
     public bool isBlockedAttack = false;
     public bool isBlockedMovement = false;
 
+    public ObjectSpawner ownerSpawner; 
+
     private List<SpriteRenderer> m_SpriteRenderers;
     private GameObject m_CollidedPlayer;
     private bool m_IsStunned = false;
@@ -273,7 +275,14 @@ public class EnemySC : MonoBehaviour, IDefender
         PlayAnimation(AnimType.Die);
         this.SetSortingOrders(-100);
         yield return m_DeadAnimDuration;
-        GameObject.Destroy(gameObject);
+        if (ownerSpawner == null)
+        {
+            GameObject.Destroy(gameObject);
+        }
+        else
+        {
+            ownerSpawner.Release(gameObject);
+        }
     }
 
     private IEnumerator AttackCoroutine()

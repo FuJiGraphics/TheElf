@@ -28,6 +28,9 @@ public class ObjectSpawner : MonoBehaviour
     public void Clear() 
         => objectPools.Clear();
 
+    public void Release(GameObject obj)
+        => objectPools.Release(obj);
+
     public GameObject Spawn()
         => this.Spawn(transform.position);
 

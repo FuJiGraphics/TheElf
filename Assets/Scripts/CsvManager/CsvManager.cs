@@ -45,6 +45,10 @@ public static class CsvManager
                         result.AddRange(intList.Cast<T>());
                         intList.Clear();
                     }
+                    else
+                    {
+                        result.Add((T)Convert.ChangeType(record, typeof(T)));
+                    }
                 }
             }
             else
@@ -52,6 +56,10 @@ public static class CsvManager
                 if (CsvManager.IsFormula(keys, intList))
                 {
                     result.AddRange(intList.Cast<T>());
+                }
+                else
+                {
+                    result.Add((T)Convert.ChangeType(keys, typeof(T)));
                 }
             }
         }

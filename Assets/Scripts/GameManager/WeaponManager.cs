@@ -1,101 +1,89 @@
-
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 public static class WeaponManager
 {
-    public enum TableType
-    {
-        RandomStatTable,
-        WeaponTable,
-        LevelTable,
-        Max,
-    }
+    private static readonly string s_RandomStatFilename = "02_RandomStatTable";
+    private static readonly string s_WeaponDataFilename = "06_WeaponTable";
+    private static readonly string s_LevelDataFilename = "03_LevelTable";
+    private static readonly int s_LongbowId = 3011;
+    private static readonly int s_CrossbowId = 3012;
+    private static readonly int s_SwordId = 3013;
 
-    private static List<string> s_TableFilenames;
-    private static List<int> s_EnforceTableIds;
+    private static List<int> s_WeaponIds;
     private static List<Dictionary<int, BaseWeapon>> s_Weapons;
-    private static bool s_IsInitialized = false;
 
-    public static BaseWeapon Get(WeaponType type, int level)
+    public static BaseWeapon GetInfo(WeaponType type, int level)
     {
         WeaponManager.Init();
-        BaseWeapon data = null;
+        BaseWeapon result = null;
         int weaponType = (int)type;
-        if (s_Weapons[weaponType].ContainsKey(level))
+        if (weaponType < s_Weapons.Count && s_Weapons[weaponType].ContainsKey(level))
         {
             var weapon = s_Weapons[weaponType][level];
-            data = WeaponManager.DeepCopy(ref weapon);
+            result = new BaseWeapon();
+            result.DeepCopy(ref weapon);
         }
-        return data;
+        return result;
     }
 
-    public static BaseWeapon LevelUp(ref BaseWeapon target)
+    public static GameObject LevelUp(WeaponSC weapon)
     {
         WeaponManager.Init();
-        int nextLevel = target.WeaponLevel + 1;
-        int weaponType = (int)target.WeaponType;
-        BaseWeapon nextWeapon = s_Weapons[weaponType][nextLevel];
-        return WeaponManager.DeepCopy(ref nextWeapon);
+        int nextLevel = weapon.info.WeaponLevel + 1;
+        BaseWeapon target = null;
+        int targetWeapon = (int)weapon.info.WeaponType;
+        if (s_Weapons[targetWeapon].ContainsKey(nextLevel))
+        {
+            target = new BaseWeapon();
+            BaseWeapon src = s_Weapons[targetWeapon][nextLevel];
+            target.DeepCopy(ref src);
+        }
+        return UtilManager.FindWithName(target.itemName);
     }
 
     private static void Init()
     {
-        if (s_IsInitialized)
-            return;
-        s_IsInitialized = true;
-        int size = (int)WeaponType.Max;
+        if (s_Weapons != null)
+        {
+            bool hasNull = false;
+            for (int i = 0; i < s_Weapons.Count; ++i)
+            {
+                hasNull = s_Weapons[i] == null;
+                if (hasNull)
+                    break;
+            }
+            if (!hasNull)
+            {
+                return;
+            }
+        }
 
-        // Init Weapon Tables
-        s_TableFilenames = new List<string>
+        DataTable<RandomStatData>.Init(s_RandomStatFilename);
+        DataTable<WeaponData>.Init(s_WeaponDataFilename);
+        DataTable<LevelData>.Init(s_LevelDataFilename);
+
+        int size = (int)WeaponType.Max;
+        s_WeaponIds = new List<int>(size)
         {
-           "02_RandomStatTable", "06_WeaponTable", "03_LevelTable"
-        };
-        s_EnforceTableIds = new List<int>
-        {
-            3011, 3012, 3013
+            s_LongbowId, s_CrossbowId, s_SwordId
         };
         s_Weapons = new List<Dictionary<int, BaseWeapon>>(size);
-        for (int i = 0; i < s_Weapons.Count; ++i)
+        for (int i = 0; i < size; ++i)
         {
-            s_Weapons[i] = new Dictionary<int, BaseWeapon>();
+            s_Weapons.Add(new Dictionary<int, BaseWeapon>());
+            WeaponManager.LoadTechData((WeaponType)i);
         }
-        WeaponManager.LoadTechData();
     }
 
-    private static void LoadTechData()
+    private static void LoadTechData(WeaponType type)
     {
-        DataTable<RandomStatData>.Init(s_TableFilenames[(int)TableType.RandomStatTable]);
-        DataTable<WeaponData>.Init(s_TableFilenames[(int)TableType.WeaponTable]);
-        DataTable<LevelData>.Init(s_TableFilenames[(int)TableType.LevelTable]);
-        for (int i = 0; i < s_Weapons.Count; ++i)
-        {
-            int enforceId = s_EnforceTableIds[i];
-            RandomStatData ranStatData = DataTable<RandomStatData>.At(enforceId);
-            WeaponManager.AttachWeapon(ranStatData, s_Weapons[i]);
-        }
+        var data = DataTable<RandomStatData>.At(s_WeaponIds[(int)type]);
+        WeaponManager.AttachWeapon(type, data);
     }
 
-    private static BaseWeapon DeepCopy(ref BaseWeapon src)
-    {
-        BaseWeapon target = null;
-        if (src != null)
-        {
-            target = new BaseWeapon();
-
-            target.id = src.id;
-            target.itemName = src.itemName;
-            target.attackPower = src.attackPower;
-            target.attackSpeed = src.attackSpeed;
-            target.basicAttackRange = new List<int>(src.basicAttackRange);
-            target.effectKeyIds = new List<int>(src.effectKeyIds);
-            target.skillKeyIds = new List<int>(src.skillKeyIds);
-            target.monsterMaximumTarget = src.monsterMaximumTarget;
-        }
-        return target;
-    }
-
-    private static void AttachWeapon(RandomStatData ranStatData, Dictionary<int, BaseWeapon> dst)
+    private static void AttachWeapon(WeaponType type, RandomStatData ranStatData)
     {
         List<int> itemList = CsvManager.ToList<int>(ranStatData.ItemPayments);
         List<int> levelIds = CsvManager.ToList<int>(ranStatData.LevelKeyIds);
@@ -119,8 +107,9 @@ public static class WeaponManager
             baseWeapon.effectKeyIds = CsvManager.ToList<int>(weaponData.EffectKeyIds);
             baseWeapon.skillKeyIds = CsvManager.ToList<int>(weaponData.SkillKeyIds);
             baseWeapon.WeaponLevel = levelData.Level;
-            dst.Add(baseWeapon.id, baseWeapon);
+            baseWeapon.WeaponType = type;
+            s_Weapons[(int)type].Add(levelData.Level, baseWeapon);
         }
     }
 
-} // static class WeaponManager
+} // static class LevelManager

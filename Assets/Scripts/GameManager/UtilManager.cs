@@ -1,7 +1,7 @@
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 public static class UtilManager
 {
@@ -28,6 +28,27 @@ public static class UtilManager
         foreach (var key in sortList)
         {
             result.Add(key, src[key]);
+        }
+        return result;
+    }
+
+    public static void Copy<T>(out List<T> dst, ref List<T> src)
+    {
+        dst = new List<T>(src.Count);
+        dst.AddRange(src);
+    }
+
+    public static GameObject FindWithName(string name)
+    {
+        GameObject[] allObjects = Resources.FindObjectsOfTypeAll<GameObject>();
+        GameObject result = null;
+        foreach (GameObject obj in allObjects)
+        {
+            if (obj.name == name)
+            {
+                result = obj;
+                break;
+            }
         }
         return result;
     }

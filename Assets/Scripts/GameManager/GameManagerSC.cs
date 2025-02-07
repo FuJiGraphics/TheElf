@@ -1,7 +1,6 @@
 using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 public class GameManagerSC : Singleton<GameManagerSC>
 {
@@ -12,6 +11,7 @@ public class GameManagerSC : Singleton<GameManagerSC>
     private DefeatPanelSC m_DefeatUI;
     private VictoryPanelSC m_VictoryUI;
     private ExperienceSC m_ExpUI;
+    private EnforcePanelSC m_EnforceUI;
     private bool m_IsPlaying;
 
     public float CurrentTime { get => m_TimerUI.ElapsedTime; }
@@ -56,36 +56,27 @@ public class GameManagerSC : Singleton<GameManagerSC>
         m_IsPlaying = false;
         KillCount = 0;
 
-        gameUI = GameObject.Find("GameUI");
-        if (gameUI == null)
-        {
-            Debug.LogError("Did not found Game UI!");
-        }
+        gameUI = GameObject.Find("GameUI"); 
+        LogManager.IsVaild(gameUI);
+
         m_TimerUI = gameUI.GetComponentInChildren<GameTimerSC>(true);
-        if (m_TimerUI == null)
-        {
-            Debug.LogError("Did not found Timer UI!");
-        }
+        LogManager.IsVaild(m_TimerUI);
+
         m_DefeatUI = gameUI.GetComponentInChildren<DefeatPanelSC>(true);
-        if (m_DefeatUI == null)
-        {
-            Debug.LogError("Did not found Defeat UI!");
-        }
+        LogManager.IsVaild(m_DefeatUI);
+
         m_VictoryUI = gameUI.GetComponentInChildren<VictoryPanelSC>(true);
-        if (m_VictoryUI == null)
-        {
-            Debug.LogError("Did not found Defeat UI!");
-        }
+        LogManager.IsVaild(m_VictoryUI);
+
         var expGo = GameObject.FindWithTag("ExperienceUI");
-        if (expGo == null)
-        {
-            Debug.LogError("Did not found Experience UI!");
-        }
+        LogManager.IsVaild(expGo);
+
         m_ExpUI = expGo.GetComponent<ExperienceSC>();
-        if (m_ExpUI == null)
-        {
-            Debug.LogError("Did not found Experience Script!");
-        }
+        LogManager.IsVaild(m_ExpUI);
+
+        m_EnforceUI = gameUI.GetComponentInChildren<EnforcePanelSC>(true);
+        LogManager.IsVaild(m_EnforceUI);
+
         this.SetExp(0, 100);
     }
 
@@ -134,6 +125,13 @@ public class GameManagerSC : Singleton<GameManagerSC>
     {
         this.PauseGame();
         m_VictoryUI.gameObject.SetActive(true);
+    }
+
+    public void EnforceGame(PlayerSC target)
+    {
+        this.PauseGame();
+        m_EnforceUI.SetTargetPlayer(target);
+        m_EnforceUI.gameObject.SetActive(true);
     }
 
     public void AddTimeEvent(int second, Action func)

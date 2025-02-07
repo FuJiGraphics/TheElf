@@ -12,7 +12,6 @@ public class ObjectManagerSC: MonoBehaviour
     public UnityEvent<GameObject> onDestroy;
 
     private ObjectPool<GameObject> m_Pool;
-    private bool m_IsInitialized = false;
 
     private void Awake()
     {
@@ -25,13 +24,13 @@ public class ObjectManagerSC: MonoBehaviour
         return m_Pool.Get();
     }
 
-    public void Release(GameObject)
+    public void Release(GameObject target)
+        => m_Pool.Release(target);
 
     private void Init()
     {
-        if (m_IsInitialized)
+        if (m_Pool != null)
             return;
-        m_IsInitialized = true;
 
         m_Pool = new ObjectPool<GameObject>(
             createFunc: () => Instantiate(prefab),   // 새 객체를 생성하는 방법
@@ -39,7 +38,7 @@ public class ObjectManagerSC: MonoBehaviour
             actionOnRelease: ActionOnRelease,        // 풀에 반환될 때 실행
             actionOnDestroy: ActionOnDestroy,        // 풀에서 제거될 때 실행
             collectionCheck: false,                  // 중복 반환 검사
-            defaultCapacity: maxCount,               // 기본 용량
+            defaultCapacity: 1,                      // 기본 용량
             maxSize: maxCount                        // 최대 용량
         );
     }

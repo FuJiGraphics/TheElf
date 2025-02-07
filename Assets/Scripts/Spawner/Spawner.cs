@@ -64,6 +64,7 @@ public class Spawner : MonoBehaviour
                 m_CurrentSpawnCount++;
                 GameObject go = m_Spawner.Spawn();
                 EnemySC sc = go.GetComponent<EnemySC>();
+                sc.ownerSpawner = m_Spawner;
                 if (sc != null)
                 {
                     sc.target = trackingTarget;

@@ -17,6 +17,9 @@ TagManager:
   - ExperienceUI
   - RemainExpUI
   - ObjectPool
+  - Crossbow
+  - Longbow
+  - Sword
   layers:
   - Default
   - TransparentFX

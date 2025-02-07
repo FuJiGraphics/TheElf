@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefab: {fileID: 0}
-  maxCount: 0
+  maxCount: 10
   onGet:
     m_PersistentCalls:
       m_Calls: []
