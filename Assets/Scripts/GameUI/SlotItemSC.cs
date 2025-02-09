@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class SlotItemSC : MonoBehaviour
 {
     public Image image;
+    public Image background;
     public TextMeshProUGUI text;
 
     private bool m_IsInitailized = false;
@@ -23,6 +24,10 @@ public class SlotItemSC : MonoBehaviour
         var images = GetComponentsInChildren<Image>();
         foreach (var image in images)
         {
+            if (image.gameObject.name == "Slot")
+            {
+                this.background = image;
+            }
             if (image.gameObject.name == "Item")
             {
                 this.image = image;

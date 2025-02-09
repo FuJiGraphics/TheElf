@@ -41,13 +41,9 @@ public class EnemySC : MonoBehaviour, IDefender
     public bool isBlockedAttack = false;
     public bool isBlockedMovement = false;
 
-    public ObjectSpawner ownerSpawner; 
+    public Spawner ownerSpawner; 
 
     private List<SpriteRenderer> m_SpriteRenderers;
-    private GameObject m_CollidedPlayer;
-    private bool m_IsStunned = false;
-    private bool m_IsCollided = false;
-    private bool m_IsFireIndividualSkills = false;
     private Vector3 m_TargetDir = Vector3.zero;
 
     private WaitForSeconds m_WaitBlinkDuration;
@@ -56,17 +52,42 @@ public class EnemySC : MonoBehaviour, IDefender
 
     private bool m_Attacked = false;
 
+    private GameObject m_CollidedPlayer;
     private Rigidbody2D m_Rigidbody;
 
+    public bool IsStunned { get; private set; } = false;
+    public bool IsCollided { get; private set; } = false;
+    public bool IsFireIndividualSkills { get; private set; } = false;
     public bool IsDie { get; private set; } = false;
+
+    protected virtual void OnEnable()
+    {
+        IsFireIndividualSkills = false;
+        IsCollided = false;
+        IsStunned = false;
+        IsDie = false;
+        CircleCollider2D collider = GetComponentInParent<CircleCollider2D>();
+        if (collider == null)
+        {
+            collider = GetComponentInChildren<CircleCollider2D>();
+        }
+        collider.isTrigger = false;
+        Rigidbody2D rb = GetComponentInParent<Rigidbody2D>();
+        if (rb == null)
+        {
+            rb = GetComponentInChildren<Rigidbody2D>();
+        }
+        rb.isKinematic = false;
+    }
 
     protected virtual void Start()
     {
+        target = GameObject.FindWithTag("Player");
         m_SpriteRenderers = new List<SpriteRenderer>(
             GetComponentsInChildren<SpriteRenderer>());
         for (int i = 0; i < m_SpriteRenderers.Count; i++)
         {
-            if (m_SpriteRenderers[i].tag == "Shadow")
+            if (m_SpriteRenderers[i].tag == "Shadow" || m_SpriteRenderers[i].name == "Shadow")
             {
                 m_SpriteRenderers.RemoveAt(i);
             }
@@ -88,11 +109,11 @@ public class EnemySC : MonoBehaviour, IDefender
 
         this.FireIndividualSkill();
 
-        if (!isBlockedMovement && !m_Attacked && !IsDie && !m_IsStunned)
+        if (!isBlockedMovement && !m_Attacked && !IsDie && !IsStunned)
         {
             this.Move();
         }
-        if (!isBlockedAttack && m_IsCollided)
+        if (!isBlockedAttack && IsCollided)
         {
             this.Attack();
         }
@@ -103,7 +124,7 @@ public class EnemySC : MonoBehaviour, IDefender
         bool playerCollided = collision.CompareTag("Player");
         if (collision.CompareTag("Player"))
         {
-            m_IsCollided = true;
+            IsCollided = true;
             m_CollidedPlayer = collision.gameObject;
             m_Rigidbody.velocity = Vector3.zero;
             m_Rigidbody.angularVelocity = 0f;
@@ -115,7 +136,7 @@ public class EnemySC : MonoBehaviour, IDefender
     {
         if (collision.CompareTag("Player"))
         {
-            m_IsCollided = true;
+            IsCollided = true;
         }
     }
 
@@ -123,7 +144,7 @@ public class EnemySC : MonoBehaviour, IDefender
     {
         if (collision.CompareTag("Player"))
         {
-            m_IsCollided = false;
+            IsCollided = false;
             m_Rigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
         }
     }
@@ -150,7 +171,7 @@ public class EnemySC : MonoBehaviour, IDefender
     public virtual void Move()
     {
         var animState = animator.GetCurrentAnimatorStateInfo(0);
-        if (!m_IsCollided)
+        if (!IsCollided)
         {
             if (target != null)
             {
@@ -184,6 +205,7 @@ public class EnemySC : MonoBehaviour, IDefender
         {
             healthPoint = 0;
             IsDie = true;
+            this.TriggerDamageEffect();
             this.Die();
         }
         else
@@ -211,7 +233,7 @@ public class EnemySC : MonoBehaviour, IDefender
         }
         else
         {
-            m_IsStunned = false;
+            IsStunned = false;
         }
     }
 
@@ -250,9 +272,9 @@ public class EnemySC : MonoBehaviour, IDefender
 
     private IEnumerator Stun()
     {
-        m_IsStunned = true;
+        IsStunned = true;
         yield return m_StunDuration;
-        m_IsStunned = false;
+        IsStunned = false;
     }
 
     private IEnumerator DeadCoroutine()
@@ -287,7 +309,7 @@ public class EnemySC : MonoBehaviour, IDefender
 
     private IEnumerator AttackCoroutine()
     {
-        if (!m_Attacked && !IsDie && !m_IsStunned)
+        if (!m_Attacked && !IsDie && !IsStunned)
         {
             m_Attacked = true;
             PlayAnimation(AnimType.Attack);
@@ -303,9 +325,9 @@ public class EnemySC : MonoBehaviour, IDefender
 
     private IEnumerator IndividualSkillCoroutine()
     {
-        if (individualSkills.Count > 0 && !m_IsFireIndividualSkills)
+        if (individualSkills.Count > 0 && !IsFireIndividualSkills)
         {
-            m_IsFireIndividualSkills = true;
+            IsFireIndividualSkills = true;
             yield return new WaitForSeconds(activeSkillDuration);
             for (int i = 0; i < individualSkills.Count; ++i)
             {
@@ -329,7 +351,7 @@ public class EnemySC : MonoBehaviour, IDefender
                 }
                 GameObject.Destroy(skillGo);
             }
-            m_IsFireIndividualSkills = false;
+            IsFireIndividualSkills = false;
         }
     }
 

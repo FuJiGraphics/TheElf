@@ -1,7 +1,9 @@
+using Assets.PixelFantasy.Common.Scripts;
 using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class BulletSC : MonoBehaviour
 {
@@ -10,28 +12,44 @@ public class BulletSC : MonoBehaviour
     public float projectileSpeed = 10f;
     public Vector3 direction = Vector3.forward;
     public int maximumTarget = 10;
+    public GameObject effect;
     public ObjectManagerSC ownerPool;
+
 
     private float m_ElapsedTime = 0f;
     private SpriteRenderer m_SpriteRenderer;
-    private Quaternion m_FirstRotation;
     private int m_CurrentHitCount = 0;
+
+    protected Quaternion firstRotation;
+    protected Rigidbody2D rb;
+    protected GameObject owner;
+    protected Vector3 setPosition = Vector3.zero;
+    protected Vector3 setDirection = Vector3.zero;
+    protected Quaternion setRotation = Quaternion.identity;
 
     private void Awake()
     {
         m_SpriteRenderer = GetComponent<SpriteRenderer>();
         m_SpriteRenderer.enabled = false;
-        m_FirstRotation = transform.rotation;
+        firstRotation = transform.rotation;
+        rb = GetComponent<Rigidbody2D>();
     }
 
     private void Update()
     {
         m_ElapsedTime += Time.deltaTime;
+        this.MoveTrigger();
         if (m_ElapsedTime >= survivalTime)
         {
             this.Destroy();
             m_ElapsedTime = 0f;
         }
+    }
+
+    protected virtual void OnDisable()
+    {
+        m_CurrentHitCount = 0;
+        m_ElapsedTime = 0f;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -61,11 +79,13 @@ public class BulletSC : MonoBehaviour
         }
     }
 
-    private void Destroy()
+    protected virtual void MoveTrigger()
     {
-        m_CurrentHitCount = 0;
-        m_SpriteRenderer.enabled = false;
-        gameObject.SetActive(false);
+        // Empty
+    }
+
+    protected void Destroy()
+    {
         if (ownerPool)
         {
             ownerPool.Release(gameObject);
@@ -96,13 +116,22 @@ public class BulletSC : MonoBehaviour
         this.Fire(position, direction, attackPower);
     }
 
-    public void Fire(Vector3 position, Vector3 direction, Quaternion rotation)
+    public void Fire(Vector3 position, Vector3 direction, Quaternion rotation, GameObject owner)
     {
         m_SpriteRenderer.enabled = true;
-        this.transform.rotation = m_FirstRotation * rotation;
-        GetComponent<Rigidbody2D>().velocity = direction * projectileSpeed;
+        this.transform.rotation = firstRotation * rotation;
+        rb.velocity = direction * projectileSpeed;
         transform.position = position;
         m_ElapsedTime = 0f;
+        var particle = GetComponentInChildren<ParticleSystem>();
+        if (particle != null)
+        {
+            particle.transform.rotation = this.transform.rotation;
+        }
+        this.setPosition = position;
+        this.setDirection = direction;
+        this.setRotation = rotation;
+        this.owner = owner;
     }
 
 } // class BulletSC

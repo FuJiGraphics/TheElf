@@ -1,30 +1,42 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using static Cinemachine.DocumentationSortingAttribute;
+using static UnityEditor.Progress;
 
 public class EnforcePanelSC : MonoBehaviour
 {
+    public enum SlotType
+    {
+        LevelupWeapons,
+        UnusedDefaultWeapons,
+        Potions,
+        NoMoreItems,
+    }
+
     public struct EnforceItem
     {
-        public int TargetIndex { get; set; }
-        public GameObject LevelUp { get; set; }
-        public WeaponSC Selectable { get; set; }
+        public GameObject LevelUpPrev { get; set; }
+        public GameObject LevelUpNext { get; set; }
+        public WeaponSC SelectRandomDefaultWeapon { get; set; }
         public Button Button { get; set; }
         public Image Image { get; set; }
+        public Image Background { get; set; }
         public TextMeshProUGUI Text { get; set; }
         public GameObject Prefab { get; set; }
     }
 
     public TextMeshProUGUI levelTitle;
-    public GameObject[] potions;
+    public Color emptySlotColor;
 
     private EnforceItem[] m_Slots;
     private PlayerSC m_TargetPlayer;
-    private List<WeaponSC> m_CurrentWeapons;
-    private List<WeaponSC> m_UnusedWeapons;
+
+    private readonly int m_SlotCount = 3;
 
     private void Awake()
     {
@@ -65,7 +77,7 @@ public class EnforcePanelSC : MonoBehaviour
             }
         }
 
-        m_Slots = new EnforceItem[3];
+        m_Slots = new EnforceItem[m_SlotCount];
         var buttons = GetComponentsInChildren<Button>();
         if (buttons == null)
         {
@@ -81,12 +93,14 @@ public class EnforcePanelSC : MonoBehaviour
         {
             Debug.LogError("Mismatch between the number of slots and buttons!");
         }
+
         for (int i = 0; i < slots.Length; ++i)
         {
             slots[i].Init();
             m_Slots[i].Button = buttons[i];
             m_Slots[i].Image = slots[i].image;
             m_Slots[i].Text = slots[i].text;
+            m_Slots[i].Background = slots[i].background;
         }
         m_Slots[0].Button.onClick.AddListener(OnSlot0);
         m_Slots[1].Button.onClick.AddListener(OnSlot1);
@@ -95,137 +109,118 @@ public class EnforcePanelSC : MonoBehaviour
 
     private void AdjustSlots()
     {
-        var weaponSC = m_TargetPlayer.allWeapons[0].GetComponent<WeaponSC>();
-        m_CurrentWeapons = m_TargetPlayer.allWeapons
-            .Select(w => w.GetComponent<WeaponSC>()).ToList();
-
-        bool hasUnusedWeapon = false;
         int iterIndex = 0;
-        for (int i = 0; i < 3; ++i)
+        this.levelTitle.text = m_TargetPlayer.Level.ToString();
+        iterIndex = this.SelectedLevelUpWeapons(iterIndex);
+        iterIndex = this.SelectedRandomWeapon(iterIndex);
+        this.SelectedDisableEmptySlots(iterIndex);
+    }
+
+    private int SelectedLevelUpWeapons(int iterIndex = 0)
+    {
+        var allWeapons = m_TargetPlayer.allWeapons;
+        if (allWeapons != null)
         {
-            if (m_CurrentWeapons[i].gameObject.activeSelf)
+            for (int i = 0; i < m_SlotCount; ++i)
             {
-                // 레벨업
-                GameObject nextWeapon = WeaponManager.LevelUp(m_CurrentWeapons[i]);
-                if (LogManager.IsVaild(nextWeapon))
+                if (allWeapons[i].activeSelf)
                 {
-                    this.ShowWeaponSlot(iterIndex, nextWeapon.GetComponent<WeaponSC>());
-                    m_Slots[iterIndex].LevelUp = nextWeapon;
-                    m_Slots[iterIndex].TargetIndex = i;
+                    GameObject nextWeapon = WeaponManager.LevelUp(allWeapons[i]);
+                    if (LogManager.IsVaild(nextWeapon))
+                    {
+                        this.SetSlotItem(iterIndex, allWeapons[i], SlotType.LevelupWeapons, nextWeapon);
+                        iterIndex++;
+                    }
+                }
+            }
+        }
+        return iterIndex;
+    }
+
+    private int SelectedRandomWeapon(int iterIndex = 0)
+    {
+        if (iterIndex < m_SlotCount)
+        {
+            List<WeaponSC> unused = m_TargetPlayer.GetUnusedWeapons();
+            if (unused != null)
+            {
+                for (int i = 0; i < unused.Count; ++i)
+                {
+                    this.SetSlotItem(iterIndex, unused[i].gameObject, SlotType.UnusedDefaultWeapons);
                     iterIndex++;
                 }
-                else
-                {
-                    // 흑백 처리 선택불가 또는 다른 아이템
-                    // iterIndex++;
-                    // this.ShowWeaponSlot(iterIndex, m_CurrentWeapons[i]);
-                }
-            }
-            else
-            {
-                hasUnusedWeapon = true;
             }
         }
-
-        if (hasUnusedWeapon)
+        return iterIndex;
+    }
+    
+    private void SelectedDisableEmptySlots(int iterIndex = 0)
+    {
+        if (iterIndex < m_SlotCount)
         {
-            m_UnusedWeapons = this.GetUnusedWeapons(ref m_CurrentWeapons);
-            for (int i = 0; i < m_UnusedWeapons.Count; ++i)
+            for (int i = iterIndex; i < m_Slots.Length; ++i)
             {
-                m_Slots[iterIndex].Selectable = m_UnusedWeapons[i];
-                this.ShowRandomWeaponSlot(iterIndex);
+                m_Slots[i].Button.interactable = false;
+                m_Slots[i].Image.color = Color.clear;
             }
         }
     }
 
-    private void ShowRandomWeaponSlot(int slot)
+    private void SetSlotItem(int slotIndex, GameObject weapon, SlotType type, GameObject levelUpTarget = null)
     {
-        if (m_UnusedWeapons == null || m_UnusedWeapons.Count < 1)
+        if (LogManager.IsNull(weapon))
             return;
-        int ran = Random.Range(0, m_UnusedWeapons.Count);
-        this.ShowWeaponSlot(slot, m_UnusedWeapons[ran]);
-        m_UnusedWeapons.Remove(m_UnusedWeapons[ran]);
-    }
 
-    private void ShowWeaponSlot(int slot, WeaponSC weapon)
-    {
-        m_Slots[slot].Image.sprite = weapon.icon;
-        m_Slots[slot].Text.text = weapon.desc;
-    }
-
-    private List<WeaponSC> GetUnusedWeapons(ref List<WeaponSC> weapons)
-    {
-        List<WeaponSC> unusedWeapons = new List<WeaponSC>();
-        foreach (WeaponSC weapon in weapons)
+        if (SlotType.LevelupWeapons == type)
         {
-            if (!weapon.gameObject.activeSelf)
+            if (LogManager.IsVaild(levelUpTarget))
             {
-                unusedWeapons.Add(weapon);
+                WeaponSC nextWeaponSC = levelUpTarget.GetComponent<WeaponSC>();
+                m_Slots[slotIndex].Image.sprite = nextWeaponSC.icon;
+                m_Slots[slotIndex].Text.text = nextWeaponSC.desc;
+                m_Slots[slotIndex].SelectRandomDefaultWeapon = null;
+                m_Slots[slotIndex].LevelUpNext = levelUpTarget;
+                m_Slots[slotIndex].LevelUpPrev = weapon;
             }
         }
-        if (unusedWeapons.Count <= 0)
+        else if (SlotType.UnusedDefaultWeapons == type)
         {
-            unusedWeapons = null;
+            WeaponSC originWeapon = weapon.GetComponent<WeaponSC>();
+            m_Slots[slotIndex].Image.sprite = originWeapon.icon;
+            m_Slots[slotIndex].Text.text = originWeapon.desc;
+            m_Slots[slotIndex].SelectRandomDefaultWeapon = originWeapon;
+            m_Slots[slotIndex].LevelUpNext = null;
+            m_Slots[slotIndex].LevelUpPrev = null;
         }
-        return unusedWeapons;
+        else if (SlotType.Potions == type)
+        {
+            // 미구현
+            m_Slots[slotIndex].Button.onClick.RemoveAllListeners();
+        }
+        else
+        {
+            m_Slots[slotIndex].Button.onClick.RemoveAllListeners();
+        }
     }
 
-    private void OnSlot0()
+    private void OnSlot0() => OnSlot(0);
+    private void OnSlot1() => OnSlot(1);
+    private void OnSlot2() => OnSlot(2);
+
+    private void OnSlot(int index)
     {
         if (LogManager.IsNull(m_TargetPlayer))
             return;
 
-        if (m_Slots[0].Selectable != null)
+        if (m_Slots[index].SelectRandomDefaultWeapon != null)
         {
-            m_Slots[0].Selectable.gameObject.SetActive(true);
+            m_Slots[index].SelectRandomDefaultWeapon.gameObject.SetActive(true);
         }
-
-        if (m_Slots[0].LevelUp != null)
+        else if (m_Slots[index].LevelUpNext != null)
         {
-            int targetIndex = m_Slots[0].TargetIndex;
-            m_TargetPlayer.SetItem(targetIndex, m_Slots[0].LevelUp);
-            m_CurrentWeapons = m_TargetPlayer.allWeapons
-            .Select(w => w.GetComponent<WeaponSC>()).ToList();
-        }
-        this.gameObject.SetActive(false);
-        GameManagerSC.Instance.StartGame();
-    }
-
-    private void OnSlot1()
-    {
-        if (LogManager.IsNull(m_TargetPlayer))
-            return;
-
-        if (m_Slots[1].Selectable != null)
-        {
-            m_Slots[1].Selectable.gameObject.SetActive(true);
-        }
-        if (m_Slots[1].LevelUp != null)
-        {
-            int targetIndex = m_Slots[1].TargetIndex;
-            m_TargetPlayer.SetItem(targetIndex, m_Slots[1].LevelUp);
-            m_CurrentWeapons = m_TargetPlayer.allWeapons
-            .Select(w => w.GetComponent<WeaponSC>()).ToList();
-        }
-        this.gameObject.SetActive(false);
-        GameManagerSC.Instance.StartGame();
-    }
-
-    private void OnSlot2()
-    {
-        if (LogManager.IsNull(m_TargetPlayer))
-            return;
-
-        if (m_Slots[2].Selectable != null)
-        {
-            m_Slots[2].Selectable.gameObject.SetActive(true);
-        }
-        if (m_Slots[2].LevelUp != null)
-        {
-            int targetIndex = m_Slots[2].TargetIndex;
-            m_TargetPlayer.SetItem(targetIndex, m_Slots[2].LevelUp);
-            m_CurrentWeapons = m_TargetPlayer.allWeapons
-            .Select(w => w.GetComponent<WeaponSC>()).ToList();
+            GameObject prevItem = m_Slots[index].LevelUpPrev;
+            GameObject nextItem = m_Slots[index].LevelUpNext;
+            m_TargetPlayer.ChangeItem(prevItem, nextItem);
         }
         this.gameObject.SetActive(false);
         GameManagerSC.Instance.StartGame();

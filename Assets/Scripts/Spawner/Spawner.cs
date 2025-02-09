@@ -41,6 +41,12 @@ public class Spawner : MonoBehaviour
         m_ElapsedTime += Time.deltaTime;    
     }
 
+    public void Release(GameObject target)
+    {
+        m_CurrentSpawnCount = Mathf.Clamp(m_CurrentSpawnCount - 1, 0, maxCount);
+        m_Spawner.Release(target);
+    }
+
     public void StartSpawner()
     {
         m_WaitRespawnCycle = new WaitForSeconds(respawnCycle);
@@ -64,7 +70,7 @@ public class Spawner : MonoBehaviour
                 m_CurrentSpawnCount++;
                 GameObject go = m_Spawner.Spawn();
                 EnemySC sc = go.GetComponent<EnemySC>();
-                sc.ownerSpawner = m_Spawner;
+                sc.ownerSpawner = this;
                 if (sc != null)
                 {
                     sc.target = trackingTarget;

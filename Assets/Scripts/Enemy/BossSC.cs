@@ -16,21 +16,6 @@ public class BossSC : EnemySC
         this.AttackAnimations();
     }
 
-    protected override void Update()
-        => base.Update();
-
-    protected override void OnTriggerEnter2D(Collider2D collision)
-        => base.OnTriggerEnter2D(collision);
-
-    protected override void OnTriggerExit2D(Collider2D collision)
-        => base.OnTriggerExit2D(collision);
-
-    protected override void OnCollisionEnter2D(Collision2D collision)
-        => this.OnTriggerEnter2D(collision.collider);
-
-    protected override void OnCollisionExit2D(Collision2D collision)
-        => this.OnTriggerExit2D(collision.collider);
-
     private void Init()
     {
         DataTable<MonsterData>.Init("04_MonsterTable");

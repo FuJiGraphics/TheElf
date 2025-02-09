@@ -28,19 +28,22 @@ public static class WeaponManager
         return result;
     }
 
-    public static GameObject LevelUp(WeaponSC weapon)
+    public static GameObject LevelUp(GameObject weapon)
     {
         WeaponManager.Init();
-        int nextLevel = weapon.info.WeaponLevel + 1;
-        BaseWeapon target = null;
-        int targetWeapon = (int)weapon.info.WeaponType;
-        if (s_Weapons[targetWeapon].ContainsKey(nextLevel))
+        GameObject result = null;
+        WeaponSC sc = weapon.GetComponent<WeaponSC>();
+        if (sc != null)
         {
-            target = new BaseWeapon();
-            BaseWeapon src = s_Weapons[targetWeapon][nextLevel];
-            target.DeepCopy(ref src);
+            int nextLevel = sc.info.WeaponLevel + 1;
+            int targetWeapon = (int)sc.info.WeaponType;
+            if (s_Weapons[targetWeapon].ContainsKey(nextLevel))
+            {
+                BaseWeapon src = s_Weapons[targetWeapon][nextLevel];
+                result = UtilManager.FindWithName(src.itemName);
+            }
         }
-        return UtilManager.FindWithName(target.itemName);
+        return result;
     }
 
     private static void Init()

@@ -13,10 +13,12 @@ public class WeaponSC : MonoBehaviour
     public bool fixedRotation = false;
     public GameObject objectPool;
     public GameObject bulletPrefab;
+    public Effects effects;
     public BaseWeapon info;
-
+        
     private float m_ElapsedTime = 0f;
     private ObjectManagerSC m_ObjectPool;
+    private GameObject m_Owner;
 
     private void Start()
     {
@@ -73,7 +75,8 @@ public class WeaponSC : MonoBehaviour
             BulletSC sc = bullet.GetComponent<BulletSC>();
             sc.ownerPool = m_ObjectPool != null ? m_ObjectPool : null;
             sc.SetWeaponData(info);
-            sc.Fire(position, direction, rotation);
+            sc.Fire(position, direction, rotation, m_Owner);
+            effects?.Play(position, rotation);
         }
     }
 
@@ -89,6 +92,8 @@ public class WeaponSC : MonoBehaviour
                 m_ObjectPool.prefab = bulletPrefab != null ? bulletPrefab : null;
                 objectPool = m_ObjectPool.gameObject;
             }
+            m_Owner = GameObject.FindWithTag("Player");
+            effects = GetComponentInChildren<Effects>();
         }
     }
 

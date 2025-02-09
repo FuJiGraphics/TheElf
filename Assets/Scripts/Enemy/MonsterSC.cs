@@ -13,21 +13,6 @@ public class MonsterSC : EnemySC
         this.AttackAnimations();
     }
 
-    protected override void Update()
-        => base.Update();
-
-    protected override void OnTriggerEnter2D(Collider2D collision)
-        => base.OnTriggerEnter2D(collision);
-
-    protected override void OnTriggerExit2D(Collider2D collision)
-        => base.OnTriggerExit2D(collision);
-
-    protected override void OnCollisionEnter2D(Collision2D collision)
-        => base.OnCollisionEnter2D(collision);
-
-    protected override void OnCollisionExit2D(Collision2D collision)
-        => base.OnCollisionExit2D(collision);
-
     private void Init()
     {
         DataTable<MonsterData>.Init("04_MonsterTable");
@@ -55,7 +40,7 @@ public class MonsterSC : EnemySC
         animations.Add(AnimType.Damaged, 
             () => { m_Prefabs.PlayAnimation(PlayerState.DAMAGED, 0); });
         animations.Add(AnimType.Die, 
-            () => { m_Prefabs.PlayAnimation(PlayerState.DEATH, 0); });
+            () => { m_Prefabs._anim.Rebind(); m_Prefabs.PlayAnimation(PlayerState.DEATH, 0); });
     }
 
 } // class MonsterSC

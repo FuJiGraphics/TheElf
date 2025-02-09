@@ -5279,8 +5279,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80ba545a0e7e6f24db301656e58aa00c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  id: 105
+  id: 101
   target: {fileID: 0}
+  individualSkills: []
+  activeSkillDuration: 5
+  isBoss: 0
   moveSpeed: 5
   basicAttack: 10
   attackSpeed: 1
@@ -5295,6 +5298,9 @@ MonoBehaviour:
   animator: {fileID: 0}
   right: {x: -1, y: 1, z: 1}
   left: {x: 1, y: 1, z: 1}
+  isBlockedAttack: 0
+  isBlockedMovement: 0
+  ownerSpawner: {fileID: 0}
 --- !u!50 &7382192845080575672
 Rigidbody2D:
   serializedVersion: 4

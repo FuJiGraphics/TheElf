@@ -722,6 +722,8 @@ MonoBehaviour:
   randomStatKeyIds: 
   effectKeyIds: 
   expKeyIds: 
+  blinkDuration: 0.03
+  blinkCount: 5
 --- !u!212 &220692329107683510
 SpriteRenderer:
   m_ObjectHideFlags: 0

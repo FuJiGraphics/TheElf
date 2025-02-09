@@ -12,14 +12,14 @@ GameObject:
   - component: {fileID: 2199712146014903654}
   - component: {fileID: 5040953569633184169}
   - component: {fileID: 1622032980980964989}
-  - component: {fileID: 9037573049104964274}
+  - component: {fileID: 322161744617175993}
   m_Layer: 0
   m_Name: SwordArrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4546005192642823936
 Transform:
   m_ObjectHideFlags: 0
@@ -28,13 +28,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8808289594362423235}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0.38268343, w: 0.92387956}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 45}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &2199712146014903654
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -76,15 +76,15 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 876c89cd3140fe0419fb9c0689b5090c, type: 3}
+  m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.34375, y: 0.65625}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!50 &5040953569633184169
@@ -150,16 +150,16 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 6.4, y: 6.4}
-    newSize: {x: 1, y: 1}
+    oldSize: {x: 0.32, y: 0.32}
+    newSize: {x: 0.34375, y: 0.65625}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 10, y: 10}
   m_EdgeRadius: 0
---- !u!114 &9037573049104964274
+--- !u!114 &322161744617175993
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -168,12 +168,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 8808289594362423235}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8dd15387d6b048345a9fbee1d9962b9e, type: 3}
+  m_Script: {fileID: 11500000, guid: 739a6a0863bf90945ae5b922e302f5ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   attackPower: 20
   survivalTime: 5
-  projectileSpeed: 10
+  projectileSpeed: 100
   direction: {x: 0, y: 0, z: 1}
-  maximumTarget: 10
+  maximumTarget: 1000000000
+  effect: {fileID: 0}
   ownerPool: {fileID: 0}
+  rotationCount: 1
+  orbitRadius: 2
+  offsetAngle: -60
+  maxAngle: 180

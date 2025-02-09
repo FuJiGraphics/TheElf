@@ -23,6 +23,12 @@ public class PlayerSC : MonoBehaviour
     private Vector3 m_TargetPos;
     private bool m_HasMoved;
 
+    public float blinkDuration = 0.2f;
+    public int blinkCount = 5;
+
+    private SpriteRenderer m_SpriteRenderer;
+    private WaitForSeconds m_WaitBlinkDuration;
+
     private Animator m_Animator;
 
     private HealthBarSC m_HealthBar;
@@ -60,10 +66,28 @@ public class PlayerSC : MonoBehaviour
     {
         m_CurrHealth = Mathf.Clamp(m_CurrHealth - damage, 0, healthPoint);
         m_HealthBar.SetHealth(m_CurrHealth);
+        this.TriggerDamageEffect();
         if (m_CurrHealth == 0)
         {
             IsDie = true;
             StartCoroutine(CoroutineDead());
+        }
+    }
+
+    public void TriggerDamageEffect()
+    {
+        StartCoroutine(BlinkEffect());
+    }
+
+    private IEnumerator BlinkEffect()
+    {
+        for (int i = 0; i < blinkCount; i++)
+        {
+            m_SpriteRenderer.color = Color.red;
+            yield return m_WaitBlinkDuration;
+
+            m_SpriteRenderer.color = Color.white;
+            yield return m_WaitBlinkDuration;
         }
     }
 
@@ -89,15 +113,48 @@ public class PlayerSC : MonoBehaviour
         GameManagerSC.Instance.SetExp(m_CurrExp, maxExp);
     }
 
-    public void SetItem(int index, GameObject weapon)
+    public void ChangeItem(GameObject from, GameObject to)
     {
-        allWeapons[index] = weapon;
-        m_EquippedWeapons = new List<WeaponSC>();
-        foreach (var go in allWeapons)
+        bool isFind = false;
+        for (int i = 0; i < allWeapons.Count; ++i)
         {
-            WeaponSC sc = go.GetComponent<WeaponSC>();
-            m_EquippedWeapons.Add(sc);
+            if (allWeapons[i] == from)
+            {
+                isFind = true;
+                allWeapons[i] = to;
+                break;
+            }
         }
+        if (isFind)
+        {
+            m_EquippedWeapons = new List<WeaponSC>();
+            foreach (var go in allWeapons)
+            {
+                WeaponSC sc = go.GetComponent<WeaponSC>();
+                m_EquippedWeapons.Add(sc);
+            }
+        }
+    }
+
+    public List<WeaponSC> GetUnusedWeapons()
+    {
+        List<WeaponSC> unused = null;
+        for (int i = 0; i < allWeapons.Count; ++i)
+        {
+            if (allWeapons[i].activeSelf == false)
+            {
+                if (unused == null)
+                {
+                    unused = new List<WeaponSC>();
+                }
+                WeaponSC sc = allWeapons[i].GetComponent<WeaponSC>();
+                if (LogManager.IsVaild(sc))
+                {
+                    unused.Add(sc);
+                }
+            }
+        }
+        return unused;
     }
 
     private void Init()
@@ -109,6 +166,8 @@ public class PlayerSC : MonoBehaviour
         m_HealthBar.SetMaxHealth(healthPoint);
         m_CurrHealth = healthPoint;
         m_Rigidbody = GetComponent<Rigidbody2D>();
+        m_WaitBlinkDuration = new WaitForSeconds(blinkDuration);
+        m_SpriteRenderer = GetComponent<SpriteRenderer>();
         IsDie = false;
     }
 
@@ -148,7 +207,7 @@ public class PlayerSC : MonoBehaviour
             allWeapons[i].SetActive(false);
         }
         int ran = Random.Range(0, allWeapons.Count);
-        allWeapons[1].SetActive(true);
+        allWeapons[ran].SetActive(true);
         m_EquippedWeapons = new List<WeaponSC>();
         foreach (var weapon in allWeapons)
         {
@@ -165,7 +224,16 @@ public class PlayerSC : MonoBehaviour
             m_TargetPos.z = 0f;
             m_CurrDir = (m_TargetPos - transform.position).normalized;
             m_CurrDir.z = 0f;
+            m_Animator.SetFloat("x", m_CurrDir.x);
+            m_Animator.SetFloat("y", m_CurrDir.y);
+            m_Animator.SetBool("Walk", true);
             m_HasMoved = true;
+        }
+        else
+        {
+            m_Rigidbody.velocity = Vector3.zero;
+            m_Animator.SetBool("Walk", false);
+            return;
         }
 
         Vector3 velocity = (m_CurrDir * moveSpeed * Time.deltaTime) * 0.01f;
@@ -181,10 +249,6 @@ public class PlayerSC : MonoBehaviour
             m_HasMoved = false;
         }
         m_Rigidbody.MovePosition(newPosition);
-
-        m_Animator.SetFloat("x", m_CurrDir.x);
-        m_Animator.SetFloat("y", m_CurrDir.y);
-        m_Animator.SetBool("Walk", m_HasMoved);
     }
 
     private void Attack()
@@ -201,7 +265,8 @@ public class PlayerSC : MonoBehaviour
 
     private IEnumerator CoroutineDead()
     {
-        m_Animator.SetBool("Dead", true);
+        GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
+        m_Animator.SetTrigger("Dead");
         var animState = m_Animator.GetCurrentAnimatorStateInfo(0);
         while (animState.normalizedTime < 1.0f)
         {
