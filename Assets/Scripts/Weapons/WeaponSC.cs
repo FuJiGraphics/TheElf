@@ -1,3 +1,4 @@
+using Helios.GUI;
 using UnityEngine;
 
 public class WeaponSC : MonoBehaviour
@@ -23,23 +24,16 @@ public class WeaponSC : MonoBehaviour
     private void Start()
     {
         this.Init();
-        info = WeaponManager.GetInfo(type, level);
+        info = WeaponManager.Instance.GetInfo(type, level);
     }
 
     private void OnEnable()
     {
+        if (GameManagerSC.Instance.IsSceneLoaded == false)
+            return;
+
         this.Init();
-        info = WeaponManager.GetInfo(type, level);
-    }
-
-    private void OnValidate()
-    {
-        info = WeaponManager.GetInfo(type, level);
-
-        if (info != null)
-        {
-            this.Init();
-        }
+        info = WeaponManager.Instance.GetInfo(type, level);
     }
 
     public void Fire(Vector2 direction, Vector2 position)
@@ -48,7 +42,7 @@ public class WeaponSC : MonoBehaviour
     public void Fire(Vector2 direction, Vector2 position, Quaternion rotation)
     {
         this.Init();
-        info = WeaponManager.GetInfo(type, level);
+        info = WeaponManager.Instance.GetInfo(type, level);
         LogManager.IsVaild(bulletPrefab);
         if (info == null)
         {

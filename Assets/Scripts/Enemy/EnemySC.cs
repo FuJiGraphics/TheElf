@@ -78,6 +78,7 @@ public class EnemySC : MonoBehaviour, IDefender
             rb = GetComponentInChildren<Rigidbody2D>();
         }
         rb.isKinematic = false;
+        target = GameObject.FindWithTag("Player");
     }
 
     protected virtual void Start()
@@ -201,7 +202,7 @@ public class EnemySC : MonoBehaviour, IDefender
             return;
 
         healthPoint -= damage;
-        if (healthPoint < 0)
+        if (healthPoint <= 0)
         {
             healthPoint = 0;
             IsDie = true;

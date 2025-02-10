@@ -11,6 +11,6 @@ public class ItemData : IGameData
     public int MaximumNumberOfUsesPerStage { get; set; }    // 1 스테이지당 사용 가능한 물약 수
     public int MaximumNumberOfHoldings { get; set; }        // 최대 물약 소지 가능 개수
     public float Duration { get; set; }                     // 지속시간
-    public int AppearanceProbability { get; set; }          // 등장 확률
+    public float AppearanceProbability { get; set; }        // 등장 확률
 
 } // class ItemData

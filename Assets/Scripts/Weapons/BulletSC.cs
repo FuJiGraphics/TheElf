@@ -58,7 +58,6 @@ public class BulletSC : MonoBehaviour
         {
             var sc = collision.gameObject.GetComponent<EnemySC>();
             sc.TakeDamage(attackPower);
-            m_CurrentHitCount++;
             if (sc.IsDie)
             {
                 if (sc.isBoss)
@@ -70,6 +69,10 @@ public class BulletSC : MonoBehaviour
                     // 킬 카운트 증가
                     GameManagerSC.Instance.KillCount++;
                 }
+            }
+            else
+            {
+                m_CurrentHitCount++;
             }
             // 맞출 수 있는 적이 초과됐을 경우 현재 오브젝트 반환
             if (m_CurrentHitCount >= maximumTarget)

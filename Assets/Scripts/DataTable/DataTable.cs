@@ -34,6 +34,13 @@ public static class DataTable<T>
         }
     }
 
+    public static void Release()
+    {
+        s_IsInitialized = false;
+        s_Table.Clear();
+        s_Table = null;
+    }
+
     public static T At(int id)
     {
         if (id < 0)
