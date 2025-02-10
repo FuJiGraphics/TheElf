@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class TouchManager : Singleton<TouchManager>
 {
-    public TouchTap Tap { get; private set; } = new TouchTap();
-    public TouchDoubleTap DoubleTap { get; private set; } = new TouchDoubleTap();
-    public TouchHeld TouchHeld { get; private set; } = new TouchHeld();
-    public TouchSwipe TouchSwipeUp { get; private set; } = new TouchSwipe(Vector2.up);
-    public TouchSwipe TouchSwipeDown { get; private set; } = new TouchSwipe(Vector2.down);
-    public TouchSwipe TouchSwipeRight { get; private set; } = new TouchSwipe(Vector2.right);
-    public TouchSwipe TouchSwipeLeft { get; private set; } = new TouchSwipe(Vector2.left);
-    public TouchZoom TouchZoom { get; private set; } = new TouchZoom();
+    public virtual TouchTap Tap { get; private set; } = new TouchTap();
+    public virtual TouchDoubleTap DoubleTap { get; private set; } = new TouchDoubleTap();
+    public virtual TouchHeld TouchHeld { get; private set; } = new TouchHeld();
+    public virtual TouchSwipe TouchSwipeUp { get; private set; } = new TouchSwipe(Vector2.up);
+    public virtual TouchSwipe TouchSwipeDown { get; private set; } = new TouchSwipe(Vector2.down);
+    public virtual TouchSwipe TouchSwipeRight { get; private set; } = new TouchSwipe(Vector2.right);
+    public virtual TouchSwipe TouchSwipeLeft { get; private set; } = new TouchSwipe(Vector2.left);
+    public virtual TouchZoom TouchZoom { get; private set; } = new TouchZoom();
 
     private void Update()
     {

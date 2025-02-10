@@ -12,7 +12,8 @@ public class TouchHeld : IDeviceContext
 
     public TouchHeld()
     {
-        data = new TouchData(0);
+        // data = new TouchData(0);
+        data = UtilManager.FindWithName("Joystick").GetComponent<VirtualJoystck>();
     }
 
     public void OnUpdate()
