@@ -16,9 +16,12 @@ public class BaseWeapon : IWeaponLevel
     public int attackPower = 1;
     public float attackSpeed = 1f;
     public int monsterMaximumTarget = 10;
+    public float Duration = 0;
+    public int Count = 0;
+    public int Bounce = 0;
+    public float RotationSpeed = 0f;
+    public float DamagePerSecond = 0f;
     public List<int> basicAttackRange;
-    public List<int> effectKeyIds;
-    public List<int> skillKeyIds;
 
     public WeaponType WeaponType { get; set; }
     public int WeaponLevel { get; set; } = 0;
@@ -32,8 +35,6 @@ public class BaseWeapon : IWeaponLevel
         this.WeaponType = other.WeaponType;
         this.WeaponLevel = other.WeaponLevel;
         UtilManager.Copy(out this.basicAttackRange, ref other.basicAttackRange);
-        UtilManager.Copy(out this.effectKeyIds, ref other.effectKeyIds);
-        UtilManager.Copy(out this.skillKeyIds, ref other.skillKeyIds);
     }
 
 } // class PlayerWeaponSC

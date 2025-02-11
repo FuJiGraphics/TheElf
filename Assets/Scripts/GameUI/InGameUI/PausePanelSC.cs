@@ -15,17 +15,8 @@ public class PausePanelSC : MonoBehaviour
 
     private void OnClickContinueButton()
     {
-        gameObject.SetActive(false);
-    }
-
-    private void OnEnable()
-    {
-        GameManagerSC.Instance.PauseGame();
-    }
-
-    private void OnDisable()
-    {
         GameManagerSC.Instance.StartGame();
+        gameObject.SetActive(false);
     }
 
 } // class PausePanelSC

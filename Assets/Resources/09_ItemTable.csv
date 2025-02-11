@@ -1,0 +1,7 @@
+Id,Name,RecoveryAmountPercent,GodMode,DoubleAttackPower,RemoveAllStatusAbnormalities,TimeLimitIncreasedBy30Seconds,MaximumNumberOfUsesPerStage,MaximumNumberOfHoldings,Duration,AppearanceProbability
+51,Spirit'sBlessing(RecoveryPotion),20.0,false,false,0,0,5,10,0,60.0
+52,Spirit'sTears(RecoveryPotion),50.0,false,false,0,0,1,2,0,15.0
+53,MandrakeRoot(InvincibilityPotion),0,true,false,0,0,2,3,3,1.0
+54,Spirit'sRage(AttackIncreasePotion),0,false,true,0,0,2,6,15,13.0
+55,Mandrake'sTears(StatusRecoveryPotion),0,false,false,1,0,3,5,0,10.0
+56,CurtainOfTime(TimeAttackTimeIncreasedBy30Seconds),0,false,false,0,1,1,1,0,1.0

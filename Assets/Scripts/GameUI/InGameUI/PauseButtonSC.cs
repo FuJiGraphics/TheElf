@@ -14,6 +14,7 @@ public class PauseButtonSC : MonoBehaviour
 
     private void OnClickPauseButton()
     {
+        GameManagerSC.Instance.PauseGame();
         activeObject.SetActive(true);
     }
 

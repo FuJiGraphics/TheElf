@@ -9,7 +9,10 @@ public class WeaponData : IGameData
     public float BasicAttackSpeed { get; set; }
     public string BasicAttackRange { get; set; }
     public int MonsterMaximumTarget { get; set; }
-    public string EffectKeyIds { get; set; }
-    public string SkillKeyIds { get; set; }
+    public float Duration { get; set; }
+    public int Count { get; set; }
+    public int Bounce { get; set; }
+    public float RotationSpeed { get; set; }
+    public float DamagePerSecond { get; set; }
 
 } // class WeaponData

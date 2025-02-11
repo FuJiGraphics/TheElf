@@ -3,7 +3,7 @@ namespace fz
     public enum TouchDevice
     {
         Unknown = 0,
-        Mouse, Keyboard, Touch,
+        Mouse, Keyboard, Touch, Joystick
     }
 
     public interface IDeviceContext
@@ -11,4 +11,5 @@ namespace fz
         public TouchDevice Device { get; }
         public void SetDevice(TouchDevice device);
     }
-} // namespcae fz
+
+} // namespace fz

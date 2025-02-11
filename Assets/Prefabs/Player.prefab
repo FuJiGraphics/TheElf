@@ -714,6 +714,8 @@ MonoBehaviour:
   moveSpeed: 300
   healthPoint: 100
   skillCoolDown: 0
+  movementType: 1
+  joystick: {fileID: 0}
   allWeapons:
   - {fileID: 6018665884468457717, guid: 4548e254e91764c4c91f6fcae14ee7f0, type: 3}
   - {fileID: 6018665884468457717, guid: 194862c46623b9144a11b18a20331d70, type: 3}
@@ -823,8 +825,8 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
+  m_Mass: 10
+  m_LinearDrag: 1
   m_AngularDrag: 0.05
   m_GravityScale: 0
   m_Material: {fileID: 0}

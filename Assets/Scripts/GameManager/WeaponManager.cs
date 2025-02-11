@@ -104,8 +104,11 @@ public class WeaponManager : Singleton<WeaponManager>
             baseWeapon.attackSpeed = weaponData.BasicAttackSpeed;
             baseWeapon.basicAttackRange = CsvManager.ToList<int>(weaponData.BasicAttackRange);
             baseWeapon.monsterMaximumTarget = weaponData.MonsterMaximumTarget;
-            baseWeapon.effectKeyIds = CsvManager.ToList<int>(weaponData.EffectKeyIds);
-            baseWeapon.skillKeyIds = CsvManager.ToList<int>(weaponData.SkillKeyIds);
+            baseWeapon.Duration = weaponData.Duration;
+            baseWeapon.Count = weaponData.Count;
+            baseWeapon.Bounce = weaponData.Bounce;
+            baseWeapon.RotationSpeed = weaponData.RotationSpeed;
+            baseWeapon.DamagePerSecond = weaponData.DamagePerSecond;
             baseWeapon.WeaponLevel = levelData.Level;
             baseWeapon.WeaponType = type;
             m_Weapons[(int)type].Add(levelData.Level, baseWeapon);

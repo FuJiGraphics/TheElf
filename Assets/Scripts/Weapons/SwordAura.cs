@@ -14,9 +14,8 @@ public class SwordAura : BulletSC
     private int currentRotateCount = 0;
     private Vector3 targetPos = Vector3.zero;
 
-    protected override void OnDisable()
+    protected override void DisableTrigger()
     {
-        base.OnDisable();
         rb.velocity = Vector3.zero;
         isFirstCalled = true;
         currentAngle = 0;

@@ -1,12 +1,15 @@
-using Assets.PixelFantasy.Common.Scripts;
-using Cinemachine;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class BulletSC : MonoBehaviour
 {
+    public class MultiAttackInfo
+    {
+        public int attackCount;
+        public float attackDuration;
+        public bool stopAttack;
+    }
+
     public int attackPower = 20;
     public float survivalTime = 5f;
     public float projectileSpeed = 10f;
@@ -14,7 +17,6 @@ public class BulletSC : MonoBehaviour
     public int maximumTarget = 10;
     public GameObject effect;
     public ObjectManagerSC ownerPool;
-
 
     private float m_ElapsedTime = 0f;
     private SpriteRenderer m_SpriteRenderer;
@@ -46,45 +48,64 @@ public class BulletSC : MonoBehaviour
         }
     }
 
-    protected virtual void OnDisable()
+    private void OnEnable()
+    {
+        EnableTrigger();
+    }
+
+    private void OnDisable()
     {
         m_CurrentHitCount = 0;
         m_ElapsedTime = 0f;
+        StopAllCoroutines();
+        DisableTrigger();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (!collision.gameObject.activeSelf)
+            return;
+
         if (collision.CompareTag("Enemy"))
         {
             var sc = collision.gameObject.GetComponent<EnemySC>();
-            sc.TakeDamage(attackPower);
-            if (sc.IsDie)
+            if (sc != null && !sc.IsDie)
             {
-                if (sc.isBoss)
+                MultiAttackInfo info = MultiAttackTrigger(sc);
+                if (info.stopAttack)
                 {
-                    GameManagerSC.Instance.VictoryGame();
+                    return;
+                }
+                else if (info == null)
+                {
+                    AttackEnemy(sc);
                 }
                 else
                 {
-                    // 킬 카운트 증가
-                    GameManagerSC.Instance.KillCount++;
+                    AttackEnemy(sc, info.attackCount, info.attackDuration);
                 }
             }
-            else
-            {
-                m_CurrentHitCount++;
-            }
-            // 맞출 수 있는 적이 초과됐을 경우 현재 오브젝트 반환
-            if (m_CurrentHitCount >= maximumTarget)
-            {
-                this.Destroy();
-            }
         }
+    }
+
+    protected virtual void EnableTrigger()
+    {
+        // Empty
+    }
+
+    protected virtual void DisableTrigger()
+    {
+        // Empty
     }
 
     protected virtual void MoveTrigger()
     {
         // Empty
+    }
+
+    protected virtual MultiAttackInfo MultiAttackTrigger(EnemySC enemy)
+    {
+        return null;
     }
 
     protected void Destroy()
@@ -103,11 +124,6 @@ public class BulletSC : MonoBehaviour
     {
         this.attackPower = data.attackPower;
         this.maximumTarget = data.monsterMaximumTarget;
-    }
-
-    public void ImmediateFire()
-    {
-
     }
 
     public void Fire(Vector3 position, Vector3 direction, int maximumTarget, 
@@ -136,5 +152,61 @@ public class BulletSC : MonoBehaviour
         this.setRotation = rotation;
         this.owner = owner;
     }
+
+
+    private void AttackEnemy(EnemySC enemy, int count = 1, float duration = 0)
+    {
+        if (enemy == null)
+            return;
+
+        if (count == 1 && duration == 0)
+        {
+            this.Attack(enemy);
+        }
+        else if (enemy != null)
+        {
+            GameManagerSC.Instance.StartCoroutine(this.AttackEnemyCoroutine(enemy, count, duration));
+        }
+        m_CurrentHitCount++;
+        if (m_CurrentHitCount >= maximumTarget)
+        {
+            this.Destroy();
+        }
+    }
+
+    private IEnumerator AttackEnemyCoroutine(EnemySC enemy, int count, float duration)
+    {
+        if (enemy == null || !enemy.gameObject.activeInHierarchy)
+        {
+            yield break;
+        }
+
+        for (int i = 0; i < count; ++i)
+        {
+            if (enemy == null || !enemy.gameObject.activeInHierarchy) 
+                yield break;
+            this.Attack(enemy);
+            yield return new WaitForSeconds(duration);
+        }
+    }
+
+    void Attack(EnemySC enemy)
+    {
+        enemy.TakeDamage(attackPower);
+        if (enemy.IsDie)
+        {
+            if (enemy.isBoss)
+            {
+                GameManagerSC.Instance.VictoryGame();
+            }
+            else
+            {
+                GameManagerSC.Instance.KillCount++;
+            }
+        }
+    }
+
+    protected void ResetSuvivalTime()
+    => m_ElapsedTime = 0f;
 
 } // class BulletSC

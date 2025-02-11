@@ -185,6 +185,7 @@ public class GameManagerSC : Singleton<GameManagerSC>
         Time.timeScale = 0.0f;
         IsPlaying = false;
         m_TimerUI.PauseTimer();
+        VirtualJoystick.Instance?.SetActive(false);
     }
 
     public void RestartGame()
@@ -203,6 +204,7 @@ public class GameManagerSC : Singleton<GameManagerSC>
         Time.timeScale = 1.0f;
         IsPlaying = true;
         m_TimerUI.StartTimer(timeLimit);
+        VirtualJoystick.Instance?.SetActive(true);
     }
 
     public void EndGame()

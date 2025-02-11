@@ -5291,6 +5291,7 @@ MonoBehaviour:
   expGained: 0
   superArmor: 0
   stunDuration: 0.1
+  fixedBarycentric: 0
   blinkDuration: 0.03
   blinkCount: 5
   receiveDamageDuration: 0.8

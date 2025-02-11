@@ -1,0 +1,16 @@
+Id,Name,SpawnCycle,MaxCount,Offset,Duration,MonsterKeyIds
+10000001,Spawn,0.5,300,1,120,101
+10000002,Stage1NormalMonster2Spawn,1,300,1,120,102
+10000003,Stage1EliteMonster1Spawn,2,300,120,360,109
+10000004,Stage1EliteMonster2Spawn,2,300,120,360,110
+10000005,Stage2NormalMonster3Spawn,0.5,300,1,120,103
+10000006,Stage2NormalMonster4Spawn,1,300,1,120,104
+10000007,Stage2EliteMonster3Spawn,2,300,120,360,111
+10000008,Stage2EliteMonster4Spawn,2,300,120,360,112
+10000009,Stage3NormalMonster5Spawn,0.5,300,1,120,105
+10000010,Stage3NormalMonster6Spawn,1,300,1,120,106
+10000011,Stage3EliteMonster5Spawn,2,300,120,360,113
+10000012,Stage3EliteMonster6Spawn,2,300,120,360,201
+10000013,Stage4Normal7Spawn,0.5,300,1,360,107
+10000014,Stage4Normal8Spawn,1,300,1,360,108
+10000015,Stage3BossMonster1Spawn,1,1,120,360,301

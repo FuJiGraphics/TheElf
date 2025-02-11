@@ -1,0 +1,16 @@
+Id,Name,HealthPoint,BasicAttack,ExpGained,MoveSpeed,AttackSpeed,SkillKeyIds,EffectKeyIds
+101,NormalMonster1,20,1,1,100,0.01,0,10000
+102,NormalMonster2,25,1,2,110,0.01,0,10000
+103,NormalMonster3,35,1,2,110,0.01,0,10000
+104,NormalMonster4,50,1,3,120,0.01,0,10000
+105,NormalMonster5,75,1,3,160,0.01,0,10000
+106,NormalMonster6,110,1,4,170,0.01,0,10000
+107,NormalMonster7,160,1,4,200,0.01,2107,10000
+108,NormalMonster8,570,1,5,210,0.01,2108,10000
+109,EliteMonster1,83,2,4,130,0.01,2109,10000
+110,EliteMonster2,100,2,6,140,0.01,2110,10000
+111,EliteMonster3,140,2,8,140,0.01,2111,10000
+112,EliteMonster4,199,2,10,150,0.01,2112,10000
+113,EliteMonster5,255,2,16,190,0.01,2113,10000
+201,EliteMonster6,331,2,18,200,1.5,2201,10000
+301,BossMonster1,3500,25,0,220,1.5,2202,10000

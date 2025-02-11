@@ -1,7 +1,8 @@
 using fz;
 using UnityEngine;
 
-public class TouchHeld : IDeviceContext
+public class TouchHeld : 
+    IDeviceContext, ITouchHeld
 {
     public bool Active { get; private set; } = false;
     public Vector2 Position { get; private set; } = Vector2.zero;
@@ -12,8 +13,7 @@ public class TouchHeld : IDeviceContext
 
     public TouchHeld()
     {
-        // data = new TouchData(0);
-        data = UtilManager.FindWithName("Joystick").GetComponent<VirtualJoystck>();
+        data = new TouchData(0);
     }
 
     public void OnUpdate()

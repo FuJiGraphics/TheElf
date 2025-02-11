@@ -20,6 +20,7 @@ TagManager:
   - Crossbow
   - Longbow
   - Sword
+  - fz_Joystick
   layers:
   - Default
   - TransparentFX

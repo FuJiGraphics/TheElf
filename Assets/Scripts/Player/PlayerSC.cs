@@ -5,10 +5,17 @@ using UnityEngine;
 public class PlayerSC : MonoBehaviour
     , IDefender, ILevelable
 {
+    public enum MovementType
+    {
+        Touch, Joystick
+    };
+
     public int id = 1;
     public float moveSpeed;
     public int healthPoint;
     public float skillCoolDown;
+    public MovementType movementType = MovementType.Joystick;
+    public GameObject joystick = null;
 
     // IEquipment
     public List<GameObject> allWeapons;
@@ -21,7 +28,6 @@ public class PlayerSC : MonoBehaviour
     private TouchManager m_Touch;
     private Vector3 m_CurrDir;
     private Vector3 m_TargetPos;
-    private bool m_HasMoved;
 
     public float blinkDuration = 0.2f;
     public int blinkCount = 5;
@@ -42,6 +48,7 @@ public class PlayerSC : MonoBehaviour
     public int Level { get; set; } = 1;
 
     private List<WeaponSC> m_EquippedWeapons;
+    private VirtualJoystick m_VirtualJoystick;
 
     private void Start()
     {
@@ -57,7 +64,7 @@ public class PlayerSC : MonoBehaviour
 
         if (!IsDie)
         { 
-            this.TouchMove();
+            this.Movement();
             this.Attack();
         }
     }
@@ -168,6 +175,11 @@ public class PlayerSC : MonoBehaviour
         m_Rigidbody = GetComponent<Rigidbody2D>();
         m_WaitBlinkDuration = new WaitForSeconds(blinkDuration);
         m_SpriteRenderer = GetComponent<SpriteRenderer>();
+        joystick = GameObject.FindWithTag("fz_Joystick");
+        if (joystick != null)
+        {
+            m_VirtualJoystick = joystick.GetComponent<VirtualJoystick>();
+        }
         IsDie = false;
     }
 
@@ -207,12 +219,25 @@ public class PlayerSC : MonoBehaviour
             allWeapons[i].SetActive(false);
         }
         int ran = Random.Range(0, allWeapons.Count);
-        allWeapons[ran].SetActive(true);
+        allWeapons[4].SetActive(true);
         m_EquippedWeapons = new List<WeaponSC>();
         foreach (var weapon in allWeapons)
         {
             WeaponSC sc = weapon.GetComponent<WeaponSC>();
             m_EquippedWeapons.Add(sc);
+        }
+    }
+
+    private void Movement()
+    {
+        switch (movementType)
+        {
+            case MovementType.Touch:
+                this.TouchMove();
+                break;
+            case MovementType.Joystick:
+                this.JoystickMove();
+                break;
         }
     }
 
@@ -227,7 +252,6 @@ public class PlayerSC : MonoBehaviour
             m_Animator.SetFloat("x", m_CurrDir.x);
             m_Animator.SetFloat("y", m_CurrDir.y);
             m_Animator.SetBool("Walk", true);
-            m_HasMoved = true;
         }
         else
         {
@@ -246,8 +270,40 @@ public class PlayerSC : MonoBehaviour
         else
         {
             newPosition = m_TargetPos;
-            m_HasMoved = false;
         }
+        m_Rigidbody.MovePosition(newPosition);
+    }
+
+    private void JoystickMove()
+    {
+        if (m_VirtualJoystick == null)
+        {
+            if (LogManager.IsVaild(joystick))
+            {
+                m_VirtualJoystick = joystick.GetComponent<VirtualJoystick>();
+            }
+        }
+
+        if (m_VirtualJoystick.Active)
+        {
+            if (m_VirtualJoystick.Direction.magnitude > float.Epsilon)
+            {
+                m_CurrDir = m_VirtualJoystick.Direction;
+            }
+            m_CurrDir.z = 0f;
+            m_Animator.SetFloat("x", m_CurrDir.x);
+            m_Animator.SetFloat("y", m_CurrDir.y);
+            m_Animator.SetBool("Walk", true);
+        }
+        else
+        {
+            m_Rigidbody.velocity = Vector3.zero;
+            m_Animator.SetBool("Walk", false);
+            return;
+        }
+
+        Vector3 velocity = (m_CurrDir * moveSpeed * Time.deltaTime) * 0.01f;
+        Vector3 newPosition = transform.position + (velocity * m_VirtualJoystick.Distance);
         m_Rigidbody.MovePosition(newPosition);
     }
 
@@ -255,7 +311,7 @@ public class PlayerSC : MonoBehaviour
     {
         for (int i = 0; i < m_EquippedWeapons.Count; ++i)
         {
-            if (m_EquippedWeapons[i].gameObject.activeSelf)
+            if (m_EquippedWeapons[i] != null && m_EquippedWeapons[i].gameObject.activeSelf)
             {
                 var look = Quaternion.LookRotation(Vector3.forward, m_CurrDir);
                 m_EquippedWeapons[i].Fire(m_CurrDir, transform.position, look);

@@ -25,6 +25,7 @@ public class EnemySC : MonoBehaviour, IDefender
 
     public bool superArmor = false;
     public float stunDuration = 0.1f;
+    public bool fixedBarycentric = false;
 
     public float blinkDuration = 0.2f;
     public int blinkCount = 5;
@@ -59,8 +60,9 @@ public class EnemySC : MonoBehaviour, IDefender
     public bool IsCollided { get; private set; } = false;
     public bool IsFireIndividualSkills { get; private set; } = false;
     public bool IsDie { get; private set; } = false;
+    public int CurrentHP { get; private set; } = 0;
 
-    protected virtual void OnEnable()
+    private void OnEnable()
     {
         IsFireIndividualSkills = false;
         IsCollided = false;
@@ -79,6 +81,21 @@ public class EnemySC : MonoBehaviour, IDefender
         }
         rb.isKinematic = false;
         target = GameObject.FindWithTag("Player");
+        CurrentHP = healthPoint;
+        if (!isBoss)
+        {
+            if (GameManagerSC.Instance.CurrentTime >= 30)
+            {
+                int time = (int)GameManagerSC.Instance.CurrentTime;
+                float w = (healthPoint * 0.2f);
+                CurrentHP += (time / 30) * ((int)w);
+            }
+        }
+    }
+
+    protected virtual void OnDisable()
+    {
+
     }
 
     protected virtual void Start()
@@ -101,6 +118,7 @@ public class EnemySC : MonoBehaviour, IDefender
         m_WaitBlinkDuration = new WaitForSeconds(blinkDuration);
         m_StunDuration = new WaitForSeconds(stunDuration);
         m_DeadAnimDuration = new WaitForSeconds(deadAnimDuration);
+        CurrentHP = healthPoint;
     }
 
     protected virtual void Update()
@@ -122,14 +140,16 @@ public class EnemySC : MonoBehaviour, IDefender
 
     protected virtual void OnTriggerEnter2D(Collider2D collision)
     {
-        bool playerCollided = collision.CompareTag("Player");
         if (collision.CompareTag("Player"))
         {
             IsCollided = true;
             m_CollidedPlayer = collision.gameObject;
-            m_Rigidbody.velocity = Vector3.zero;
-            m_Rigidbody.angularVelocity = 0f;
-            m_Rigidbody.constraints = RigidbodyConstraints2D.FreezeAll;
+            if (fixedBarycentric)
+            {
+                m_Rigidbody.velocity = Vector3.zero;
+                m_Rigidbody.angularVelocity = 0f;
+                m_Rigidbody.constraints = RigidbodyConstraints2D.FreezeAll;
+            }
         }
     }
 
@@ -137,7 +157,10 @@ public class EnemySC : MonoBehaviour, IDefender
     {
         if (collision.CompareTag("Player"))
         {
-            IsCollided = true;
+            if (fixedBarycentric)
+            {
+                IsCollided = true;
+            }
         }
     }
 
@@ -146,7 +169,10 @@ public class EnemySC : MonoBehaviour, IDefender
         if (collision.CompareTag("Player"))
         {
             IsCollided = false;
-            m_Rigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
+            if (fixedBarycentric)
+            {
+                m_Rigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
+            }
         }
     }
 
@@ -201,10 +227,10 @@ public class EnemySC : MonoBehaviour, IDefender
         if (IsDie)
             return;
 
-        healthPoint -= damage;
-        if (healthPoint <= 0)
+        CurrentHP -= damage;
+        if (CurrentHP <= 0)
         {
-            healthPoint = 0;
+            CurrentHP = 0;
             IsDie = true;
             this.TriggerDamageEffect();
             this.Die();
