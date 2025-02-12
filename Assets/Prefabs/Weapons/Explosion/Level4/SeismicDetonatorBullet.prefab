@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: -391943411913881106}
   - component: {fileID: -7036120828959385186}
   m_Layer: 0
-  m_Name: ExplosionBullet
+  m_Name: SeismicDetonatorBullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

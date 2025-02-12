@@ -2,11 +2,29 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum WeaponType
+{
+    Longbow,
+    Crossbow,
+    Sword,
+    InfernoRounds,
+    Explosion,
+    Shield,
+    ThunderLash,
+    RandomAttack,
+    Max,
+};
+
 public class WeaponManager : Singleton<WeaponManager>
 {
-    private readonly int s_LongbowId = 3011;
-    private readonly int s_CrossbowId = 3012;
-    private readonly int s_SwordId = 3013;
+    private readonly int m_LongbowId = 3011;
+    private readonly int m_CrossbowId = 3012;
+    private readonly int m_SwordId = 3013;
+    private readonly int m_InfernoRoundsId = 63018;
+    private readonly int m_ExplosionId = 63016;
+    private readonly int m_ShieldId = 63014;
+    private readonly int m_ThunderLashId = 63017;
+    private readonly int m_RandomAttackId = 63015;
 
     private List<int> m_WeaponIds;
     private List<Dictionary<int, BaseWeapon>> m_Weapons;
@@ -61,7 +79,14 @@ public class WeaponManager : Singleton<WeaponManager>
         int size = (int)WeaponType.Max;
         m_WeaponIds = new List<int>(size)
         {
-            s_LongbowId, s_CrossbowId, s_SwordId
+            m_LongbowId, 
+            m_CrossbowId, 
+            m_SwordId, 
+            m_InfernoRoundsId, 
+            m_ExplosionId,
+            m_ShieldId,
+            m_ThunderLashId,
+            m_RandomAttackId,
         };
         m_Weapons = new List<Dictionary<int, BaseWeapon>>(size);
         for (int i = 0; i < size; ++i)

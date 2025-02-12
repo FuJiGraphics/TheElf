@@ -5,9 +5,9 @@ public class BulletSC : MonoBehaviour
 {
     public class MultiAttackInfo
     {
-        public int attackCount;
-        public float attackDuration;
-        public bool stopAttack;
+        public int attackCount = 0;
+        public float attackDuration = 0f;
+        public bool stopAttack = false;
     }
 
     public int attackPower = 20;
@@ -72,7 +72,7 @@ public class BulletSC : MonoBehaviour
             if (sc != null && !sc.IsDie)
             {
                 MultiAttackInfo info = MultiAttackTrigger(sc);
-                if (info.stopAttack)
+                if (info != null && info.stopAttack)
                 {
                     return;
                 }

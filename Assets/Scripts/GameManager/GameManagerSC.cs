@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 public class GameManagerSC : Singleton<GameManagerSC>
 {
     public int currentStage = 0;
-    public float timeLimit = 360.0f;
+    public float timeLimit = 600f;
     public GameObject gameUI;
 
     private GameTimerSC m_TimerUI;
@@ -16,10 +16,13 @@ public class GameManagerSC : Singleton<GameManagerSC>
     private EnforcePanelSC m_EnforceUI;
     private bool m_IsPlaying;
 
+    private EnemyFindBounds m_EnemyFindBounds;
+
     public float CurrentTime { get => m_TimerUI.ElapsedTime; }
     public int KillCount { get; set; }
     public bool IsNotInGameScene { get; private set; } = true;
     public bool IsSceneLoaded { get; private set; } = false;
+    public GameObject RandomEnemyTarget { get => m_EnemyFindBounds?.CurrentEnemy; }
 
     public bool IsPlaying
     {
@@ -68,7 +71,6 @@ public class GameManagerSC : Singleton<GameManagerSC>
         if (IsNotInGameScene)
             return;
 
-        timeLimit = 360.0f;
         m_IsPlaying = false;
         KillCount = 0;
 
@@ -92,6 +94,12 @@ public class GameManagerSC : Singleton<GameManagerSC>
 
         m_EnforceUI = gameUI.GetComponentInChildren<EnforcePanelSC>(true);
         LogManager.IsVaild(m_EnforceUI);
+
+        var boundsGo = GameObject.FindWithTag("EnemyFindBounds");
+        LogManager.IsVaild(boundsGo);
+
+        m_EnemyFindBounds = boundsGo.GetComponent<EnemyFindBounds>();
+        LogManager.IsVaild(m_EnemyFindBounds);
 
         this.SetExp(0, 100);
     }
@@ -127,7 +135,6 @@ public class GameManagerSC : Singleton<GameManagerSC>
         m_TimerUI = null;
         gameUI = null;
         currentStage = 0;
-        timeLimit = 360.0f;
     }
 
     private void ReleaseDataTables()
@@ -193,7 +200,7 @@ public class GameManagerSC : Singleton<GameManagerSC>
         m_TimerUI.StopTimer();
         this.StartGame();
         string currScene = SceneManager.GetActiveScene().name;
-        SceneManager.LoadScene(currScene);
+        LoadSceneManager.LoadScene(currScene);
     }
 
     public void StartGame()
@@ -209,7 +216,7 @@ public class GameManagerSC : Singleton<GameManagerSC>
 
     public void EndGame()
     {
-        SceneManager.LoadScene("LobbyScene");
+        LoadSceneManager.LoadScene("LobbyScene");
     }
 
     public void DefeatGame()

@@ -10,13 +10,14 @@ public class WeaponSC : MonoBehaviour
     public WeaponType type;
     public int id = 0;
     public string weaponName = "Empty";
+    public bool isAutoTarget = false;
 
     public bool fixedRotation = false;
     public GameObject objectPool;
     public GameObject bulletPrefab;
     public Effects effects;
     public BaseWeapon info;
-        
+
     private float m_ElapsedTime = 0f;
     private ObjectManagerSC m_ObjectPool;
     private GameObject m_Owner;
@@ -69,6 +70,11 @@ public class WeaponSC : MonoBehaviour
             BulletSC sc = bullet.GetComponent<BulletSC>();
             sc.ownerPool = m_ObjectPool != null ? m_ObjectPool : null;
             sc.SetWeaponData(info);
+            if (isAutoTarget)
+            {
+                direction = this.FindAutoTarget(ref direction, ref position);
+                rotation = Quaternion.LookRotation(Vector3.forward, direction);
+            }
             sc.Fire(position, direction, rotation, m_Owner);
             effects?.Play(position, rotation);
         }
@@ -90,5 +96,18 @@ public class WeaponSC : MonoBehaviour
             effects = GetComponentInChildren<Effects>();
         }
     }
+
+    private Vector2 FindAutoTarget(ref Vector2 direction, ref Vector2 pos)
+    {
+        Vector2 dir = direction;
+        GameObject enemyGo = GameManagerSC.Instance.RandomEnemyTarget;
+        if (enemyGo != null)
+        {
+            Vector3 currPos = pos;
+            dir = (enemyGo.transform.position - currPos).normalized;
+        }
+        return dir;
+    }
+
 
 } // class WeaponSC

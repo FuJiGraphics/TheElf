@@ -44,13 +44,15 @@ public class Explosion : BulletSC
         if (m_IsExploded)
             return;
         m_IsExploded = true;
+
+        transform.position += base.setDirection * 0.5f;
         if (singleAttackMode)
         {
             this.ExplodeSingleAttack();
         }
         else
         {
-            GameManagerSC.Instance.StartCoroutine(this.ExplodeCoroutine());
+            StartCoroutine(this.ExplodeCoroutine());
         }
     }
 
@@ -62,11 +64,12 @@ public class Explosion : BulletSC
         projectileEffect?.SetActive(false);
         explosionEffect?.SetActive(true);
 
+        m_ExplosionElapsedTime += Time.deltaTime;
         while (m_ExplosionElapsedTime <= base.survivalTime)
         {
-            m_ExplosionElapsedTime += Time.deltaTime;
             this.ExplodeAttack();
             yield return m_WaitDamagePerSecond;
+            m_ExplosionElapsedTime += Time.deltaTime;
         }
     }
 
@@ -86,7 +89,7 @@ public class Explosion : BulletSC
         {
             GameObject target = hits[i].gameObject;
             EnemySC enemy = target?.GetComponent<EnemySC>();
-            if (enemy != null && !enemy.IsDie)
+            if (enemy != null && enemy.gameObject.activeInHierarchy && !enemy.IsDie)
             {
                 enemy.TakeDamage(base.attackPower);
             }

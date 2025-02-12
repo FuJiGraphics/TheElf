@@ -21,6 +21,7 @@ TagManager:
   - Longbow
   - Sword
   - fz_Joystick
+  - EnemyFindBounds
   layers:
   - Default
   - TransparentFX

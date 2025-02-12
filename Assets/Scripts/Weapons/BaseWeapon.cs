@@ -1,14 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum WeaponType
-{
-    Longbow,
-    Crossbow,
-    Sword,
-    Max,
-};
-
 public class BaseWeapon : IWeaponLevel
 {
     public int id = -1;
@@ -32,6 +24,11 @@ public class BaseWeapon : IWeaponLevel
         this.attackPower = other.attackPower;
         this.attackSpeed = other.attackSpeed;
         this.monsterMaximumTarget = other.monsterMaximumTarget;
+        this.Duration = other.Duration;
+        this.Count = other.Count;
+        this.Bounce = other.Bounce;
+        this.RotationSpeed = other.RotationSpeed;
+        this.DamagePerSecond = other.DamagePerSecond;
         this.WeaponType = other.WeaponType;
         this.WeaponLevel = other.WeaponLevel;
         UtilManager.Copy(out this.basicAttackRange, ref other.basicAttackRange);

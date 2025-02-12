@@ -51,9 +51,11 @@ MonoBehaviour:
   type: 0
   id: 14
   weaponName: PalaceOfDawn
+  isAutoTarget: 1
   fixedRotation: 0
   objectPool: {fileID: 7809400794038650057}
   bulletPrefab: {fileID: 8808289594362423235, guid: fe096bd4d5520f24b91596b1cf35103f, type: 3}
+  effects: {fileID: 0}
 --- !u!1001 &3089821898415298941
 PrefabInstance:
   m_ObjectHideFlags: 0

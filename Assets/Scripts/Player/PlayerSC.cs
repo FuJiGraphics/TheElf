@@ -219,7 +219,7 @@ public class PlayerSC : MonoBehaviour
             allWeapons[i].SetActive(false);
         }
         int ran = Random.Range(0, allWeapons.Count);
-        allWeapons[4].SetActive(true);
+        allWeapons[ran].SetActive(true);
         m_EquippedWeapons = new List<WeaponSC>();
         foreach (var weapon in allWeapons)
         {

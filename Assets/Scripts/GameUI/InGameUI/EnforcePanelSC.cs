@@ -118,16 +118,24 @@ public class EnforcePanelSC : MonoBehaviour
     private int SelectedLevelUpWeapons(int iterIndex = 0)
     {
         var allWeapons = m_TargetPlayer.allWeapons;
-        if (allWeapons != null)
+        if (allWeapons != null && allWeapons.Count > 0)
         {
-            for (int i = 0; i < m_SlotCount; ++i)
+            Dictionary<int, bool> selectedTable = new Dictionary<int, bool>();
+
+            for (int i = iterIndex; i < m_SlotCount; ++i)
             {
-                if (allWeapons[i].activeSelf)
+                int sel = UnityEngine.Random.Range(0, allWeapons.Count);
+                if (selectedTable.ContainsKey(sel))
                 {
-                    GameObject nextWeapon = WeaponManager.Instance.LevelUp(allWeapons[i]);
+                    i--;
+                }
+                else if (allWeapons[sel].activeSelf)
+                {
+                    selectedTable.Add(sel, true);
+                    GameObject nextWeapon = WeaponManager.Instance.LevelUp(allWeapons[sel]);
                     if (LogManager.IsVaild(nextWeapon))
                     {
-                        this.SetSlotItem(iterIndex, allWeapons[i], SlotType.LevelupWeapons, nextWeapon);
+                        this.SetSlotItem(iterIndex, allWeapons[sel], SlotType.LevelupWeapons, nextWeapon);
                         iterIndex++;
                     }
                 }
@@ -140,13 +148,28 @@ public class EnforcePanelSC : MonoBehaviour
     {
         if (iterIndex < m_SlotCount)
         {
+            Dictionary<int, bool> selectedTable = new Dictionary<int, bool>();
             List<WeaponSC> unused = m_TargetPlayer.GetUnusedWeapons();
-            if (unused != null)
+            if (unused != null && unused.Count > 0)
             {
                 for (int i = 0; i < unused.Count; ++i)
                 {
-                    this.SetSlotItem(iterIndex, unused[i].gameObject, SlotType.UnusedDefaultWeapons);
-                    iterIndex++;
+                    int sel = UnityEngine.Random.Range(0, unused.Count);
+                    if (selectedTable.ContainsKey(sel))
+                    {
+                        i--;
+                        continue;
+                    }
+                    else if (iterIndex < m_SlotCount)
+                    {
+                        selectedTable.Add(sel, true);
+                        this.SetSlotItem(iterIndex, unused[i].gameObject, SlotType.UnusedDefaultWeapons);
+                        iterIndex++;
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
             }
         }

@@ -51,9 +51,11 @@ MonoBehaviour:
   type: 0
   id: 12
   weaponName: Guardian'sBow
+  isAutoTarget: 1
   fixedRotation: 0
   objectPool: {fileID: 7809400794038650057}
   bulletPrefab: {fileID: 8808289594362423235, guid: 2f49a15cf67bf464f947ac92135817f0, type: 3}
+  effects: {fileID: 0}
 --- !u!1001 &3089821898415298941
 PrefabInstance:
   m_ObjectHideFlags: 0

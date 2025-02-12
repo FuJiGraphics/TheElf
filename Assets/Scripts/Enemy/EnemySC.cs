@@ -55,6 +55,7 @@ public class EnemySC : MonoBehaviour, IDefender
 
     private GameObject m_CollidedPlayer;
     private Rigidbody2D m_Rigidbody;
+    private ObjectManagerSC m_DamageMeter;
 
     public bool IsStunned { get; private set; } = false;
     public bool IsCollided { get; private set; } = false;
@@ -91,6 +92,7 @@ public class EnemySC : MonoBehaviour, IDefender
                 CurrentHP += (time / 30) * ((int)w);
             }
         }
+        m_DamageMeter = GetComponentInChildren<ObjectManagerSC>();
     }
 
     protected virtual void OnDisable()
@@ -227,6 +229,15 @@ public class EnemySC : MonoBehaviour, IDefender
         if (IsDie)
             return;
 
+        GameObject meterGo = m_DamageMeter.Get();
+        DamageMeter meterSc = meterGo?.GetComponent<DamageMeter>();
+        if (meterSc != null)
+        {
+            meterGo.transform.position = transform.position + Vector3.up;
+            meterSc.ownerPool = m_DamageMeter;
+            meterSc.Play(damage.ToString());
+        }
+
         CurrentHP -= damage;
         if (CurrentHP <= 0)
         {
@@ -331,6 +342,10 @@ public class EnemySC : MonoBehaviour, IDefender
         else
         {
             ownerSpawner.Release(gameObject);
+        }
+        if (isBoss)
+        {
+            GameManagerSC.Instance.VictoryGame();
         }
     }
 
