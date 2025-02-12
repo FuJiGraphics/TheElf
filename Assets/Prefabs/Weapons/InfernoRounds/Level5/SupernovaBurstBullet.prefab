@@ -111,7 +111,7 @@ Rigidbody2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 126
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
@@ -131,7 +131,7 @@ CircleCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 126
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -174,8 +174,8 @@ MonoBehaviour:
   explosionEffect: {fileID: 1350241381852815033}
   projectileRadius: 0.3
   explosionRadius: 0.7
-  explosionDuration: 5
   damagePerSecond: 0.5
+  singleAttackMode: 0
 --- !u!1001 &1431378048445478825
 PrefabInstance:
   m_ObjectHideFlags: 0

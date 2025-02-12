@@ -22,6 +22,7 @@ TagManager:
   - Sword
   - fz_Joystick
   - EnemyFindBounds
+  - EnemySideBounds
   layers:
   - Default
   - TransparentFX

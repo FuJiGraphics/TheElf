@@ -1,8 +1,12 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
 public class DamageMeter : MonoBehaviour
 {
+    static Dictionary<int, string> s_StringTable
+        = new Dictionary<int, string>();
+
     public ObjectManagerSC ownerPool;
     private TextMeshProUGUI m_TextMeshPro;
     private Animator m_Aniamtor;
@@ -20,6 +24,20 @@ public class DamageMeter : MonoBehaviour
         m_Aniamtor.SetTrigger("Play");
     }
 
+    public void Play(int text)
+    {
+        this.Init();
+        if (s_StringTable.ContainsKey(text))
+        {
+            m_TextMeshPro.text = s_StringTable[text];
+        }
+        else
+        {
+            s_StringTable.Add(text, text.ToString());
+        }
+        m_Aniamtor.SetTrigger("Play");
+    }
+
     public void Init()
     {
         if (m_TextMeshPro == null)
@@ -29,6 +47,13 @@ public class DamageMeter : MonoBehaviour
         if (m_Aniamtor == null)
         {
             m_Aniamtor = GetComponent<Animator>();
+        }
+        if (s_StringTable.Count <= 0)
+        {
+            for (int i = 0; i < 50000; ++i)
+            {
+                s_StringTable.Add(i, i.ToString());
+            }
         }
     }
 

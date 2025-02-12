@@ -72,8 +72,12 @@ public class WeaponSC : MonoBehaviour
             sc.SetWeaponData(info);
             if (isAutoTarget)
             {
-                direction = this.FindAutoTarget(ref direction, ref position);
-                rotation = Quaternion.LookRotation(Vector3.forward, direction);
+                Vector2 newDir = this.FindAutoTarget(ref direction, ref position);
+                if (newDir != Vector2.zero)
+                {
+                    direction = newDir;
+                    rotation = Quaternion.LookRotation(Vector3.forward, direction);
+                }
             }
             sc.Fire(position, direction, rotation, m_Owner);
             effects?.Play(position, rotation);
@@ -99,7 +103,7 @@ public class WeaponSC : MonoBehaviour
 
     private Vector2 FindAutoTarget(ref Vector2 direction, ref Vector2 pos)
     {
-        Vector2 dir = direction;
+        Vector2 dir = Vector2.zero;
         GameObject enemyGo = GameManagerSC.Instance.RandomEnemyTarget;
         if (enemyGo != null)
         {

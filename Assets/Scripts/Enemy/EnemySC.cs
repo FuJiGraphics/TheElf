@@ -85,19 +85,36 @@ public class EnemySC : MonoBehaviour, IDefender
         CurrentHP = healthPoint;
         if (!isBoss)
         {
-            if (GameManagerSC.Instance.CurrentTime >= 30)
+            if (GameManagerSC.Instance.CurrentTime >= 60)
             {
                 int time = (int)GameManagerSC.Instance.CurrentTime;
                 float w = (healthPoint * 0.2f);
-                CurrentHP += (time / 30) * ((int)w);
+                CurrentHP += (time / 60) * ((int)w);
             }
         }
         m_DamageMeter = GetComponentInChildren<ObjectManagerSC>();
+
+        if (m_SpriteRenderers == null)
+        {
+            m_SpriteRenderers = new List<SpriteRenderer>(
+                GetComponentsInChildren<SpriteRenderer>());
+            for (int i = 0; i < m_SpriteRenderers.Count; i++)
+            {
+                if (m_SpriteRenderers[i].tag == "Shadow" || m_SpriteRenderers[i].name == "Shadow")
+                {
+                    m_SpriteRenderers.RemoveAt(i);
+                }
+            }
+        }
+        for (int i = 0; i <m_SpriteRenderers.Count; ++i)
+        {
+            m_SpriteRenderers[i].enabled = false;
+        }
     }
 
     protected virtual void OnDisable()
     {
-
+        
     }
 
     protected virtual void Start()
@@ -111,6 +128,10 @@ public class EnemySC : MonoBehaviour, IDefender
             {
                 m_SpriteRenderers.RemoveAt(i);
             }
+        }
+        for (int i = 0; i <m_SpriteRenderers.Count; ++i)
+        {
+            m_SpriteRenderers[i].enabled = false;
         }
         m_Rigidbody = GetComponentInParent<Rigidbody2D>();
         if (m_Rigidbody == null)
@@ -153,6 +174,13 @@ public class EnemySC : MonoBehaviour, IDefender
                 m_Rigidbody.constraints = RigidbodyConstraints2D.FreezeAll;
             }
         }
+        else if (collision.CompareTag("EnemyFindBounds"))
+        {
+            for (int i = 0; i <m_SpriteRenderers.Count; ++i)
+            {
+                m_SpriteRenderers[i].enabled = true;
+            }
+        }
     }
 
     protected virtual void OnTriggerStay2D(Collider2D collision)
@@ -174,6 +202,18 @@ public class EnemySC : MonoBehaviour, IDefender
             if (fixedBarycentric)
             {
                 m_Rigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
+            }
+        }
+        else if (collision.CompareTag("EnemySideBounds"))
+        {
+            this.transform.position = ownerSpawner.transform.position;
+        }
+
+        else if (collision.CompareTag("EnemyFindBounds"))
+        {
+            for (int i = 0; i <m_SpriteRenderers.Count; ++i)
+            {
+                m_SpriteRenderers[i].enabled = false;
             }
         }
     }
@@ -235,7 +275,7 @@ public class EnemySC : MonoBehaviour, IDefender
         {
             meterGo.transform.position = transform.position + Vector3.up;
             meterSc.ownerPool = m_DamageMeter;
-            meterSc.Play(damage.ToString());
+            meterSc.Play(damage);
         }
 
         CurrentHP -= damage;
