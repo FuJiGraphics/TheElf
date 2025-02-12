@@ -9,9 +9,8 @@ public class BossSC : EnemySC
     private Animator m_Animator;
     private MonsterAnimation m_Animation;
 
-    protected override void Start()
+    protected override void OnStart()
     {
-        base.Start();
         this.Init();
         this.AttackAnimations();
     }

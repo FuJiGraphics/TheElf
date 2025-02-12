@@ -6,16 +6,14 @@ public class MonsterSC : EnemySC
 {
     private SPUM_Prefabs m_Prefabs;
 
-    protected override void Start()
+    protected override void OnStart()
     {
-        base.Start();
         this.Init();
         this.AttackAnimations();
     }
 
     private void Init()
     {
-        DataTable<MonsterData>.Init("04_MonsterTable");
         this.SetMonsterData(DataTable<MonsterData>.At(id));
         m_Prefabs = GetComponentInChildren<SPUM_Prefabs>();
         if (m_Prefabs == null)

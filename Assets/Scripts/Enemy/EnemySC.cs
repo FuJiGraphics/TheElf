@@ -21,6 +21,7 @@ public class EnemySC : MonoBehaviour, IDefender
     public int basicAttack = 10;
     public float attackSpeed = 1f;
     public int healthPoint = 100;
+    public int currentHP;
     public int expGained = 0;
 
     public bool superArmor = false;
@@ -30,6 +31,8 @@ public class EnemySC : MonoBehaviour, IDefender
     public float blinkDuration = 0.2f;
     public int blinkCount = 5;
     public float receiveDamageDuration = 0.1f;
+    public float rigidbodyCullingDistance = 50f;
+    public float respawnCullingDistance = 50f;
 
     public float deadAnimDuration = 2f;
     public Animator animator;
@@ -61,7 +64,7 @@ public class EnemySC : MonoBehaviour, IDefender
     public bool IsCollided { get; private set; } = false;
     public bool IsFireIndividualSkills { get; private set; } = false;
     public bool IsDie { get; private set; } = false;
-    public int CurrentHP { get; private set; } = 0;
+    public int CurrentHP { get => currentHP; private set => currentHP = value; }
 
     private void OnEnable()
     {
@@ -94,22 +97,8 @@ public class EnemySC : MonoBehaviour, IDefender
         }
         m_DamageMeter = GetComponentInChildren<ObjectManagerSC>();
 
-        if (m_SpriteRenderers == null)
-        {
-            m_SpriteRenderers = new List<SpriteRenderer>(
-                GetComponentsInChildren<SpriteRenderer>());
-            for (int i = 0; i < m_SpriteRenderers.Count; i++)
-            {
-                if (m_SpriteRenderers[i].tag == "Shadow" || m_SpriteRenderers[i].name == "Shadow")
-                {
-                    m_SpriteRenderers.RemoveAt(i);
-                }
-            }
-        }
-        for (int i = 0; i <m_SpriteRenderers.Count; ++i)
-        {
-            m_SpriteRenderers[i].enabled = false;
-        }
+        m_Rigidbody = rb;
+        m_Rigidbody.simulated = false;
     }
 
     protected virtual void OnDisable()
@@ -117,7 +106,7 @@ public class EnemySC : MonoBehaviour, IDefender
         
     }
 
-    protected virtual void Start()
+    private void Start()
     {
         target = GameObject.FindWithTag("Player");
         m_SpriteRenderers = new List<SpriteRenderer>(
@@ -129,10 +118,7 @@ public class EnemySC : MonoBehaviour, IDefender
                 m_SpriteRenderers.RemoveAt(i);
             }
         }
-        for (int i = 0; i <m_SpriteRenderers.Count; ++i)
-        {
-            m_SpriteRenderers[i].enabled = false;
-        }
+
         m_Rigidbody = GetComponentInParent<Rigidbody2D>();
         if (m_Rigidbody == null)
         {
@@ -142,6 +128,7 @@ public class EnemySC : MonoBehaviour, IDefender
         m_StunDuration = new WaitForSeconds(stunDuration);
         m_DeadAnimDuration = new WaitForSeconds(deadAnimDuration);
         CurrentHP = healthPoint;
+        OnStart();
     }
 
     protected virtual void Update()
@@ -174,13 +161,6 @@ public class EnemySC : MonoBehaviour, IDefender
                 m_Rigidbody.constraints = RigidbodyConstraints2D.FreezeAll;
             }
         }
-        else if (collision.CompareTag("EnemyFindBounds"))
-        {
-            for (int i = 0; i <m_SpriteRenderers.Count; ++i)
-            {
-                m_SpriteRenderers[i].enabled = true;
-            }
-        }
     }
 
     protected virtual void OnTriggerStay2D(Collider2D collision)
@@ -204,18 +184,6 @@ public class EnemySC : MonoBehaviour, IDefender
                 m_Rigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
             }
         }
-        else if (collision.CompareTag("EnemySideBounds"))
-        {
-            this.transform.position = ownerSpawner.transform.position;
-        }
-
-        else if (collision.CompareTag("EnemyFindBounds"))
-        {
-            for (int i = 0; i <m_SpriteRenderers.Count; ++i)
-            {
-                m_SpriteRenderers[i].enabled = false;
-            }
-        }
     }
 
     protected virtual void OnCollisionEnter2D(Collision2D collision)
@@ -227,10 +195,16 @@ public class EnemySC : MonoBehaviour, IDefender
     protected virtual void OnCollisionExit2D(Collision2D collision)
         => this.OnTriggerExit2D(collision.collider);
 
+    protected virtual void OnStart()
+    {
+        // Virtual
+    }
+
     public void SetMonsterData(MonsterData data)
     {
         this.id = data.Id;
         this.healthPoint = data.HealthPoint;
+        this.CurrentHP = this.healthPoint;
         this.basicAttack = data.BasicAttack;
         this.expGained = data.ExpGained;
         this.moveSpeed = data.MoveSpeed;
@@ -242,16 +216,37 @@ public class EnemySC : MonoBehaviour, IDefender
         var animState = animator.GetCurrentAnimatorStateInfo(0);
         if (!IsCollided)
         {
+            float targetDistance = 0f;
             if (target != null)
             {
                 m_TargetDir = target.transform.position - transform.position;
+                targetDistance = m_TargetDir.magnitude;
                 m_TargetDir.Normalize();
                 m_TargetDir.z = 0f;
+            }
+            if (targetDistance < rigidbodyCullingDistance)
+            {
+                m_Rigidbody.simulated = true;
+            }
+            else
+            {
+                m_Rigidbody.simulated = false;
+            }
+            if (targetDistance > respawnCullingDistance)
+            {
+                transform.position = ownerSpawner.transform.position;
             }
 
             Vector3 velocity = m_TargetDir * moveSpeed * Time.deltaTime * 0.01f;
             Vector3 newPosition = transform.position + velocity;
-            m_Rigidbody.MovePosition(newPosition);
+            if (m_Rigidbody.simulated)
+            {
+                m_Rigidbody.MovePosition(newPosition);
+            }
+            else
+            {
+                transform.position += velocity;
+            }
             if (m_TargetDir != Vector3.zero)
             {
                 PlayAnimation(AnimType.Walk);

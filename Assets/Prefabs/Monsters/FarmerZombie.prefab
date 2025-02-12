@@ -5296,6 +5296,8 @@ MonoBehaviour:
   blinkDuration: 0.03
   blinkCount: 5
   receiveDamageDuration: 0.8
+  rigidbodyCullingDistance: 10
+  respawnCullingDistance: 20
   deadAnimDuration: 2
   animator: {fileID: 0}
   right: {x: -1, y: 1, z: 1}
