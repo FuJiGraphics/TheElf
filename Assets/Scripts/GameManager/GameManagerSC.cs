@@ -23,6 +23,7 @@ public class GameManagerSC : Singleton<GameManagerSC>
     public bool IsNotInGameScene { get; private set; } = true;
     public bool IsSceneLoaded { get; private set; } = false;
     public GameObject RandomEnemyTarget { get => m_EnemyFindBounds?.CurrentEnemy; }
+    public SaveData GameData { get; private set; }
 
     public bool IsPlaying
     {
@@ -64,6 +65,18 @@ public class GameManagerSC : Singleton<GameManagerSC>
             return;
         }
         this.StartGame();
+    }
+
+    public bool LoginId(int id)
+    {
+        bool result = false;
+        this.LoadSaveData();
+        if (DataTable<SaveData>.Exists(id))
+        {
+            GameData = DataTable<SaveData>.At(id);
+            result = true;
+        }
+        return result;
     }
 
     public void Init()
@@ -121,6 +134,11 @@ public class GameManagerSC : Singleton<GameManagerSC>
         DataTable<NeedExpData>.Init("12_NeedExpTable");
     }
 
+    private void LoadSaveData()
+    {
+        DataTable<SaveData>.InitFromPersistentData("SaveData");
+    }
+
     private void InitWeaponManager()
     {
         WeaponManager.Instance.Init();
@@ -154,6 +172,11 @@ public class GameManagerSC : Singleton<GameManagerSC>
         DataTable<NeedExpData>.Release();
     }
 
+    private void SaveGameData()
+    {
+        CsvManager.SaveInPersistentDataPath<SaveData>(GameData, "SaveData.csv");
+    }
+
     private void ReleaseWeaponManager()
     {
         WeaponManager.Instance.Release();
@@ -166,6 +189,7 @@ public class GameManagerSC : Singleton<GameManagerSC>
         {
             this.IsNotInGameScene = false;
             this.LoadDataTables();
+            this.LoadSaveData();
             this.InitWeaponManager();
             this.Init();
             this.StartGame();
@@ -182,6 +206,7 @@ public class GameManagerSC : Singleton<GameManagerSC>
             this.Release();
             this.ReleaseWeaponManager();
             this.ReleaseDataTables();
+            this.SaveGameData();
             this.IsNotInGameScene = true;
         }
         Time.timeScale = 1.0f;

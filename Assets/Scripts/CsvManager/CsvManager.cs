@@ -5,12 +5,14 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using Unity.VisualScripting.FullSerializer;
+using UnityEngine;
 
 public static class CsvManager
 {
-    public static IEnumerable<T> Load<T>(string pathOrText)
+    public static IEnumerable<T> Load<T>(string path)
     {
-        using (var reader = new StreamReader(pathOrText))
+        using (var reader = new StreamReader(path))
         using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
         {
             return csv.GetRecords<T>().ToList();
@@ -23,6 +25,42 @@ public static class CsvManager
         using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
         {
             return csv.GetRecords<T>().ToList();
+        }
+    }
+
+    public static void SaveFromText<T>(string filePath, params T[] data)
+    {
+        var records = new List<T>();
+        foreach (var item in data)
+        {
+            records.Add(item);
+        }
+
+        using (var writer = new StreamWriter(filePath))
+        using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+        {
+            csv.WriteRecords(records);
+        }
+    }
+
+    public static void SaveInPersistentDataPath<T>(T data, string fileName)
+    {
+        string filePath = Path.Combine(Application.persistentDataPath, fileName);
+        if (!Directory.Exists(Application.persistentDataPath))
+        {
+            Directory.CreateDirectory(Application.persistentDataPath);
+            Debug.Log($"폴더 생성 완료: {Application.persistentDataPath}");
+        }
+
+        using (var memoryStream = new MemoryStream())
+        using (var writer = new StreamWriter(memoryStream))
+        using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+        {
+            csv.WriteRecords(new List<T> { data });
+            writer.Flush(); 
+            string csvData = System.Text.Encoding.UTF8.GetString(memoryStream.ToArray());
+            File.WriteAllText(filePath, csvData);
+            Debug.Log($"CSV 저장 완료: {filePath}");
         }
     }
 

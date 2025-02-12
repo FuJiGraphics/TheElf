@@ -24,19 +24,19 @@ public class LobbyPanelUI : MonoBehaviour
         m_Buttons = GetComponentsInChildren<ButtonUI>();
         foreach (var button in m_Buttons)
         {
-            if (button.name == "LobbySettingUI")
+            if (button.name == "Setting")
             {
                 settingButton = button;
                 settingButton.button = settingButton.GetComponent<Button>();
                 settingButton.button.onClick.AddListener(this.OnClickSettingButton);
             }
-            else if (button.name == "StageChoiceUI")
+            else if (button.name == "StageChoice")
             {
                 StageChoiceButton = button;
                 StageChoiceButton.button = StageChoiceButton.GetComponent<Button>();
                 StageChoiceButton.button.onClick.AddListener(this.OnClickStageChoiceButton);
             }
-            else if (button.name == "StageUpgradeStat")
+            else if (button.name == "Upgrade")
             {
                 UpgradeStatButton = button;
                 UpgradeStatButton.button = UpgradeStatButton.GetComponent<Button>();

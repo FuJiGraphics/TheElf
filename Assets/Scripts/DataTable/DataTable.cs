@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 public static class DataTable<T>
     where T : IGameData
@@ -34,6 +36,40 @@ public static class DataTable<T>
         }
     }
 
+    public static bool InitFromPersistentData(string fileName)
+    {
+        if (s_IsInitialized)
+            return false;
+        s_IsInitialized = true;
+
+        s_Table = new Dictionary<int, T>();
+
+        if (fileName.Contains(".csv") == false)
+        {
+            fileName += ".csv";
+        }
+        string filePath = Path.Combine(Application.persistentDataPath, fileName);
+        if (File.Exists(filePath))
+        {
+            var records = CsvManager.Load<T>(filePath);
+            foreach (T data in records)
+            {
+                if (s_Table.ContainsKey(data.Id))
+                {
+                    Debug.Log($"중복 선언된 키입니다. {data.Id}");
+                    continue;
+                }
+                s_Table.Add(data.Id, data);
+            }
+        }
+        else
+        {
+            Debug.LogError($"CSV 파일을 찾을 수 없습니다. {filePath}");
+            return false;
+        }
+        return true;
+    }
+
     public static void Release()
     {
         s_IsInitialized = false;
@@ -60,5 +96,8 @@ public static class DataTable<T>
         }
         return s_Table[id];
     }
+
+    public static bool Exists(int id)
+        => s_Table.ContainsKey(id);
 
 } // class EnemyTable

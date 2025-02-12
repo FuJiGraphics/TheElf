@@ -13,11 +13,22 @@ public class ButtonUI : MonoBehaviour
     protected virtual void Awake()
     {
         button = GetComponent<Button>();
+        OnAwake();
     }
 
     protected virtual void Start()
     {
+        OnStart();
+    }
 
+    protected virtual void OnAwake()
+    {
+        // Empty
+    }
+
+    protected virtual void OnStart()
+    {
+        // Empty
     }
 
 } // class class BackButtonUI
