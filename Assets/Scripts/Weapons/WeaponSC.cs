@@ -8,7 +8,7 @@ public class WeaponSC : MonoBehaviour
 
     public int level;
     public WeaponType type;
-    public int id = 0;
+    public string id = "0";
     public string weaponName = "Empty";
     public bool isAutoTarget = false;
 
@@ -38,9 +38,9 @@ public class WeaponSC : MonoBehaviour
     }
 
     public void Fire(Vector2 direction, Vector2 position)
-     => this.Fire(direction, position, Quaternion.identity);
+     => this.Fire(direction, position, Quaternion.identity, null);
 
-    public void Fire(Vector2 direction, Vector2 position, Quaternion rotation)
+    public void Fire(Vector2 direction, Vector2 position, Quaternion rotation, GameObject playerOwner)
     {
         this.Init();
         info = WeaponManager.Instance.GetInfo(type, level);
@@ -79,7 +79,8 @@ public class WeaponSC : MonoBehaviour
                     rotation = Quaternion.LookRotation(Vector3.forward, direction);
                 }
             }
-            sc.Fire(position, direction, rotation, m_Owner);
+            m_Owner = playerOwner;
+            sc.Fire(position, direction, rotation, playerOwner);
             effects?.Play(position, rotation);
         }
     }

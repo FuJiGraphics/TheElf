@@ -164,7 +164,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackPower: 5
-  survivalTime: 5
+  survivalTime: 2.5
   projectileSpeed: 10
   direction: {x: 0, y: 0, z: 1}
   maximumTarget: 10000
@@ -194,7 +194,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3377398349018969459, guid: 761e811872d88954c88c5703b1aeda48, type: 3}
       propertyPath: m_SortingOrder
-      value: 32767
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8082487741900341435, guid: 761e811872d88954c88c5703b1aeda48, type: 3}
       propertyPath: ShapeModule.angle

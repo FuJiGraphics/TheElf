@@ -1,7 +1,7 @@
 
 public class SpawnData : IGameData
 {
-    public int Id { get; set; }
+    public string Id { get; set; }
     public string Name { get; set; }
     public float SpawnCycle { get; set; }
     public int MaxCount { get; set; }

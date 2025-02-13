@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class StatData : IGameData
 {
-    public int Id { get; set; }
+    public string Id { get; set; }
     public string Name { get; set; }
     public string NeedStatPoints { get; set; }
     public string SkillCoolDownReductions { get; set; }

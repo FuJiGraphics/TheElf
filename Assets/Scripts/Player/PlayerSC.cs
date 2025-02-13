@@ -10,7 +10,8 @@ public class PlayerSC : MonoBehaviour
         Touch, Joystick
     };
 
-    public int id = 1;
+    public string id = "1";
+    public int maxLevel = 20;
     public float moveSpeed;
     public int healthPoint;
     public float skillCoolDown;
@@ -69,7 +70,7 @@ public class PlayerSC : MonoBehaviour
         }
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(int damage, string effectName = "")
     {
         m_CurrHealth = Mathf.Clamp(m_CurrHealth - damage, 0, healthPoint);
         m_HealthBar.SetHealth(m_CurrHealth);
@@ -102,7 +103,12 @@ public class PlayerSC : MonoBehaviour
     {
         if (Level >= expKeyIds.Count)
             return;
-
+        if (Level >= maxLevel)
+        {
+            int max = expKeyIds[Level - 1];
+            GameManagerSC.Instance.SetExp(max, max);
+            return;
+        }
         DataTable<NeedExpData>.Init("12_NeedExpTable");
 
         int maxExp = expKeyIds[Level - 1];
@@ -197,13 +203,12 @@ public class PlayerSC : MonoBehaviour
         this.effectKeyIds = CsvManager.ToList<int>(playerData.EffectKeyIds);
 
         // 필요 경험치 로드
-        var expList = CsvManager.ToList<int>(playerData.ExpKeyIds);
+        var expList = CsvManager.ToList<string>(playerData.ExpKeyIds);
         DataTable<NeedExpData>.Init("12_NeedExpTable");
         expKeyIds = new List<int>();
         for (int i = 0; i < expList.Count; ++i)
         {
-            int id = expList[i];
-            expKeyIds.Add(DataTable<NeedExpData>.At(id).NeedExp);
+            expKeyIds.Add(DataTable<NeedExpData>.At(expList[i]).NeedExp);
         }
     }
 
@@ -219,7 +224,7 @@ public class PlayerSC : MonoBehaviour
             allWeapons[i].SetActive(false);
         }
         int ran = Random.Range(0, allWeapons.Count);
-        allWeapons[ran].SetActive(true);
+        allWeapons[5].SetActive(true);
         m_EquippedWeapons = new List<WeaponSC>();
         foreach (var weapon in allWeapons)
         {
@@ -311,10 +316,20 @@ public class PlayerSC : MonoBehaviour
     {
         for (int i = 0; i < m_EquippedWeapons.Count; ++i)
         {
+            if (m_EquippedWeapons[i] == null)
+            {
+                continue;
+            }
+            if (m_EquippedWeapons[i].gameObject == null)
+            {
+                m_EquippedWeapons.RemoveAt(i);
+                i--;
+                continue;
+            }
             if (m_EquippedWeapons[i] != null && m_EquippedWeapons[i].gameObject.activeSelf)
             {
                 var look = Quaternion.LookRotation(Vector3.forward, m_CurrDir);
-                m_EquippedWeapons[i].Fire(m_CurrDir, transform.position, look);
+                m_EquippedWeapons[i].Fire(m_CurrDir, transform.position, look, this.gameObject);
             }
         }
     } 

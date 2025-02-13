@@ -1,5 +1,6 @@
 
 public interface IGameData
 {
-    public int Id { get; set; }
+    public string Id { get; set; }
+
 } // interface IDefender

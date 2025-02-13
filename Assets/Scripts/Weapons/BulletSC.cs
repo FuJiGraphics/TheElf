@@ -24,7 +24,7 @@ public class BulletSC : MonoBehaviour
 
     protected Quaternion firstRotation;
     protected Rigidbody2D rb;
-    protected GameObject owner;
+    protected GameObject ownerPlayer;
     protected Vector3 setPosition = Vector3.zero;
     protected Vector3 setDirection = Vector3.zero;
     protected Quaternion setRotation = Quaternion.identity;
@@ -40,7 +40,7 @@ public class BulletSC : MonoBehaviour
     private void Update()
     {
         m_ElapsedTime += Time.deltaTime;
-        this.MoveTrigger();
+        this.UpdateTrigger();
         if (m_ElapsedTime >= survivalTime)
         {
             this.Destroy();
@@ -98,7 +98,7 @@ public class BulletSC : MonoBehaviour
         // Empty
     }
 
-    protected virtual void MoveTrigger()
+    protected virtual void UpdateTrigger()
     {
         // Empty
     }
@@ -106,6 +106,11 @@ public class BulletSC : MonoBehaviour
     protected virtual MultiAttackInfo MultiAttackTrigger(EnemySC enemy)
     {
         return null;
+    }
+
+    protected virtual void FireTrigger()
+    {
+        // Empty
     }
 
     protected void Destroy()
@@ -150,7 +155,8 @@ public class BulletSC : MonoBehaviour
         this.setPosition = position;
         this.setDirection = direction;
         this.setRotation = rotation;
-        this.owner = owner;
+        this.ownerPlayer = owner;
+        FireTrigger();
     }
 
 

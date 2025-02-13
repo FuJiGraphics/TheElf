@@ -45,6 +45,8 @@ public class VirtualJoystick: MonoBehaviour
                     break;
             }
         }
+        m_RectTransform.gameObject.SetActive(false);
+        m_Lever.gameObject.SetActive(false);
     }
 
     private void Clear()

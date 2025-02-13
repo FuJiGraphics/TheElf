@@ -1,7 +1,7 @@
 
 public class MonsterData : IGameData
 {
-    public int Id { get; set; }
+    public string Id { get; set; }
     public string Name { get; set; }
     public int HealthPoint { get; set; }
     public int BasicAttack { get; set; }

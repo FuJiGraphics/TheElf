@@ -13,6 +13,7 @@ public class ButtonUI : MonoBehaviour
     protected virtual void Awake()
     {
         button = GetComponent<Button>();
+        button.onClick.AddListener(OnClick);
         OnAwake();
     }
 
@@ -27,6 +28,16 @@ public class ButtonUI : MonoBehaviour
     }
 
     protected virtual void OnStart()
+    {
+        // Empty
+    }
+
+    private void OnClick()
+    {
+        OnClickButton();
+    }
+
+    protected virtual void OnClickButton()
     {
         // Empty
     }

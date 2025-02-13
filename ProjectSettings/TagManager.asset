@@ -23,6 +23,8 @@ TagManager:
   - fz_Joystick
   - EnemyFindBounds
   - EnemySideBounds
+  - MessagePopup
+  - Effects
   layers:
   - Default
   - TransparentFX

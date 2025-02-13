@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class Save : MonoBehaviour
 {
-    public int id = -1;
+    public string id = "-1";
     public float atk = -1f;
     public int clear = -1;
     private Button m_Button;
@@ -22,7 +22,7 @@ public class Save : MonoBehaviour
         SaveData data = new SaveData();
 
         DataTable<SaveData>.InitFromPersistentData("SaveData.csv");
-        var userData = DataTable<SaveData>.At(255);
+        var userData = DataTable<SaveData>.At("255");
 
         id = userData.Id;
         atk = userData.AttackSpeed;

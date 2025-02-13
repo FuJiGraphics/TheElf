@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class BaseWeapon : IWeaponLevel
 {
-    public int id = -1;
+    public string id = "-1";
     public string itemName = "Empty";
     public int attackPower = 1;
     public float attackSpeed = 1f;

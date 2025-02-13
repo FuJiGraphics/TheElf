@@ -6,22 +6,23 @@ using UnityEngine.Profiling;
 public static class DataTable<T>
     where T : IGameData
 {
-    private static Dictionary<int, T> s_Table;
-    private static bool s_IsInitialized = false;
+    private static Dictionary<string, T> s_Table;
 
     public static string FileName { get; set; } = "Empty";
 
     public static void Init(string fileName)
     {
-        if (s_IsInitialized)
-            return;
-        s_IsInitialized = true;
-        s_Table = new Dictionary<int, T>();
+        if (s_Table == null)
+        {
+            s_Table = new Dictionary<string, T>();
+        }
+
+        s_Table = new Dictionary<string, T>();
 
         TextAsset csvFile = Resources.Load<TextAsset>(fileName);
         if (csvFile == null)
         {
-            Debug.LogError("CSV 파일을 찾을 수 없습니다.");
+            Debug.LogError("did not found csv file!");
         }
 
         var records = CsvManager.LoadFromText<T>(csvFile.text);
@@ -29,8 +30,7 @@ public static class DataTable<T>
         {
             if (s_Table.ContainsKey(data.Id))
             {
-                Debug.Log($"중복 선언된 키입니다. {data.Id}");
-                continue;
+                s_Table.Remove(data.Id);
             }
             s_Table.Add(data.Id, data);
         }
@@ -38,11 +38,10 @@ public static class DataTable<T>
 
     public static bool InitFromPersistentData(string fileName)
     {
-        if (s_IsInitialized)
-            return false;
-        s_IsInitialized = true;
-
-        s_Table = new Dictionary<int, T>();
+        if (s_Table == null)
+        {
+            s_Table = new Dictionary<string, T>();
+        }
 
         if (fileName.Contains(".csv") == false)
         {
@@ -56,48 +55,47 @@ public static class DataTable<T>
             {
                 if (s_Table.ContainsKey(data.Id))
                 {
-                    Debug.Log($"중복 선언된 키입니다. {data.Id}");
-                    continue;
+                    s_Table.Remove(data.Id);
                 }
                 s_Table.Add(data.Id, data);
             }
         }
         else
         {
-            Debug.LogError($"CSV 파일을 찾을 수 없습니다. {filePath}");
+            Debug.LogWarning($"Unexpected Error. {filePath}");
             return false;
         }
         return true;
     }
 
+    public static void SaveFromPersistentData(string fileName, T data)
+    {
+        CsvManager.SaveInPersistentDataPath(data, fileName);
+        InitFromPersistentData(fileName);
+    }
+
     public static void Release()
     {
-        s_IsInitialized = false;
         s_Table.Clear();
         s_Table = null;
     }
 
-    public static T At(int id)
+    public static T At(string id)
     {
-        if (id < 0)
+        if (s_Table == null)
         {
-            Debug.LogError("인덱스를 찾을 수 없습니다.");
-            return default(T);
-        }
-        if (!s_IsInitialized)
-        {
-            Debug.LogError("초기화 되지 않은 테이블입니다.");
+            Debug.LogError("초기화되지 않은 테이블입니다.");
             return default(T);
         }
         if (!s_Table.ContainsKey(id))
         {
-            Debug.LogError($"Id를 찾을 수 없습니다. {id}");
+            Debug.LogError($"아이디를 찾을 수 없습니다 {id}");
             return default(T);
         }
         return s_Table[id];
     }
 
-    public static bool Exists(int id)
-        => s_Table.ContainsKey(id);
+    public static bool Exists(string id)
+        => s_Table != null && s_Table.ContainsKey(id);
 
 } // class EnemyTable

@@ -122,8 +122,12 @@ public class EnforcePanelSC : MonoBehaviour
         {
             Dictionary<int, bool> selectedTable = new Dictionary<int, bool>();
 
-            for (int i = iterIndex; i < m_SlotCount; ++i)
+            for (int i = 0; i < allWeapons.Count; ++i)
             {
+                if (iterIndex >= m_SlotCount)
+                {
+                    break;
+                }
                 int sel = UnityEngine.Random.Range(0, allWeapons.Count);
                 if (selectedTable.ContainsKey(sel))
                 {
@@ -138,6 +142,10 @@ public class EnforcePanelSC : MonoBehaviour
                         this.SetSlotItem(iterIndex, allWeapons[sel], SlotType.LevelupWeapons, nextWeapon);
                         iterIndex++;
                     }
+                }
+                else
+                {
+                    selectedTable.Add(sel, true);
                 }
             }
         }
@@ -168,6 +176,7 @@ public class EnforcePanelSC : MonoBehaviour
                     }
                     else
                     {
+                        selectedTable.Add(sel, true);
                         break;
                     }
                 }

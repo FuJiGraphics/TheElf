@@ -1,10 +1,25 @@
 using System;
+using System.Collections;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+public enum SignUpState
+{
+    Done,
+    ExistsID,
+    LeastID,
+    EmptyID,
+    LeastPassword,
+    EmptyPassword,
+    EmptyUsername,
+    UnexpectedError,
+};
+
 public class GameManagerSC : Singleton<GameManagerSC>
 {
+    public readonly string saveFileName = "SaveData";
+
     public int currentStage = 0;
     public float timeLimit = 600f;
     public GameObject gameUI;
@@ -15,9 +30,11 @@ public class GameManagerSC : Singleton<GameManagerSC>
     private ExperienceSC m_ExpUI;
     private EnforcePanelSC m_EnforceUI;
     private bool m_IsPlaying;
+    private FadeInOut m_FadeInOutController;
 
     private EnemyFindBounds m_EnemyFindBounds;
 
+    public bool FadeOutDone { get; set; } = true;
     public float CurrentTime { get => m_TimerUI.ElapsedTime; }
     public int KillCount { get; set; }
     public bool IsNotInGameScene { get; private set; } = true;
@@ -58,7 +75,7 @@ public class GameManagerSC : Singleton<GameManagerSC>
             {
                 this.DefeatGame();
             }
-            else
+            else if (FadeOutDone)
             {
                 this.PauseGame();
             }
@@ -67,16 +84,92 @@ public class GameManagerSC : Singleton<GameManagerSC>
         this.StartGame();
     }
 
-    public bool LoginId(int id)
+    public bool LoginId(string id, string password)
     {
         bool result = false;
         this.LoadSaveData();
         if (DataTable<SaveData>.Exists(id))
         {
-            GameData = DataTable<SaveData>.At(id);
-            result = true;
+            SaveData tempUserData = DataTable<SaveData>.At(id);
+            if (tempUserData.Password == password)
+            {
+                GameData = DataTable<SaveData>.At(id);
+                result = true;
+            }
         }
         return result;
+    }
+
+    public SignUpState SignUp(SaveData data)
+    {
+        if (data == null)
+        {
+            return SignUpState.UnexpectedError;
+        }
+        if (data.Id.Length == 0)
+        {
+            return SignUpState.EmptyID;
+        }
+        if (data.Id.Length < 6)
+        {
+            return SignUpState.LeastID;
+        }
+        if (data.Password.Length == 0)
+        {
+            return SignUpState.EmptyPassword;
+        }
+        if (data.Password.Length < 6)
+        {
+            return SignUpState.LeastPassword;
+        }
+        if (data.Name.Length == 0)
+        {
+            return SignUpState.EmptyUsername;
+        }
+        this.LoadSaveData();
+        if (DataTable<SaveData>.Exists(data.Id))
+        {
+            return SignUpState.ExistsID;
+        }
+        DataTable<SaveData>.SaveFromPersistentData(saveFileName, data);
+        return SignUpState.Done;
+    }
+
+    public void FadeIn()
+    {
+        StartCoroutine(this.FadeInCoroutine());
+    }
+
+    public IEnumerator FadeInCoroutine()
+    {
+        GameObject fadeGo = UtilManager.FindWithName("FadeInOut");
+        if (m_FadeInOutController == null)
+        {
+            m_FadeInOutController = fadeGo?.GetComponent<FadeInOut>();
+        }
+        m_FadeInOutController?.FadeIn();
+        yield return new WaitForSeconds(m_FadeInOutController.playTime);
+        fadeGo.SetActive(false);
+    }
+
+    public void FadeOut(Action trigger)
+    {
+        StartCoroutine(this.FadeOutCoroutine(trigger));
+    }
+
+    public IEnumerator FadeOutCoroutine(Action trigger)
+    {
+        FadeOutDone = false;
+        GameObject fadeGo = UtilManager.FindWithName("FadeInOut");
+        if (m_FadeInOutController == null)
+        {
+            m_FadeInOutController = fadeGo?.GetComponent<FadeInOut>();
+        }
+        m_FadeInOutController?.gameObject.SetActive(true);
+        m_FadeInOutController?.FadeOut();
+        yield return new WaitForSeconds(m_FadeInOutController.playTime);
+        FadeOutDone = true;
+        trigger.Invoke();
     }
 
     public void Init()
@@ -136,7 +229,12 @@ public class GameManagerSC : Singleton<GameManagerSC>
 
     private void LoadSaveData()
     {
-        DataTable<SaveData>.InitFromPersistentData("SaveData");
+        DataTable<SaveData>.InitFromPersistentData(saveFileName);
+    }
+
+    public void ClearSaveData()
+    {
+        CsvManager.RemoveInPersistentDataPath<SaveData>(saveFileName);
     }
 
     private void InitWeaponManager()
@@ -174,7 +272,12 @@ public class GameManagerSC : Singleton<GameManagerSC>
 
     private void SaveGameData()
     {
-        CsvManager.SaveInPersistentDataPath<SaveData>(GameData, "SaveData.csv");
+        if (GameData != null)
+        {
+            // Test Play
+            Debug.Log("Active Test Play");
+            CsvManager.SaveInPersistentDataPath<SaveData>(GameData, "SaveData.csv");
+        }
     }
 
     private void ReleaseWeaponManager()
@@ -225,7 +328,7 @@ public class GameManagerSC : Singleton<GameManagerSC>
         m_TimerUI.StopTimer();
         this.StartGame();
         string currScene = SceneManager.GetActiveScene().name;
-        LoadSceneManager.LoadScene(currScene);
+        GameManagerSC.Instance.FadeOut(() => LoadSceneManager.LoadScene(currScene));
     }
 
     public void StartGame()
@@ -241,7 +344,8 @@ public class GameManagerSC : Singleton<GameManagerSC>
 
     public void EndGame()
     {
-        LoadSceneManager.LoadScene("LobbyScene");
+        this.StartGame();
+        GameManagerSC.Instance.FadeOut(() => LoadSceneManager.LoadScene("LobbyScene"));
     }
 
     public void DefeatGame()

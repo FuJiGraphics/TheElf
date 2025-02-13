@@ -192,6 +192,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6287728572282381675, guid: 59f6846b69b80854dbf01f9608d9b428, type: 3}
+      propertyPath: m_SortingOrder
+      value: 200
+      objectReference: {fileID: 0}
     - target: {fileID: 7401524376916455657, guid: 59f6846b69b80854dbf01f9608d9b428, type: 3}
       propertyPath: m_LocalScale.x
       value: 2
@@ -314,6 +318,10 @@ PrefabInstance:
     - target: {fileID: 3551597606300281360, guid: dbc40791e7f676a4b8f5370ce1b9d1ad, type: 3}
       propertyPath: InitialModule.startRotation.scalar
       value: -1.5707963
+      objectReference: {fileID: 0}
+    - target: {fileID: 3551597606300281361, guid: dbc40791e7f676a4b8f5370ce1b9d1ad, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3551597606300281361, guid: dbc40791e7f676a4b8f5370ce1b9d1ad, type: 3}
       propertyPath: m_Materials.Array.size

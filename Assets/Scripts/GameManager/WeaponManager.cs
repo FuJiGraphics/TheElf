@@ -17,16 +17,16 @@ public enum WeaponType
 
 public class WeaponManager : Singleton<WeaponManager>
 {
-    private readonly int m_LongbowId = 3011;
-    private readonly int m_CrossbowId = 3012;
-    private readonly int m_SwordId = 3013;
-    private readonly int m_InfernoRoundsId = 63018;
-    private readonly int m_ExplosionId = 63016;
-    private readonly int m_ShieldId = 63014;
-    private readonly int m_ThunderLashId = 63017;
-    private readonly int m_RandomAttackId = 63015;
+    private readonly string m_LongbowId = "3011";
+    private readonly string m_CrossbowId = "3012";
+    private readonly string m_SwordId = "3013";
+    private readonly string m_InfernoRoundsId = "63018";
+    private readonly string m_ExplosionId = "63016";
+    private readonly string m_ShieldId = "63014";
+    private readonly string m_ThunderLashId = "63017";
+    private readonly string m_RandomAttackId = "63015";
 
-    private List<int> m_WeaponIds;
+    private List<string> m_WeaponIds;
     private List<Dictionary<int, BaseWeapon>> m_Weapons;
 
     public BaseWeapon GetInfo(WeaponType type, int level)
@@ -77,7 +77,7 @@ public class WeaponManager : Singleton<WeaponManager>
         }
 
         int size = (int)WeaponType.Max;
-        m_WeaponIds = new List<int>(size)
+        m_WeaponIds = new List<string>(size)
         {
             m_LongbowId, 
             m_CrossbowId, 
@@ -110,8 +110,8 @@ public class WeaponManager : Singleton<WeaponManager>
 
     private void AttachWeapon(WeaponType type, RandomStatData ranStatData)
     {
-        List<int> itemList = CsvManager.ToList<int>(ranStatData.ItemPayments);
-        List<int> levelIds = CsvManager.ToList<int>(ranStatData.LevelKeyIds);
+        List<string> itemList = CsvManager.ToList<string>(ranStatData.ItemPayments);
+        List<string> levelIds = CsvManager.ToList<string>(ranStatData.LevelKeyIds);
         if (itemList.Count != levelIds.Count)
         {
             // 아이템 개수와 레벨의 개수가 대응되지 않음
@@ -119,9 +119,8 @@ public class WeaponManager : Singleton<WeaponManager>
         }
         for (int i = 0; i < itemList.Count; ++i)
         {
-            int id = itemList[i];
             LevelData levelData = DataTable<LevelData>.At(levelIds[i]);
-            var weaponData = DataTable<WeaponData>.At(id);
+            var weaponData = DataTable<WeaponData>.At(itemList[i]);
             BaseWeapon baseWeapon = new BaseWeapon();
             baseWeapon.id = weaponData.Id;
             baseWeapon.itemName = weaponData.Name;

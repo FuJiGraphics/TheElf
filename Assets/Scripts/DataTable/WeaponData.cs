@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class WeaponData : IGameData
 {
-    public int Id { get; set; }
+    public string Id { get; set; }
     public string Name { get; set; }
     public int BasicAttack { get; set; }
     public float BasicAttackSpeed { get; set; }

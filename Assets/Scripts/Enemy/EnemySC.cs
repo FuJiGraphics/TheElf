@@ -11,7 +11,7 @@ public enum AnimType
 
 public class EnemySC : MonoBehaviour, IDefender
 {
-    public int id = -1;
+    public string id = "-1";
     public GameObject target;
     public List<GameObject> individualSkills;
     public float activeSkillDuration = 5f;      // 스킬 발동 간격
@@ -259,10 +259,15 @@ public class EnemySC : MonoBehaviour, IDefender
         }
     }
 
-    public virtual void TakeDamage(int damage)
+    public virtual void TakeDamage(int damage, string effectName = "")
     {
         if (IsDie)
             return;
+
+        if (effectName.Length > 0)
+        {
+            EffectMap.Instance.Play(effectName, transform.position);
+        }
 
         GameObject meterGo = m_DamageMeter.Get();
         DamageMeter meterSc = meterGo?.GetComponent<DamageMeter>();

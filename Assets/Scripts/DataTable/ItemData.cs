@@ -1,7 +1,7 @@
 
 public class ItemData : IGameData
 {
-    public int Id { get; set; }
+    public string Id { get; set; }
     public string Name { get; set; }
     public float RecoveryAmountPercent { get; set; }
     public bool GodMode { get; set; }

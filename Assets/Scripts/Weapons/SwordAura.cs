@@ -22,7 +22,7 @@ public class SwordAura : BulletSC
         currentRotateCount = 0;
     }
 
-    protected override void MoveTrigger()
+    protected override void UpdateTrigger()
     {
         if (currentRotateCount >= rotationCount)
         {
@@ -32,7 +32,7 @@ public class SwordAura : BulletSC
         if (isFirstCalled)
         {
             isFirstCalled = false;
-            setPosition = owner.transform.position + new Vector3(orbitRadius, 0, 0); // 처음 위치 설정
+            setPosition = ownerPlayer.transform.position + new Vector3(orbitRadius, 0, 0); // 처음 위치 설정
             transform.position = setPosition;
             rb.velocity = Vector3.zero;
             currentAngle = 0f;
@@ -48,7 +48,7 @@ public class SwordAura : BulletSC
         }
 
         transform.rotation = Quaternion.identity;
-        transform.position = owner.transform.position + targetPos;
-        transform.RotateAround(owner.transform.position, Vector3.forward, currentAngle);
+        transform.position = ownerPlayer.transform.position + targetPos;
+        transform.RotateAround(ownerPlayer.transform.position, Vector3.forward, currentAngle);
     }
 } // class SwordAura

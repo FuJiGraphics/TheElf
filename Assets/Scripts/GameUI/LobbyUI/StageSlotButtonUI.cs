@@ -54,8 +54,8 @@ public class StageSlotButtonUI : ButtonUI
 
     private IEnumerator StartStageCoroutine()
     {
-        yield return new WaitForSeconds(2);
-        LoadSceneManager.LoadScene("InGameScene");
+        yield return new WaitForSeconds(1);
+        GameManagerSC.Instance.FadeOut(() => LoadSceneManager.LoadScene("InGameScene"));
     }
 
 } // class StageSlotButtonUI 
