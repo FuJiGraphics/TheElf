@@ -40,7 +40,7 @@ public class StageSlotButtonUI : ButtonUI
         }
     }
 
-    private void OnClickButton()
+    protected override void OnClickButton()
     {
         if (IsLock)
             return;

@@ -4,19 +4,19 @@ using UnityEngine;
 
 public class BillboardSC : MonoBehaviour
 {
-    public GameObject camera;
+    public GameObject billboardCamera;
 
     private void Start()
     {
-        camera = GameObject.FindWithTag("MainCamera");
+        billboardCamera = GameObject.FindWithTag("MainCamera");
     }
 
     private void LateUpdate()
     {
-        if (camera == null)
+        if (billboardCamera == null)
             return;
 
-        transform.LookAt(transform.position + camera.transform.forward);
+        transform.LookAt(transform.position + billboardCamera.transform.forward);
     }
 
 } // class BillboardSC

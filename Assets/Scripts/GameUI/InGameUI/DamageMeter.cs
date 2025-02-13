@@ -10,7 +10,6 @@ public class DamageMeter : MonoBehaviour
     public ObjectManagerSC ownerPool;
     private TextMeshProUGUI m_TextMeshPro;
     private Animator m_Aniamtor;
-    private bool m_IsInitialized = false;
 
     private void Awake()
     {

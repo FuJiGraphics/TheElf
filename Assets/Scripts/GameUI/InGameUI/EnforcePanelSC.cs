@@ -27,8 +27,10 @@ public class EnforcePanelSC : MonoBehaviour
         public Image Background { get; set; }
         public TextMeshProUGUI Text { get; set; }
         public GameObject Prefab { get; set; }
+        public SlotItemSC SlotItem { get; set; }
     }
 
+    public Sprite[] slotLevelImage;
     public TextMeshProUGUI levelTitle;
     public Color emptySlotColor;
 
@@ -100,6 +102,7 @@ public class EnforcePanelSC : MonoBehaviour
             m_Slots[i].Image = slots[i].image;
             m_Slots[i].Text = slots[i].text;
             m_Slots[i].Background = slots[i].background;
+            m_Slots[i].SlotItem = slots[i];
         }
         m_Slots[0].Button.onClick.AddListener(OnSlot0);
         m_Slots[1].Button.onClick.AddListener(OnSlot1);
@@ -118,34 +121,26 @@ public class EnforcePanelSC : MonoBehaviour
     private int SelectedLevelUpWeapons(int iterIndex = 0)
     {
         var allWeapons = m_TargetPlayer.allWeapons;
+
         if (allWeapons != null && allWeapons.Count > 0)
         {
-            Dictionary<int, bool> selectedTable = new Dictionary<int, bool>();
-
-            for (int i = 0; i < allWeapons.Count; ++i)
+            List<int> weaponIndices = Enumerable.Range(0, allWeapons.Count).ToList();
+            weaponIndices = weaponIndices.OrderBy(x => UnityEngine.Random.value).ToList(); // ¸®½ºÆ® ¼ÅÇÃ
+            for (int i = 0; i < Math.Min(m_SlotCount, weaponIndices.Count); i++)
             {
                 if (iterIndex >= m_SlotCount)
                 {
                     break;
                 }
-                int sel = UnityEngine.Random.Range(0, allWeapons.Count);
-                if (selectedTable.ContainsKey(sel))
+                int sel = weaponIndices[i];
+                if (allWeapons[sel].activeSelf)
                 {
-                    i--;
-                }
-                else if (allWeapons[sel].activeSelf)
-                {
-                    selectedTable.Add(sel, true);
                     GameObject nextWeapon = WeaponManager.Instance.LevelUp(allWeapons[sel]);
                     if (LogManager.IsVaild(nextWeapon))
                     {
                         this.SetSlotItem(iterIndex, allWeapons[sel], SlotType.LevelupWeapons, nextWeapon);
                         iterIndex++;
                     }
-                }
-                else
-                {
-                    selectedTable.Add(sel, true);
                 }
             }
         }
@@ -154,31 +149,19 @@ public class EnforcePanelSC : MonoBehaviour
 
     private int SelectedRandomWeapon(int iterIndex = 0)
     {
-        if (iterIndex < m_SlotCount)
+        List<WeaponSC> unused = m_TargetPlayer.GetUnusedWeapons();
+        if (unused != null && unused.Count > 0)
         {
-            Dictionary<int, bool> selectedTable = new Dictionary<int, bool>();
-            List<WeaponSC> unused = m_TargetPlayer.GetUnusedWeapons();
-            if (unused != null && unused.Count > 0)
+            List<int> weaponIndices = Enumerable.Range(0, unused.Count).ToList();
+            weaponIndices = weaponIndices.OrderBy(x => UnityEngine.Random.value).ToList();
+
+            for (int i = 0; i < Math.Min(m_SlotCount, weaponIndices.Count); i++)
             {
-                for (int i = 0; i < unused.Count; ++i)
+                int sel = weaponIndices[i];
+                if (iterIndex < m_SlotCount)
                 {
-                    int sel = UnityEngine.Random.Range(0, unused.Count);
-                    if (selectedTable.ContainsKey(sel))
-                    {
-                        i--;
-                        continue;
-                    }
-                    else if (iterIndex < m_SlotCount)
-                    {
-                        selectedTable.Add(sel, true);
-                        this.SetSlotItem(iterIndex, unused[i].gameObject, SlotType.UnusedDefaultWeapons);
-                        iterIndex++;
-                    }
-                    else
-                    {
-                        selectedTable.Add(sel, true);
-                        break;
-                    }
+                    this.SetSlotItem(iterIndex, unused[sel].gameObject, SlotType.UnusedDefaultWeapons);
+                    iterIndex++;
                 }
             }
         }
@@ -212,6 +195,9 @@ public class EnforcePanelSC : MonoBehaviour
                 m_Slots[slotIndex].SelectRandomDefaultWeapon = null;
                 m_Slots[slotIndex].LevelUpNext = levelUpTarget;
                 m_Slots[slotIndex].LevelUpPrev = weapon;
+                int slotBackgroundIndex = Math.Clamp(nextWeaponSC.level - 1, 0, slotLevelImage.Length);
+                m_Slots[slotIndex].Background.sprite = slotLevelImage[nextWeaponSC.level - 1];
+                m_Slots[slotIndex].SlotItem.SetStar(nextWeaponSC.level);
             }
         }
         else if (SlotType.UnusedDefaultWeapons == type)
@@ -222,6 +208,9 @@ public class EnforcePanelSC : MonoBehaviour
             m_Slots[slotIndex].SelectRandomDefaultWeapon = originWeapon;
             m_Slots[slotIndex].LevelUpNext = null;
             m_Slots[slotIndex].LevelUpPrev = null;
+            int slotBackgroundIndex = Math.Clamp(originWeapon.level - 1, 0, slotLevelImage.Length);
+            m_Slots[slotIndex].Background.sprite = slotLevelImage[originWeapon.level - 1];
+            m_Slots[slotIndex].SlotItem.SetStar(originWeapon.level);
         }
         else if (SlotType.Potions == type)
         {

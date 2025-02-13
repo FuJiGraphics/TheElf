@@ -6,6 +6,7 @@ public class SlotItemSC : MonoBehaviour
 {
     public Image image;
     public Image background;
+    public GameObject[] stars;
     public TextMeshProUGUI text;
 
     private bool m_IsInitailized = false;
@@ -43,6 +44,18 @@ public class SlotItemSC : MonoBehaviour
                 break;
             }
         }
+    }
+
+    public void SetStar(int star)
+    {
+        star = Mathf.Clamp(star, 1, stars.Length);
+        star = star - 1;
+
+        for (int i = 0; i < stars.Length; ++i)
+        {
+            stars[i].SetActive(false);
+        }
+        stars[star].SetActive(true);
     }
 
 } // class SlotItemSC

@@ -45,15 +45,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f237451f2f176914c8e5808c879465bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  icon: {fileID: 21300000, guid: f96ea93fb22dea646bae37a3a65ea42d, type: 3}
+  icon: {fileID: 21300000, guid: 58fd38b494a9cca49b4ae287534a8a48, type: 3}
   desc: Crossbow
   level: 5
   type: 1
   id: 25
   weaponName: JudgmentOfTheWorldTree
+  isAutoTarget: 0
   fixedRotation: 0
   objectPool: {fileID: 7809400794038650057}
   bulletPrefab: {fileID: 8808289594362423235, guid: 9e8058d8532e6ae4e987b2d8ec06fbbb, type: 3}
+  effects: {fileID: 0}
 --- !u!1001 &3089821898415298941
 PrefabInstance:
   m_ObjectHideFlags: 0

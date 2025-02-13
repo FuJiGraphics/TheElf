@@ -17,6 +17,13 @@ public class ChainLightning : BulletSC
     private Dictionary<GameObject, bool> m_TargetTable;
     private int m_CurrentCount = 0;
 
+    protected override void InitTrigger(BaseWeapon data)
+    {
+        this.attackPower = data.attackPower;
+        this.maximumTarget = data.monsterMaximumTarget;
+        this.chainCount = data.Bounce;
+    }
+
     protected override void EnableTrigger()
     {
         if (m_TargetTable == null)
@@ -66,16 +73,18 @@ public class ChainLightning : BulletSC
             if (enemy != null && enemy.gameObject.activeInHierarchy && !enemy.IsDie)
             {
                 enemy.TakeDamage(base.attackPower);
-                if (fireEffect != null)
-                {
-                    fireEffect.SetActive(true);
-                    this.AdjustScale(findGo.transform);
-                }
+                this.AdjustScale(findGo.transform);
+                m_CurrentCount++;
+                yield return m_WaitDuration;
+                transform.position = enemy.transform.position;
+                findGo = FindMinDistanceGo(chainDistance);
             }
-            m_CurrentCount++;
-            yield return m_WaitDuration;
-            transform.position = enemy.transform.position;
-            findGo = FindMinDistanceGo(chainDistance);
+            else
+            {
+                m_Running = false;
+                m_CurrentCount = 0;
+                yield break;
+            }
         }
         m_Running = false;
         m_CurrentCount = 0;

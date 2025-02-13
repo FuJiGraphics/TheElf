@@ -18,6 +18,8 @@ public enum SignUpState
 
 public class GameManagerSC : Singleton<GameManagerSC>
 {
+    public readonly string guestId = "aoi@fk!j%qw$d9&14%jd01*)(*^osdpkfe";
+    public readonly string guestPassword = "349592mf#@$@$@FDsd@!!~CA";
     public readonly string saveFileName = "SaveData";
 
     public int currentStage = 0;
@@ -87,6 +89,20 @@ public class GameManagerSC : Singleton<GameManagerSC>
     public bool LoginId(string id, string password)
     {
         bool result = false;
+        if (id == guestId && password == guestPassword)
+        {
+            SaveData data = new SaveData();
+            data.Id = guestId;
+            data.Name = "Guest";
+            data.Password = guestPassword;
+            data.MaxHealthPoint = 0;
+            data.AttackSpeed = 0;
+            data.ClearStage = 0;
+            data.MoveSpeed = 0;
+            data.Coin = 1000;
+            this.SignUp(data);
+            result = true;
+        }
         this.LoadSaveData();
         if (DataTable<SaveData>.Exists(id))
         {

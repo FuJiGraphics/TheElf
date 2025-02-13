@@ -92,12 +92,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f237451f2f176914c8e5808c879465bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  icon: {fileID: 21300000, guid: af28b778a9416e746a6148ceb06eea2b, type: 3}
+  icon: {fileID: 21300000, guid: aff3f934c40f0ff4bac7ca593517abb3, type: 3}
   desc: Sword Test
   level: 3
   type: 2
   id: 33
   weaponName: EarthSword
+  isAutoTarget: 0
   fixedRotation: 0
   objectPool: {fileID: 7809400794038650057}
   bulletPrefab: {fileID: 8808289594362423235, guid: 14112f6f980dc95478382b9621ebc3da, type: 3}

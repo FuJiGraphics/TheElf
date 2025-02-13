@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f237451f2f176914c8e5808c879465bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  icon: {fileID: 21300000, guid: 8403fa41b8d9ef141990c7ba5c6445ed, type: 3}
+  icon: {fileID: 21300000, guid: 4f7e5d01478502a4db3abf7e1cc6f8b4, type: 3}
   desc: Longbow
   level: 5
   type: 0

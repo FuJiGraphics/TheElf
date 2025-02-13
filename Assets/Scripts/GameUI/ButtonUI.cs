@@ -9,14 +9,12 @@ public class ButtonUI : MonoBehaviour
     {
         button = GetComponent<Button>();
     }
-
     protected virtual void Awake()
     {
         button = GetComponent<Button>();
         button.onClick.AddListener(OnClick);
         OnAwake();
     }
-
     protected virtual void Start()
     {
         OnStart();

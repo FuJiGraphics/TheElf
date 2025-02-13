@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f237451f2f176914c8e5808c879465bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  icon: {fileID: 21300000, guid: f96ea93fb22dea646bae37a3a65ea42d, type: 3}
+  icon: {fileID: 21300000, guid: ce7e83c32761242509bc1768e8634f53, type: 3}
   desc: Catapult
   level: 1
   type: 1

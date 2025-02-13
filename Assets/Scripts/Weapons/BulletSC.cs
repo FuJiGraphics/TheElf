@@ -129,6 +129,7 @@ public class BulletSC : MonoBehaviour
     {
         this.attackPower = data.attackPower;
         this.maximumTarget = data.monsterMaximumTarget;
+        InitTrigger(data);
     }
 
     public void Fire(Vector3 position, Vector3 direction, int maximumTarget, 
@@ -159,6 +160,10 @@ public class BulletSC : MonoBehaviour
         FireTrigger();
     }
 
+    protected virtual void InitTrigger(BaseWeapon data)
+    {
+        // Empty
+    }
 
     private void AttackEnemy(EnemySC enemy, int count = 1, float duration = 0)
     {

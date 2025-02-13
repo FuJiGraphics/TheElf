@@ -92,12 +92,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f237451f2f176914c8e5808c879465bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  icon: {fileID: 21300000, guid: af28b778a9416e746a6148ceb06eea2b, type: 3}
+  icon: {fileID: 21300000, guid: 360ac1517c64a3143a3eb3028002b608, type: 3}
   desc: Sword Test
   level: 4
   type: 2
   id: 34
   weaponName: BladeOfDawn
+  isAutoTarget: 0
   fixedRotation: 0
   objectPool: {fileID: 7809400794038650057}
   bulletPrefab: {fileID: 8808289594362423235, guid: cdab6699eb73ca14ab67f7deb07eb9c2, type: 3}
