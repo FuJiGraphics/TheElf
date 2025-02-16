@@ -11,6 +11,7 @@ public class WeaponSC : MonoBehaviour
     public string id = "0";
     public string weaponName = "Empty";
     public bool isAutoTarget = false;
+    public bool isSingleAttack = false;
 
     public bool fixedRotation = false;
     public GameObject objectPool;
@@ -21,20 +22,25 @@ public class WeaponSC : MonoBehaviour
     private float m_ElapsedTime = 0f;
     private ObjectManagerSC m_ObjectPool;
     private GameObject m_Owner;
+    private bool m_IsFirstFired = false;
+    private bool m_IsInitialized = false;
 
     private void Start()
     {
         this.Init();
-        info = WeaponManager.Instance.GetInfo(type, level);
     }
 
     private void OnEnable()
     {
         if (GameManagerSC.Instance.IsSceneLoaded == false)
             return;
-
         this.Init();
-        info = WeaponManager.Instance.GetInfo(type, level);
+    }
+
+    private void OnDisable()
+    {
+        m_IsInitialized = false;
+        m_IsFirstFired = false;
     }
 
     public void Fire(Vector2 direction, Vector2 position)
@@ -42,7 +48,9 @@ public class WeaponSC : MonoBehaviour
 
     public void Fire(Vector2 direction, Vector2 position, Quaternion rotation, GameObject playerOwner)
     {
-        this.Init();
+        if (isSingleAttack && m_IsFirstFired)
+            return;
+        
         info = WeaponManager.Instance.GetInfo(type, level);
         LogManager.IsVaild(bulletPrefab);
         if (info == null)
@@ -82,24 +90,28 @@ public class WeaponSC : MonoBehaviour
             m_Owner = playerOwner;
             sc.Fire(position, direction, rotation, playerOwner);
             effects?.Play(position, rotation);
+            m_IsFirstFired = true;
         }
     }
 
     private void Init()
     {
-        if (info != null)
+        if (m_IsInitialized)
+            return;
+        m_IsInitialized = true;
+
+        info = WeaponManager.Instance.GetInfo(type, level);
+        this.id = info.id;
+        this.weaponName = info.itemName;
+        m_ObjectPool = GetComponentInChildren<ObjectManagerSC>();
+        if (m_ObjectPool != null)
         {
-            this.id = info.id;
-            this.weaponName = info.itemName;
-            m_ObjectPool = GetComponentInChildren<ObjectManagerSC>();
-            if (m_ObjectPool != null)
-            {
-                m_ObjectPool.prefab = bulletPrefab != null ? bulletPrefab : null;
-                objectPool = m_ObjectPool.gameObject;
-            }
-            m_Owner = GameObject.FindWithTag("Player");
-            effects = GetComponentInChildren<Effects>();
+            m_ObjectPool.prefab = bulletPrefab != null ? bulletPrefab : null;
+            objectPool = m_ObjectPool.gameObject;
         }
+        m_Owner = GameObject.FindWithTag("Player");
+        effects = GetComponentInChildren<Effects>();
+        m_IsFirstFired = false;
     }
 
     private Vector2 FindAutoTarget(ref Vector2 direction, ref Vector2 pos)

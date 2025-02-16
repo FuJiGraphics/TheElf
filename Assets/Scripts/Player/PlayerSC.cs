@@ -19,6 +19,7 @@ public class PlayerSC : MonoBehaviour
     public GameObject joystick = null;
 
     // IEquipment
+    public int selectWeaponIndex = -1;
     public List<GameObject> allWeapons;
 
     public List<int> statKeyIds;
@@ -223,7 +224,8 @@ public class PlayerSC : MonoBehaviour
         {
             allWeapons[i].SetActive(false);
         }
-        int ran = Random.Range(0, allWeapons.Count);
+        int ran = selectWeaponIndex == -1 ? 
+            Random.Range(0, allWeapons.Count) : selectWeaponIndex;
         allWeapons[ran].SetActive(true);
         m_EquippedWeapons = new List<WeaponSC>();
         foreach (var weapon in allWeapons)

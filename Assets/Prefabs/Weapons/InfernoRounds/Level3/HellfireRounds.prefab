@@ -71,7 +71,7 @@ PrefabInstance:
     - target: {fileID: 6785360048121163087, guid: f02d6342acb91284493d2efa1c60bd7f, type: 3}
       propertyPath: prefab
       value: 
-      objectReference: {fileID: 8808289594362423235, guid: 9ff71de50e7994340ab7fad5acaa4d39, type: 3}
+      objectReference: {fileID: 8808289594362423235, guid: ce06be96fc40ff5439166127e400d9e3, type: 3}
     - target: {fileID: 6785360048121163087, guid: f02d6342acb91284493d2efa1c60bd7f, type: 3}
       propertyPath: maxCount
       value: 50

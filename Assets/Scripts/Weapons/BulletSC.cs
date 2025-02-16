@@ -17,6 +17,7 @@ public class BulletSC : MonoBehaviour
     public int maximumTarget = 10;
     public GameObject effect;
     public ObjectManagerSC ownerPool;
+    public bool isInvicible = false;
 
     private float m_ElapsedTime = 0f;
     private SpriteRenderer m_SpriteRenderer;
@@ -179,7 +180,7 @@ public class BulletSC : MonoBehaviour
             GameManagerSC.Instance.StartCoroutine(this.AttackEnemyCoroutine(enemy, count, duration));
         }
         m_CurrentHitCount++;
-        if (m_CurrentHitCount >= maximumTarget)
+        if (!isInvicible && m_CurrentHitCount >= maximumTarget)
         {
             this.Destroy();
         }
